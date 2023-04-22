@@ -1,0 +1,26 @@
+server:
+  port: 8083
+  servlet:
+    context-path: '/master-authuser/'
+
+master:
+  auth:
+    jwtSecret: B&E)H@McQfTjWnZr4u7w!z%C*F-JaNdRgUkXp2s5v8y/A?D(G+KbPeShVmYq3t6w
+    jwtExpirationMs: 1440000
+
+spring:
+  application:
+    name: master-authuser-service
+  datasource:
+    url:  jdbc:postgresql://localhost:5432/master-authuser
+    username: postgres
+    password: dev_router
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob.non-contextual-creation: true
+    properties:
+      hibernate:
+        show_sql: true
