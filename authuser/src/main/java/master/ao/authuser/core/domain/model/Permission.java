@@ -1,8 +1,7 @@
 package master.ao.authuser.core.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -11,7 +10,10 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name="PERMISSIONS")
@@ -25,8 +27,8 @@ public class Permission implements Serializable {
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "permission", fetch = FetchType.LAZY )
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "permission", fetch = FetchType.EAGER )
+    //@Fetch(FetchMode.SUBSELECT)
     private Set<Role> roles;
 
     public boolean removeRole(Role role) {

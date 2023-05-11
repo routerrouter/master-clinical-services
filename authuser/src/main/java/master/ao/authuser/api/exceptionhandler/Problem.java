@@ -38,5 +38,14 @@ public class Problem {
 			position = 30)
 	private List<Object> objects;
 
+	@Builder
+	@Getter
+	public static class Object {
+
+		private String name;
+		private String userMessage;
+
+	}
+
 	
 }

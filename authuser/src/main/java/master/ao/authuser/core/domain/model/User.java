@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import master.ao.authuser.core.domain.enums.UserStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -31,8 +33,6 @@ public class User implements Serializable {
     @Column(nullable = false, length = 255)
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
 
     @Column(nullable = false, unique = true, length = 50)
     private String username;
@@ -51,7 +51,7 @@ public class User implements Serializable {
 
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Group group;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -69,20 +69,23 @@ public class User implements Serializable {
         return getRoles().add(role);
     }
 
-    public boolean isNewUser() {
-        return getUserId() == null;
-    }
+    @Column(name = "account_non_expired")
+    private boolean accountNonExpired;
+
+    @Column(name = "credentials_non_expired")
+    private boolean credentialsNonExpired ;
+
+    private boolean enabled;
+
+    @Column(name = "account_non_locked")
+    private boolean accountNonLocked;
+
+    @Column(name = "lock_time")
+    private Date lockTime;
+
+    @Transient
+    private String oldPassword;
 
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", fullName='" + fullName + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", group=" + group.getDescription() +
-                '}';
-    }
+
 }

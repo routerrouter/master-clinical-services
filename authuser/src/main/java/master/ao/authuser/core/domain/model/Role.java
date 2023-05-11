@@ -21,11 +21,11 @@ public class Role implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID roleId;
 
-    @Column(nullable = false, unique = true, length = 30)
+    @Column(nullable = false, unique = true, length = 255)
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Permission permission;
 
 

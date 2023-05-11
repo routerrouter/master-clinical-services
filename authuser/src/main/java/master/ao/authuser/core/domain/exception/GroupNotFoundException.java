@@ -11,7 +11,7 @@ public class GroupNotFoundException extends EntityNotFoundException {
 	}
 
 	public GroupNotFoundException(UUID groupId) {
-		this(String.format("Não existe um cadastro de grupo com código %d", groupId));
+		this(String.format("Não existe um cadastro de grupo com código: %s", groupId.toString()));
 	}
 	
 }

@@ -24,8 +24,8 @@ public class UserMapper {
         return mapper.map(User, UserResponse.class);
     }
 
-    public List<UserResponse> toUserResponseList(List<User> Users) {
-        return Users.stream()
+    public List<UserResponse> toUserResponseList(List<User> users) {
+        return users.stream()
                 .map(this::toUserResponse)
                 .collect(Collectors.toList());
     }

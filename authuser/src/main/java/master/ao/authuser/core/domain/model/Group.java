@@ -2,14 +2,10 @@ package master.ao.authuser.core.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Setter
 @Getter
@@ -36,13 +32,14 @@ public class Group implements Serializable {
     @JoinTable( name = "GROUPS_PERMISSIONS",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    private Set<Permission> permissions = new HashSet<>();
+    private List<Permission> permissions = new ArrayList<>();
 
     public boolean removePermission(Permission permission) {
         return getPermissions().remove(permission);
     }
 
     public boolean addPermission(Permission permission) {
+        this.permissions.add(permission);
         return getPermissions().add(permission);
     }
 }

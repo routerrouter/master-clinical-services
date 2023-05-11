@@ -5,15 +5,19 @@ import lombok.Getter;
 @Getter
 public enum ProblemType {
 
-	DADOS_INVALIDOS("/dados-invalidos", "Dados inválidos"),
-	ACESSO_NEGADO("/acesso-negado", "Acesso negado"),
-	ERRO_DE_SISTEMA("/erro-de-sistema", "Erro de sistema"),
-	PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro inválido"),
-	MENSAGEM_INCOMPREENSIVEL("/mensagem-incompreensivel", "Mensagem incompreensível"),
-	RECURSO_NAO_ENCONTRADO("/recurso-nao-encontrado", "Recurso não encontrado"),
-	ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso"),
-	ERRO_NEGOCIO("/erro-negocio", "Violação de regra de negócio");
-	
+	INVALID_DATA("/dados-invalidos", "Dados inválidos"),
+	DENIED_ACCESS("/acesso-negado", "Acesso negado"),
+	SYSTEM_ERROR("/erro-de-sistema", "Erro de sistema"),
+	INVALID_PARAMETER("/parametro-invalido", "Parâmetro inválido"),
+	MESSAGE_INCOMPREENSIBLE("/mensagem-incompreensivel", "Mensagem incompreensível"),
+	RESOURCE_NOT_FOUND("/recurso-nao-encontrado", "Recurso não encontrado"),
+	ENTITY_IN_USE("/entidade-em-uso", "Entidade em uso"),
+	DUPLICATED_DATA("/dado-duplicado", "Informação duplicada"),
+	BUSSINES_ERROR("/erro-negocio", "Violação de regra de negócio"),
+	EXPIRED_ACCOUNT("/erro-acesso","Sua conta encontra-se expirada"),
+	BAD_CREDENTIALS("/erro-acesso","Credenciais informadas estão erradas"),
+	ACCOUNT_ACCESS_LIMIT("/erro-acesso","Limite de acesso da conta excedido."),
+	BLOCKED_ACCOUNT("/erro-acesso","Sua conta encontra-se bloqueada");
 	private String title;
 	private String uri;
 	

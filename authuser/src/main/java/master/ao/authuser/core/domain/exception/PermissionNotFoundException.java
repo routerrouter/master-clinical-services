@@ -11,7 +11,7 @@ public class PermissionNotFoundException extends EntityNotFoundException {
 	}
 	
 	public PermissionNotFoundException(UUID permissaoId) {
-		this(String.format("Não existe um cadastro de permissão com código %d", permissaoId));
+		this(String.format("Não existe um cadastro de permissão com código %s", permissaoId));
 	}
 	
 }
