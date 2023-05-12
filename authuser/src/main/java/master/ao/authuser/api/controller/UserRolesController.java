@@ -1,15 +1,24 @@
 package master.ao.authuser.api.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import master.ao.authuser.api.mapper.RoleMapper;
 import master.ao.authuser.api.response.RoleResponse;
 import master.ao.authuser.api.response.UserRoleAccsses;
+import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.model.Role;
 import master.ao.authuser.core.domain.model.User;
 import master.ao.authuser.core.domain.service.RoleService;
 import master.ao.authuser.core.domain.service.UserService;
 import master.ao.authuser.core.domain.specifications.SpecificationTemplate;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,21 +31,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/role_user")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Roles User", description = "The Roles User API. Contains all operations that can be performed on a Roles User")
 public class UserRolesController {
 
     private final RoleService roleService;
     private final UserService userService;
     private final RoleMapper mapper;
 
+
+    @Operation(summary = "Get all roles of user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found roles of user",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping()
-    public ResponseEntity<Page<RoleResponse>> getAll(SpecificationTemplate.RoleSpec spec,
-                                                     @PageableDefault(page = 0, size = 10, sort = "description", direction = Sort.Direction.ASC) Pageable pageable,
-                                                     @RequestParam(required = false) UUID userId) {
+    public ResponseEntity<Page<RoleResponse>> getAll(@ParameterObject SpecificationTemplate.RoleSpec spec,
+                                                     @ParameterObject @PageableDefault(page = 0, size = 10, sort = "description", direction = Sort.Direction.ASC) Pageable pageable,
+                                                     @Parameter(description = "id of associated user") @RequestParam(required = false) UUID userId) {
 
         List<RoleResponse> roleResponseList = roleResponseList = roleService.findAll(SpecificationTemplate.roleUserId(userId).and(spec))
                     .stream()
@@ -53,7 +70,7 @@ public class UserRolesController {
     }
 
     @GetMapping("/access")
-    public ResponseEntity<?> getAllAccessUser(SpecificationTemplate.RoleSpec spec,
+    public ResponseEntity<?> getAllAccessUser(@ParameterObject SpecificationTemplate.RoleSpec spec,
                                                                  @RequestParam(required = false) UUID userId) {
 
         Optional<User> userOptional = userService.fetchOrFail(userId);
@@ -83,7 +100,6 @@ public class UserRolesController {
         return ResponseEntity.noContent().build();
     }
 
-    //@CheckSecurity.UsuariosgroupsPermissoes.PodeEditar
     @DeleteMapping("/{userId}/user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> removeRoles(@PathVariable UUID userId, @RequestBody List<UUID> roles) {

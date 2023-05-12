@@ -1,0 +1,395 @@
+-- --------------------------------------------------------
+-- Anfitrião:                    127.0.0.1
+-- Versão do servidor:           PostgreSQL 10.11, compiled by Visual C++ build 1800, 64-bit
+-- SO do servidor:               
+-- HeidiSQL Versão:              11.3.0.6295
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES  */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+-- A despejar estrutura para tabela public.groups
+CREATE TABLE IF NOT EXISTS "groups" (
+	"group_id" UUID NOT NULL,
+	"description" VARCHAR(255) NOT NULL,
+	PRIMARY KEY ("group_id")
+);
+
+-- A despejar dados para tabela public.groups: 0 rows
+/*!40000 ALTER TABLE "groups" DISABLE KEYS */;
+INSERT INTO "groups" ("group_id", "description") VALUES
+	('f5b2794c-4ef7-422f-a05d-48d671bdd4b2', 'ADMIN'),
+	('106c496c-a3e8-41de-bee5-ca26ee9db491', 'ESTOQUE'),
+	('2a619f0e-a9a3-4b6b-b236-cc14e422cf6b', 'TESOURARIA'),
+	('0b36efde-148e-4ee4-881e-900976503e3c', 'CONTABILIDADE'),
+	('c83aeaa9-c4a5-4269-bd9f-cb4a1b6fe002', 'PATRIMONIO');
+/*!40000 ALTER TABLE "groups" ENABLE KEYS */;
+
+-- A despejar estrutura para tabela public.groups_permissions
+CREATE TABLE IF NOT EXISTS "groups_permissions" (
+	"group_id" UUID NOT NULL,
+	"permission_id" UUID NOT NULL,
+	PRIMARY KEY ("group_id", "permission_id"),
+	CONSTRAINT "fk4hdh7nac2cjsnsufini15ojbi" FOREIGN KEY ("group_id") REFERENCES "public"."groups" ("group_id") ON UPDATE NO ACTION ON DELETE NO ACTION,
+	CONSTRAINT "fkq51brbnh48sfqhdxt1t077rq4" FOREIGN KEY ("permission_id") REFERENCES "public"."permissions" ("permission_id") ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+-- A despejar dados para tabela public.groups_permissions: 3 rows
+/*!40000 ALTER TABLE "groups_permissions" DISABLE KEYS */;
+INSERT INTO "groups_permissions" ("group_id", "permission_id") VALUES
+	('c83aeaa9-c4a5-4269-bd9f-cb4a1b6fe002', '42e1430c-f17b-4b03-a63f-8a0bab4a011f'),
+	('c83aeaa9-c4a5-4269-bd9f-cb4a1b6fe002', '7efb8b6e-ef7d-4527-84b0-183f480d4b22'),
+	('c83aeaa9-c4a5-4269-bd9f-cb4a1b6fe002', '63164a28-d557-4514-9699-5a0daf57ff8f');
+/*!40000 ALTER TABLE "groups_permissions" ENABLE KEYS */;
+
+-- A despejar estrutura para tabela public.permissions
+CREATE TABLE IF NOT EXISTS "permissions" (
+	"permission_id" UUID NOT NULL,
+	"description" VARCHAR(255) NOT NULL,
+	PRIMARY KEY ("permission_id")
+);
+
+-- A despejar dados para tabela public.permissions: 0 rows
+/*!40000 ALTER TABLE "permissions" DISABLE KEYS */;
+INSERT INTO "permissions" ("permission_id", "description") VALUES
+	('f03c33f1-b83d-4741-8e9b-782d5cae9b85', 'Cadastros'),
+	('6a250412-f3c3-4a4b-a912-495a04f7294e', 'Estoque'),
+	('b8965982-e3e7-47d9-9908-07ec0f365b40', 'Tesouraria'),
+	('2da692d4-ff6f-4e79-b7ab-68f854d1dee9', 'Contabilidade'),
+	('8041334e-d787-428d-a2c8-ca65967d44bf', 'Análise do Fluxo'),
+	('643b0f2b-2ffc-49ed-9fe7-6d3534568bd6', 'Relatórios'),
+	('6e6c360a-ebce-4ded-9d57-231ca8ba23c3', 'Relatórios Contabilisticos'),
+	('44786eba-f2d6-4824-8b50-7762e8b096b3', 'Parametros Sistema'),
+	('d0a33564-b312-4103-82f6-c263a0b21f08', 'Parametros Contabilidade'),
+	('c7967a86-8bd6-437e-8b2b-244176aac6ab', 'Contas de Utilizador'),
+	('818744c8-2251-4fca-b620-d38f6a244385', 'Configurações'),
+	('782286f5-42a8-46cc-86d2-7834a2a02999', 'Estatistícas'),
+	('63164a28-d557-4514-9699-5a0daf57ff8f', 'Movimentos'),
+	('7efb8b6e-ef7d-4527-84b0-183f480d4b22', 'Relatórios Patrimonio'),
+	('00e98970-5c75-4376-8857-3b3d9ffdac4b', 'Estatisticas do Produto'),
+	('9dc3c30b-64fd-4d67-b09e-5589964efde5', 'Gestão Documental'),
+	('42e1430c-f17b-4b03-a63f-8a0bab4a011f', 'Cadastros do Patrimonio');
+/*!40000 ALTER TABLE "permissions" ENABLE KEYS */;
+
+-- A despejar estrutura para tabela public.roles
+CREATE TABLE IF NOT EXISTS "roles" (
+	"role_id" UUID NOT NULL,
+	"description" VARCHAR(255) NOT NULL,
+	"permission_permission_id" UUID NOT NULL,
+	PRIMARY KEY ("role_id"),
+	UNIQUE INDEX "uk_2op45rew8nnd6adyi86qeqk50" ("description"),
+	CONSTRAINT "fk66ywow2vgkwlkuuej79vtl24x" FOREIGN KEY ("permission_permission_id") REFERENCES "public"."permissions" ("permission_id") ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+-- A despejar dados para tabela public.roles: 94 rows
+/*!40000 ALTER TABLE "roles" DISABLE KEYS */;
+INSERT INTO "roles" ("role_id", "description", "permission_permission_id") VALUES
+	('3477c406-17fb-4571-a5a6-229d77d11bcb', 'Entidades/Unidades', 'f03c33f1-b83d-4741-8e9b-782d5cae9b85'),
+	('472507ff-1b64-4884-bb74-e6acc7d6f75e', 'Prateleiras', 'f03c33f1-b83d-4741-8e9b-782d5cae9b85'),
+	('c5cd86a3-d87e-4fe0-b90e-4a10fe6abb5c', 'Produtos', 'f03c33f1-b83d-4741-8e9b-782d5cae9b85'),
+	('671e58f4-01ba-46ac-9989-1ec5f7f87a36', 'Entrada', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('3a7aa3a5-7b6a-422c-bf98-2fa243c1f82c', 'Saida por Doente', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('3aa67549-2a53-446e-9910-9f06083241ee', 'Saida por Defeito', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('f9b864f0-e16a-41d8-92e7-88b932917ce5', 'Encomenda de Produto', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('ec4bcca0-6338-4431-a410-ceae884837ef', 'Devoluções', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('55171e74-cca7-4c2f-b858-3025ed07e8be', 'Movimentações', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('350612ac-078d-4459-9f18-e8e181938eb0', 'Localização do Produto', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('0243948e-903f-4ed9-b26c-83444945158f', 'Classes', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('5ab88c82-3d5f-483e-95f2-964bb7cc377c', 'Contas', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('a2337893-d917-4330-9117-b9adbe093b53', 'P.G.C.', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('8d74c62e-559c-43b9-af7c-30682a19e354', 'Lancamento', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('cced6830-65fe-485c-90dd-92f15228cbc8', 'Orçamento Aprovado', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('91b10b76-dbce-40ac-8cba-c1776005b254', 'Orçamento Executado', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('c79555de-f5c7-407b-9645-68c71dda4c62', 'Orçamento de Abertura', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('199e5c84-df93-4097-b396-2f87aa112c69', 'Quota Mensal', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('a26cd305-b26d-4550-8823-d64fbc51e10e', 'Despesa Com Pessoal', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('1baaa807-22e6-497a-9155-feaf785ecad0', 'Programaçao Financeira', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('6dc3c2b9-d459-4c5a-8a57-643cfcbb2f92', 'Gestão de Divida', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('63a85908-e672-4736-abec-807874e97071', 'Categorias', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('1d0c8cb7-8a88-44d8-b04d-df86c92e1f64', 'Documentos', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('40d6cbae-5c78-484e-bb5d-a6ac17cab216', 'Naturezas', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('b940882a-e1b8-4974-819c-9da2fff65d23', 'Ano/Mês Vigente', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('cbd3f682-6966-414d-bc0d-bbcc4a2569f7', 'Acessos', 'c7967a86-8bd6-437e-8b2b-244176aac6ab'),
+	('609494a4-6208-48a6-affb-14adcc426cb5', 'Grupos de Usuários', 'c7967a86-8bd6-437e-8b2b-244176aac6ab'),
+	('891c2d85-f516-4171-bf78-78af9de88705', 'Usuarios', 'c7967a86-8bd6-437e-8b2b-244176aac6ab'),
+	('2f75c92d-8d0e-4e75-a5fa-6f5497064d7d', 'Permissões', 'c7967a86-8bd6-437e-8b2b-244176aac6ab'),
+	('a6faa25e-fe12-44d2-910a-7eaea32617c3', 'Limites de Acesso', 'c7967a86-8bd6-437e-8b2b-244176aac6ab'),
+	('dbad66aa-c59b-4e42-b35d-c5a50ea916da', 'Grupos', 'f03c33f1-b83d-4741-8e9b-782d5cae9b85'),
+	('bdd0e214-9563-486f-90c5-88c54089ec11', 'Natureza', 'f03c33f1-b83d-4741-8e9b-782d5cae9b85'),
+	('016b9e42-3465-4874-aed0-ba066f4d2522', 'Categoria', 'f03c33f1-b83d-4741-8e9b-782d5cae9b85'),
+	('349085e1-3a9b-4843-8683-b5cd50acfd49', 'Armazens', 'f03c33f1-b83d-4741-8e9b-782d5cae9b85'),
+	('4efbf2aa-eac7-4dc4-aa74-00e3bb4cadaf', 'Actualizae Estoque', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('92a928a1-c3b5-4858-9cc4-93a16bfef37d', 'Actualizae Preço', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('6ec9b9ac-9e0e-490b-a0d6-5d71ab11b49d', 'Compra', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('22630f06-4bbf-4e0b-995e-c9ee3f1e7959', 'Doação', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('92a3f7ac-c370-4bad-9c9f-ebc624a1bfba', 'Requisição de Produto', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('9b27a74e-309f-4253-8563-153d993ce786', 'Saida Externa', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('ef22aef1-fe5b-42ba-8cd9-fbdc741612eb', 'Transferência de Produtos', '6a250412-f3c3-4a4b-a912-495a04f7294e'),
+	('3eb86b30-b26e-4a38-bbc5-7da7194edb88', 'Abertura Caixa', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('4437d9e2-0db5-45c9-b7f8-7d34229c6d10', 'Abertura/Fecho de Caixa', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('def60a24-ef44-4cd0-b4ce-2b66139bd59f', 'Análise de Fluxo', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('b11a037a-6f39-4bb0-ac08-aca806059ef4', 'Análise de Saidas por Natureza', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('7d10fe0c-acc0-48ef-b499-97d6a762f3ef', 'Análise por C.C Detalhado', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('1e131482-d62b-4a3e-8407-81810d25a683', 'Análise por C.C Sintético', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('962044ff-672b-4772-8bd9-0aaf2752fd8f', 'Análise por Centro de Custo - Detalhado', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('09b3c31c-7435-46fa-8db4-76ff6818b56d', 'Análise por Centro de Custo - Sintético', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('13ff5aa8-565c-478c-827a-e7f63b90a8bf', 'Análise por Natureza', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('3617b895-39e0-49ae-8ba6-c3d6ef3f0cba', 'Bens e Serv. Comparticipados', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('96c8d051-0dfa-4bfe-81ba-3b4077b21c51', 'Cadastro de Caixa/Banco', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('1bf249b1-f9c0-494e-ab26-fd56652c2265', 'Exames mais solicitados', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('b2481a12-a271-4ff0-91bc-653be692b7ef', 'Facturas', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('03c78d24-3218-4c70-9df3-4f2b16e20663', 'Fecho Caixa', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('debd7e8e-8090-4955-a513-9c44621efed6', 'Movimentos do Caixa', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('efda3ffe-8e26-4200-9361-ffcae0b521b2', 'Receita Mensal', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('9e135258-4708-4cec-ae41-c35df9910663', 'Saidas de Caixa', 'b8965982-e3e7-47d9-9908-07ec0f365b40'),
+	('5ec344bc-07ab-4e7d-b5ce-9c06daec7b75', 'Diário', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9'),
+	('75339251-6875-42e3-adec-0fc658a7bb43', 'Saida por Entidade', '8041334e-d787-428d-a2c8-ca65967d44bf'),
+	('4c2a1ba2-7a94-4d7f-a68d-d9ae6c673309', 'Consumo do Produto', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('2c679fbc-b8ba-40e1-aa21-72abcb0a77fb', 'Consumo Geral', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('0f0ff5aa-1f0b-46d4-952c-4bba78e2cced', 'Consumo por Categoria', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('c43c06d9-fbe9-4321-b455-dbe99502d569', 'Consumo por Entidade', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('334f884b-859a-45c1-90c5-205cd9aa8115', 'Consumo por Grupo', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('aab3e5b4-2964-436c-b00c-14622332c924', 'Custo dos Produtos', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('40170d13-4731-49a3-bc70-f245fdc36404', 'Custo por Entidade', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('cde4fa50-82a0-4aa3-8307-ac9468f861b2', 'Devolução Externa', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('d5244d11-c6af-452e-835a-b639716314a0', 'Devolução Interna', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('2a343caf-e390-4fe7-8164-76196f717f3e', 'Devoluções de Produto', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('7e5b8513-a1b9-4b7b-b90a-abb8957095e5', 'Entradas por Fornecedor', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('93347f38-7059-403e-8293-4681d496196e', 'Existência do Produto', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('9a12b865-85e0-4ea6-9be9-73eb0baf3fe7', 'Existência em Estoque', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('0e909a7b-659d-45fc-9b83-7f57588ccf44', 'Inventário', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('7b22c531-bfa5-4733-b83e-04e76490fe39', 'Movimento Diário', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('2b37b1a2-3065-4a3a-8db8-f3744b8e7768', 'Pesquisa de Entrada', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('bca13796-8e9b-44ef-99ba-05b05d593cda', 'Produtos a Expirar', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('8bb80686-4505-4f8d-8e1c-b65242ab42d7', 'Produtos por subcategorias', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('7602b47c-b4c1-4b61-a801-aac7e1022874', 'Total de Aquisições', '643b0f2b-2ffc-49ed-9fe7-6d3534568bd6'),
+	('340cbb10-f106-4cb6-959c-09901c0768d0', 'Conta Corrente', '6e6c360a-ebce-4ded-9d57-231ca8ba23c3'),
+	('8fc814d9-e567-461f-9f6b-e60af4a4c6d2', 'Despesas de Capital Executadas', '6e6c360a-ebce-4ded-9d57-231ca8ba23c3'),
+	('d1490f3d-a51e-4904-86ce-5d661ba19901', 'Despesas Executadas em Bens e Serviços', '6e6c360a-ebce-4ded-9d57-231ca8ba23c3'),
+	('99912816-eb47-493a-a407-f59e812c25fb', 'Despesas Executadas em Pessoal', '6e6c360a-ebce-4ded-9d57-231ca8ba23c3'),
+	('fa7efdcf-73e5-4bdf-8767-16bf1ef640c0', 'Dividas', '6e6c360a-ebce-4ded-9d57-231ca8ba23c3'),
+	('42578893-b5b5-4334-b5ab-fbed839fe5b5', 'Gestão Orçamental', '6e6c360a-ebce-4ded-9d57-231ca8ba23c3'),
+	('4485f9f6-4f49-4dd6-ab7b-d6fe28eeae76', 'O.G.E.', '6e6c360a-ebce-4ded-9d57-231ca8ba23c3'),
+	('cc8f3221-e1c2-4972-a4bc-2992db4db91f', 'Relatório de Saidas de Caixa', '6e6c360a-ebce-4ded-9d57-231ca8ba23c3'),
+	('f93cb17a-7c96-4a29-ab43-bc14a2020f9c', 'Empresa', '44786eba-f2d6-4824-8b50-7762e8b096b3'),
+	('146f3e1a-680e-4e89-bc19-998e57a24e3f', 'Tipos de Movimento', '44786eba-f2d6-4824-8b50-7762e8b096b3'),
+	('f5f9154c-0acd-49f1-9a74-69c0fd57ccf4', 'Estatística do Produto', '782286f5-42a8-46cc-86d2-7834a2a02999'),
+	('b11602db-3e76-4f4f-b93b-e11cb8960bea', 'Produtos mais consumidos', '782286f5-42a8-46cc-86d2-7834a2a02999'),
+	('97dcb2a4-69a7-4557-9e93-caf19d0c5a6c', 'Actualizar Preço', '63164a28-d557-4514-9699-5a0daf57ff8f'),
+	('48814177-1ca7-4fac-9c78-8bc170501931', 'Actualizar Stock', '63164a28-d557-4514-9699-5a0daf57ff8f'),
+	('8426519e-1f7e-49a3-b65f-c48c7445c4fd', 'Compras', '63164a28-d557-4514-9699-5a0daf57ff8f'),
+	('7ee57f6c-0b92-4e8a-8352-b4d657ecebbd', 'Balancete', '2da692d4-ff6f-4e79-b7ab-68f854d1dee9');
+/*!40000 ALTER TABLE "roles" ENABLE KEYS */;
+
+-- A despejar estrutura para tabela public.users
+CREATE TABLE IF NOT EXISTS "users" (
+	"user_id" UUID NOT NULL,
+	"account_non_expired" BOOLEAN NULL DEFAULT NULL,
+	"account_non_locked" BOOLEAN NULL DEFAULT NULL,
+	"creation_date" TIMESTAMP NOT NULL,
+	"credentials_non_expired" BOOLEAN NULL DEFAULT NULL,
+	"email" VARCHAR(255) NOT NULL,
+	"enabled" BOOLEAN NOT NULL,
+	"full_name" VARCHAR(255) NOT NULL,
+	"last_update_date" TIMESTAMP NOT NULL,
+	"lock_time" TIMESTAMP NULL DEFAULT NULL,
+	"password" VARCHAR(255) NOT NULL,
+	"username" VARCHAR(50) NOT NULL,
+	"group_group_id" UUID NOT NULL,
+	PRIMARY KEY ("user_id"),
+	UNIQUE INDEX "uk_r43af9ap4edm43mmtq01oddj6" ("username"),
+	CONSTRAINT "fko4orvv3md7qtm3fyuaptf7dlw" FOREIGN KEY ("group_group_id") REFERENCES "public"."groups" ("group_id") ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+-- A despejar dados para tabela public.users: 9 rows
+/*!40000 ALTER TABLE "users" DISABLE KEYS */;
+INSERT INTO "users" ("user_id", "account_non_expired", "account_non_locked", "creation_date", "credentials_non_expired", "email", "enabled", "full_name", "last_update_date", "lock_time", "password", "username", "group_group_id") VALUES
+	('509a45ab-bc55-445a-9cb4-610850ad8dda', 'true', 'true', '2023-04-28 01:02:07.799324', 'true', 'teste@master.com', 'true', 'Hemenergildo', '2023-04-28 01:02:08.581185', '2023-05-05 23:06:14', '$2a$10$xWHZgcRNa4EgqeMShxaQrukeNFiToTgArDUgLekbJZ8VqGH/s5ooa', 'user.teste', '0b36efde-148e-4ee4-881e-900976503e3c'),
+	('e2ac2869-6a27-45ad-bd1e-69149a4adc54', 'true', 'true', '2023-04-25 13:43:23', 'true', 'estoque@master.com', 'true', 'Estoque', '2023-04-25 13:48:58', '2023-05-05 23:06:16', '$2a$10$v0mDOP2Gz55deuCp1xMx8OFBSx4Ox5iY0uFzls37qZZppDAoRd3/S', 'user.estoque', '106c496c-a3e8-41de-bee5-ca26ee9db491'),
+	('7d3acd3f-39b4-4d3a-867e-8dae0a3b2323', 'true', 'true', '2023-05-05 20:34:41.996446', 'true', 'biany@eliane.com', 'true', 'Biatriz Eliane Andre Domingos', '2023-05-05 20:34:42.511445', '2023-05-05 23:06:18', '$2a$10$REGGOHu.Xl0tobT1MnynNesw09FAFROPUfOdcVW24JC6zgRYDeUxi', 'biany.eliane', '0b36efde-148e-4ee4-881e-900976503e3c'),
+	('9b0d7cb7-1685-4f60-bde2-e5042984671a', 'true', 'true', '2023-04-28 01:09:02.588425', 'true', 'teste13@master.com', 'true', 'Danilson', '2023-04-28 01:09:02.588425', '2023-05-05 23:06:19', '$2a$10$oxl0TIhx37v3GGr9shZkheurxIL8olSK0ZQEOcOqwPZSkMghCeRAu', 'user.teste31', '0b36efde-148e-4ee4-881e-900976503e3c'),
+	('45092757-2911-49ab-a558-af4dfa9b6c1a', 'true', 'true', '2023-04-28 00:04:09.014504', 'true', 'tesouraria@master.com', 'true', 'Tesouraria', '2023-04-28 00:04:09.015507', '2023-05-05 23:06:19', '$2a$10$GCA8C6xAbKqOc1PpD3dPGep2Qz.KuJT.C2RtvE6GqpfU0w/cKM6Lu', 'user.tesouraria', 'f5b2794c-4ef7-422f-a05d-48d671bdd4b2'),
+	('5ee7a28a-b982-4f63-9ae7-fdf3a463740e', 'true', 'true', '2023-04-28 01:07:47.058273', 'true', 'teste3@master.com', 'true', 'Braulio', '2023-04-28 01:07:47.058273', '2023-05-05 23:06:20', '$2a$10$5TGzzbr9hHxYdjusg/H.8.sSSxJ2EtyZ9wKpfEbYL.JJPVp/VcjNm', 'user.teste3', '0b36efde-148e-4ee4-881e-900976503e3c'),
+	('fe0ab904-575d-43bb-95fd-db6526d34fc6', 'true', 'true', '2023-04-28 01:04:25.897962', 'true', 'teste2@master.com', 'true', 'Carvalio', '2023-04-28 01:04:25.897962', '2023-05-05 23:06:21', '$2a$10$4wjDIBDSJp5ILkjX5pPJ7u14J32M/zO1.h7NfrvdyRbsHXkBKwxOy', 'user.teste2', '0b36efde-148e-4ee4-881e-900976503e3c'),
+	('c443f68e-c8b3-4934-aeb5-820f2779996e', 'true', 'false', '2023-04-25 13:43:23', 'true', 'patrimonio@master.com', 'false', 'Usuário Patrimonio', '2023-05-10 23:06:33.099967', '2023-05-05 23:06:17', '$2a$10$v0mDOP2Gz55deuCp1xMx8OFBSx4Ox5iY0uFzls37qZZppDAoRd3/S', 'user.patrimonio', 'c83aeaa9-c4a5-4269-bd9f-cb4a1b6fe002'),
+	('24bd6048-a756-4edf-9ca4-e7ec14f9d370', 'true', 'true', '2023-05-10 23:55:52.299463', 'true', 'gildo.francisco@socompser.com', 'true', 'Gildo Antonio Francisco', '2023-05-10 23:55:52.299463', '2023-05-11 00:55:52.299', '$2a$10$/0/AuIfJTYQwXW4/eJkQ9uN.hC0I95ZDimuCSagICeC9nBgdkYdwi', 'gildo.francisco', '0b36efde-148e-4ee4-881e-900976503e3c'),
+	('af8244ec-ca14-42bf-82ca-6705e348b2bf', 'true', 'true', '2023-05-10 23:58:02.911783', 'true', 'gildo2.francisco@socompser.com', 'true', 'Gildo Antonio Francisco', '2023-05-10 23:58:02.911783', '2023-05-11 00:58:02.911', '$2a$10$IS7c.LIhPuqjM9tSYw5bMOp9gC5qoD3XyW1Y3fewL4Jd9bN2zCVUi', 'gildo2.francisco', '0b36efde-148e-4ee4-881e-900976503e3c'),
+	('a1c587d2-dcc7-42bb-959e-170c9cef3726', 'true', 'true', '2023-05-11 00:04:06.533853', 'true', 'gildo3.francisco@socompser.com', 'true', 'Gildo Antonio Francisco', '2023-05-11 00:04:06.534852', '2023-05-11 01:04:06.534', '$2a$10$Seg48MXOZze1aDBtW7eXfur4ULgkpfeAXnESOyt7NVz7V4i.6.M.K', 'gildo3.francisco', '0b36efde-148e-4ee4-881e-900976503e3c'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'true', 'true', '2023-04-25 13:13:18.178114', 'true', 'admin@master.com', 'true', 'Administrador', '2023-05-10 23:51:43.736551', '2023-05-11 23:11:36.161', '$2a$10$4BOwZJPhLcnsb6Xlu7Ci2uI5T7YefXrt6I8JUekAl5r8n3QIR0vg6', 'user.admin', 'f5b2794c-4ef7-422f-a05d-48d671bdd4b2');
+/*!40000 ALTER TABLE "users" ENABLE KEYS */;
+
+-- A despejar estrutura para tabela public.users_access_limit
+CREATE TABLE IF NOT EXISTS "users_access_limit" (
+	"access_limit_id" UUID NOT NULL,
+	"ativation" DATE NOT NULL,
+	"block_date" DATE NOT NULL,
+	"user_user_id" UUID NOT NULL,
+	PRIMARY KEY ("access_limit_id"),
+	CONSTRAINT "fkfg5o65et3rqgsyrpiotqrn6b2" FOREIGN KEY ("user_user_id") REFERENCES "public"."users" ("user_id") ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+-- A despejar dados para tabela public.users_access_limit: 0 rows
+/*!40000 ALTER TABLE "users_access_limit" DISABLE KEYS */;
+INSERT INTO "users_access_limit" ("access_limit_id", "ativation", "block_date", "user_user_id") VALUES
+	('8059c389-84e2-4082-87af-1da882660087', '2023-05-07', '2024-05-07', '7d3acd3f-39b4-4d3a-867e-8dae0a3b2323'),
+	('5174a784-a919-4be3-9f5a-6d339a8c60f4', '2023-05-07', '2024-05-07', 'c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff');
+/*!40000 ALTER TABLE "users_access_limit" ENABLE KEYS */;
+
+-- A despejar estrutura para tabela public.users_roles
+CREATE TABLE IF NOT EXISTS "users_roles" (
+	"user_id" UUID NOT NULL,
+	"role_id" UUID NOT NULL,
+	CONSTRAINT "fk2o0jvgh89lemvvo17cbqvdxaa" FOREIGN KEY ("user_id") REFERENCES "public"."users" ("user_id") ON UPDATE NO ACTION ON DELETE NO ACTION,
+	CONSTRAINT "fkj6m8fwv7oqv74fcehir1a9ffy" FOREIGN KEY ("role_id") REFERENCES "public"."roles" ("role_id") ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+-- A despejar dados para tabela public.users_roles: 110 rows
+/*!40000 ALTER TABLE "users_roles" DISABLE KEYS */;
+INSERT INTO "users_roles" ("user_id", "role_id") VALUES
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '2f75c92d-8d0e-4e75-a5fa-6f5497064d7d'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '609494a4-6208-48a6-affb-14adcc426cb5'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '891c2d85-f516-4171-bf78-78af9de88705'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'a6faa25e-fe12-44d2-910a-7eaea32617c3'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'cbd3f682-6966-414d-bc0d-bbcc4a2569f7'),
+	('e2ac2869-6a27-45ad-bd1e-69149a4adc54', '3477c406-17fb-4571-a5a6-229d77d11bcb'),
+	('e2ac2869-6a27-45ad-bd1e-69149a4adc54', '472507ff-1b64-4884-bb74-e6acc7d6f75e'),
+	('e2ac2869-6a27-45ad-bd1e-69149a4adc54', 'c5cd86a3-d87e-4fe0-b90e-4a10fe6abb5c'),
+	('e2ac2869-6a27-45ad-bd1e-69149a4adc54', '3a7aa3a5-7b6a-422c-bf98-2fa243c1f82c'),
+	('e2ac2869-6a27-45ad-bd1e-69149a4adc54', '3aa67549-2a53-446e-9910-9f06083241ee'),
+	('e2ac2869-6a27-45ad-bd1e-69149a4adc54', 'f9b864f0-e16a-41d8-92e7-88b932917ce5'),
+	('e2ac2869-6a27-45ad-bd1e-69149a4adc54', 'ec4bcca0-6338-4431-a410-ceae884837ef'),
+	('e2ac2869-6a27-45ad-bd1e-69149a4adc54', '55171e74-cca7-4c2f-b858-3025ed07e8be'),
+	('e2ac2869-6a27-45ad-bd1e-69149a4adc54', '350612ac-078d-4459-9f18-e8e181938eb0'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '3477c406-17fb-4571-a5a6-229d77d11bcb'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '472507ff-1b64-4884-bb74-e6acc7d6f75e'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'c5cd86a3-d87e-4fe0-b90e-4a10fe6abb5c'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '671e58f4-01ba-46ac-9989-1ec5f7f87a36'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '3a7aa3a5-7b6a-422c-bf98-2fa243c1f82c'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '3aa67549-2a53-446e-9910-9f06083241ee'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'f9b864f0-e16a-41d8-92e7-88b932917ce5'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'ec4bcca0-6338-4431-a410-ceae884837ef'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '55171e74-cca7-4c2f-b858-3025ed07e8be'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '350612ac-078d-4459-9f18-e8e181938eb0'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '0243948e-903f-4ed9-b26c-83444945158f'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '5ab88c82-3d5f-483e-95f2-964bb7cc377c'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'a2337893-d917-4330-9117-b9adbe093b53'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '8d74c62e-559c-43b9-af7c-30682a19e354'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'cced6830-65fe-485c-90dd-92f15228cbc8'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '91b10b76-dbce-40ac-8cba-c1776005b254'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'c79555de-f5c7-407b-9645-68c71dda4c62'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '199e5c84-df93-4097-b396-2f87aa112c69'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'a26cd305-b26d-4550-8823-d64fbc51e10e'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '1baaa807-22e6-497a-9155-feaf785ecad0'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '6dc3c2b9-d459-4c5a-8a57-643cfcbb2f92'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '63a85908-e672-4736-abec-807874e97071'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '1d0c8cb7-8a88-44d8-b04d-df86c92e1f64'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '40d6cbae-5c78-484e-bb5d-a6ac17cab216'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'b940882a-e1b8-4974-819c-9da2fff65d23'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'cbd3f682-6966-414d-bc0d-bbcc4a2569f7'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '609494a4-6208-48a6-affb-14adcc426cb5'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '891c2d85-f516-4171-bf78-78af9de88705'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '2f75c92d-8d0e-4e75-a5fa-6f5497064d7d'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'a6faa25e-fe12-44d2-910a-7eaea32617c3'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'dbad66aa-c59b-4e42-b35d-c5a50ea916da'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'bdd0e214-9563-486f-90c5-88c54089ec11'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '016b9e42-3465-4874-aed0-ba066f4d2522'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '349085e1-3a9b-4843-8683-b5cd50acfd49'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '4efbf2aa-eac7-4dc4-aa74-00e3bb4cadaf'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '92a928a1-c3b5-4858-9cc4-93a16bfef37d'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '6ec9b9ac-9e0e-490b-a0d6-5d71ab11b49d'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '22630f06-4bbf-4e0b-995e-c9ee3f1e7959'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '92a3f7ac-c370-4bad-9c9f-ebc624a1bfba'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '9b27a74e-309f-4253-8563-153d993ce786'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'ef22aef1-fe5b-42ba-8cd9-fbdc741612eb'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '3eb86b30-b26e-4a38-bbc5-7da7194edb88'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '4437d9e2-0db5-45c9-b7f8-7d34229c6d10'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'def60a24-ef44-4cd0-b4ce-2b66139bd59f'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'b11a037a-6f39-4bb0-ac08-aca806059ef4'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '7d10fe0c-acc0-48ef-b499-97d6a762f3ef'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '1e131482-d62b-4a3e-8407-81810d25a683'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '962044ff-672b-4772-8bd9-0aaf2752fd8f'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '09b3c31c-7435-46fa-8db4-76ff6818b56d'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '13ff5aa8-565c-478c-827a-e7f63b90a8bf'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '3617b895-39e0-49ae-8ba6-c3d6ef3f0cba'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '96c8d051-0dfa-4bfe-81ba-3b4077b21c51'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '1bf249b1-f9c0-494e-ab26-fd56652c2265'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'b2481a12-a271-4ff0-91bc-653be692b7ef'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '03c78d24-3218-4c70-9df3-4f2b16e20663'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'debd7e8e-8090-4955-a513-9c44621efed6'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'efda3ffe-8e26-4200-9361-ffcae0b521b2'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '9e135258-4708-4cec-ae41-c35df9910663'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '5ec344bc-07ab-4e7d-b5ce-9c06daec7b75'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '75339251-6875-42e3-adec-0fc658a7bb43'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '4c2a1ba2-7a94-4d7f-a68d-d9ae6c673309'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '2c679fbc-b8ba-40e1-aa21-72abcb0a77fb'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '0f0ff5aa-1f0b-46d4-952c-4bba78e2cced'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'c43c06d9-fbe9-4321-b455-dbe99502d569'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '334f884b-859a-45c1-90c5-205cd9aa8115'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'aab3e5b4-2964-436c-b00c-14622332c924'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '40170d13-4731-49a3-bc70-f245fdc36404'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'cde4fa50-82a0-4aa3-8307-ac9468f861b2'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'd5244d11-c6af-452e-835a-b639716314a0'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '2a343caf-e390-4fe7-8164-76196f717f3e'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '7e5b8513-a1b9-4b7b-b90a-abb8957095e5'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '93347f38-7059-403e-8293-4681d496196e'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '9a12b865-85e0-4ea6-9be9-73eb0baf3fe7'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '0e909a7b-659d-45fc-9b83-7f57588ccf44'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '7b22c531-bfa5-4733-b83e-04e76490fe39'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '2b37b1a2-3065-4a3a-8db8-f3744b8e7768'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'bca13796-8e9b-44ef-99ba-05b05d593cda'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '8bb80686-4505-4f8d-8e1c-b65242ab42d7'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '7602b47c-b4c1-4b61-a801-aac7e1022874'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '340cbb10-f106-4cb6-959c-09901c0768d0'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '8fc814d9-e567-461f-9f6b-e60af4a4c6d2'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'd1490f3d-a51e-4904-86ce-5d661ba19901'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '99912816-eb47-493a-a407-f59e812c25fb'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'fa7efdcf-73e5-4bdf-8767-16bf1ef640c0'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '42578893-b5b5-4334-b5ab-fbed839fe5b5'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '4485f9f6-4f49-4dd6-ab7b-d6fe28eeae76'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'cc8f3221-e1c2-4972-a4bc-2992db4db91f'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'f93cb17a-7c96-4a29-ab43-bc14a2020f9c'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '146f3e1a-680e-4e89-bc19-998e57a24e3f'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'f5f9154c-0acd-49f1-9a74-69c0fd57ccf4'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', 'b11602db-3e76-4f4f-b93b-e11cb8960bea'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '97dcb2a4-69a7-4557-9e93-caf19d0c5a6c'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '48814177-1ca7-4fac-9c78-8bc170501931'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '8426519e-1f7e-49a3-b65f-c48c7445c4fd'),
+	('c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff', '7ee57f6c-0b92-4e8a-8352-b4d657ecebbd'),
+	('509a45ab-bc55-445a-9cb4-610850ad8dda', '2f75c92d-8d0e-4e75-a5fa-6f5497064d7d'),
+	('509a45ab-bc55-445a-9cb4-610850ad8dda', '609494a4-6208-48a6-affb-14adcc426cb5'),
+	('fe0ab904-575d-43bb-95fd-db6526d34fc6', '2f75c92d-8d0e-4e75-a5fa-6f5497064d7d'),
+	('fe0ab904-575d-43bb-95fd-db6526d34fc6', '609494a4-6208-48a6-affb-14adcc426cb5'),
+	('5ee7a28a-b982-4f63-9ae7-fdf3a463740e', '2f75c92d-8d0e-4e75-a5fa-6f5497064d7d'),
+	('5ee7a28a-b982-4f63-9ae7-fdf3a463740e', '609494a4-6208-48a6-affb-14adcc426cb5'),
+	('9b0d7cb7-1685-4f60-bde2-e5042984671a', '2f75c92d-8d0e-4e75-a5fa-6f5497064d7d'),
+	('9b0d7cb7-1685-4f60-bde2-e5042984671a', '609494a4-6208-48a6-affb-14adcc426cb5'),
+	('7d3acd3f-39b4-4d3a-867e-8dae0a3b2323', '2f75c92d-8d0e-4e75-a5fa-6f5497064d7d'),
+	('7d3acd3f-39b4-4d3a-867e-8dae0a3b2323', '609494a4-6208-48a6-affb-14adcc426cb5'),
+	('24bd6048-a756-4edf-9ca4-e7ec14f9d370', '2f75c92d-8d0e-4e75-a5fa-6f5497064d7d'),
+	('24bd6048-a756-4edf-9ca4-e7ec14f9d370', '609494a4-6208-48a6-affb-14adcc426cb5'),
+	('af8244ec-ca14-42bf-82ca-6705e348b2bf', '2f75c92d-8d0e-4e75-a5fa-6f5497064d7d'),
+	('af8244ec-ca14-42bf-82ca-6705e348b2bf', '609494a4-6208-48a6-affb-14adcc426cb5');
+/*!40000 ALTER TABLE "users_roles" ENABLE KEYS */;
+
+-- A despejar estrutura para tabela public.user_attempts
+CREATE TABLE IF NOT EXISTS "user_attempts" (
+	"id" UUID NOT NULL,
+	"failed_attempt" INTEGER NULL DEFAULT NULL,
+	"last_modified" TIMESTAMP NOT NULL,
+	"username" VARCHAR(255) NOT NULL,
+	PRIMARY KEY ("id")
+);
+
+-- A despejar dados para tabela public.user_attempts: 1 rows
+/*!40000 ALTER TABLE "user_attempts" DISABLE KEYS */;
+INSERT INTO "user_attempts" ("id", "failed_attempt", "last_modified", "username") VALUES
+	('ae4c6ce9-5851-49d9-968a-0e50a977d9df', 0, '2023-05-11 22:11:36.247134', 'user.admin');
+/*!40000 ALTER TABLE "user_attempts" ENABLE KEYS */;
+
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;

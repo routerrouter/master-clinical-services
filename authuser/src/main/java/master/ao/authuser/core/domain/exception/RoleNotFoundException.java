@@ -10,8 +10,8 @@ public class RoleNotFoundException extends EntityNotFoundException {
 		super(mensagem);
 	}
 	
-	public RoleNotFoundException(UUID estadoId) {
-		this(String.format("Não existe um cadastro de grupo com código %s", estadoId));
+	public RoleNotFoundException(UUID roleId) {
+		this(String.format("Não existe um cadastro de grupo com código %s", roleId));
 	}
 	
 }

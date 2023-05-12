@@ -9,6 +9,6 @@ import java.util.UUID;
 public interface AccessLimitUserService {
     AcessLimitUser save(AcessLimitUser acessLimitUser, UUID userId);
     AcessLimitUser update(AcessLimitUser acessLimitUser, UUID userId);
-    Optional<AcessLimitUser> findByUserId(UUID userId);
+    Optional<AcessLimitUser> fetchOrFailByUserId(UUID userId);
     List<AcessLimitUser> findAll();
 }

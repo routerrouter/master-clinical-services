@@ -20,7 +20,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled=true)
 @EnableWebSecurity
 public class WebSecurityConfig {
 
@@ -31,7 +30,11 @@ public class WebSecurityConfig {
     AuthenticationEntryPointImpl authenticationEntryPoint;
 
     private static final String[] AUTH_WHITELIST = {
-            "/auth/**"
+            "/auth/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-ui-custom.html"
     };
 
 

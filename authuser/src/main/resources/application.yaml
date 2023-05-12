@@ -25,3 +25,7 @@ spring:
       hibernate:
         show_sql: true
     open-in-view: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui-custom.html
