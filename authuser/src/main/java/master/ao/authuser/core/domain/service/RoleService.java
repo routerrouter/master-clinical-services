@@ -4,6 +4,7 @@ import master.ao.authuser.core.domain.model.Role;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,4 +13,5 @@ public interface RoleService {
     Role update(Role role, UUID roleId);
     Optional<Role> fetchOrFail(UUID roleId);
     List<Role> findAll(Specification<Role> spec);
+    Map<String, Object> findAllByUser(UUID userId);
 }

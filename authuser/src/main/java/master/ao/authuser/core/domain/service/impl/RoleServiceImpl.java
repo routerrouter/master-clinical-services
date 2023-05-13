@@ -2,6 +2,7 @@ package master.ao.authuser.core.domain.service.impl;
 
 
 import lombok.RequiredArgsConstructor;
+import master.ao.authuser.api.response.UserRoleAccsses;
 import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.exception.RoleNotFoundException;
 import master.ao.authuser.core.domain.model.Role;
@@ -11,9 +12,8 @@ import master.ao.authuser.core.domain.service.RoleService;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +54,21 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> findAll(Specification<Role> spec) {
         return repository.findAll(spec);
+    }
+
+    @Override
+    public Map<String, Object> findAllByUser(UUID userId) {
+        List<Role> roleList =repository.findAllByUser(userId);
+        List<UserRoleAccsses> userRoleAccssesList = new ArrayList<>();
+
+        Map<String, List<Role>> listMap =
+                roleList.stream()
+                        .collect(Collectors.groupingBy(permission -> permission.getPermission().getDescription()));
+
+        Map<String, Object> permissionRole = new HashMap<>();
+        listMap.forEach((permission, roles) -> userRoleAccssesList.add(new UserRoleAccsses(permission, roles)));
+        permissionRole.put("access", userRoleAccssesList);
+        return permissionRole;
     }
 
 }

@@ -12,13 +12,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import master.ao.authuser.api.config.security.JwtProvider;
 import master.ao.authuser.api.mapper.UserMapper;
-import master.ao.authuser.api.request.JwtRequest;
+import master.ao.authuser.api.request.LoginResponseDetail;
 import master.ao.authuser.api.request.LoginRequest;
 import master.ao.authuser.api.request.UserRequest;
 import master.ao.authuser.api.response.GroupResponse;
 import master.ao.authuser.api.response.UserResponse;
 import master.ao.authuser.core.domain.exception.*;
 import master.ao.authuser.core.domain.service.AccessLimitUserService;
+import master.ao.authuser.core.domain.service.RoleService;
 import master.ao.authuser.core.domain.service.UserAttemptsService;
 import master.ao.authuser.core.domain.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -50,6 +52,7 @@ public class AuthenticationController {
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
     private final AccessLimitUserService limitUserService;
+    private final RoleService roleService;
 
 
     @Operation(summary = "Create account user")
@@ -98,8 +101,14 @@ public class AuthenticationController {
                         String jwt = jwtProvider.generateJwt(authentication);
 
                         userAttemptsService.onAuthenticationSuccess(requestLogin.getUsername());
+                        var loginUsrDetails = new LoginResponseDetail();
+                        ArrayList<Object> valueList = new ArrayList<Object>(roleService.findAllByUser(user.getUserId()).values());
+                        loginUsrDetails.setAccsses(valueList);
+                        var userResponse = Stream.of(user).map(mapper::toUserResponse).findFirst().get();
+                        loginUsrDetails.setUser(userResponse);
+                        loginUsrDetails.setToken(jwt);
 
-                        return ResponseEntity.ok(new JwtRequest(jwt));
+                        return ResponseEntity.ok(loginUsrDetails);
                     } else {
                         throw new AccountExpiredException("Sua conta encontra-se com o acesso expirado. Por favor consultar o Administrador do sistema.");
                     }
