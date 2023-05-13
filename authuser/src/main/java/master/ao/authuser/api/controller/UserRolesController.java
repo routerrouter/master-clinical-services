@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/role_user")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @Tag(name = "Roles User", description = "The Roles User API. Contains all operations that can be performed on a Roles User")
 public class UserRolesController {
 

@@ -39,7 +39,6 @@ import java.util.stream.Stream;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/auth")
 @Tag(name = "Authentication|Signup", description = "The Authentication API. Contains all operations that can be performed on a authentication and signup user.")
 public class AuthenticationController {

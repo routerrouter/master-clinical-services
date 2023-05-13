@@ -44,7 +44,6 @@ import java.util.stream.Stream;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/group_permissions")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @Tag(name = "Permissions Group", description = "The Permissions group API. Contains all operations that can be performed on a Permissions group.")
 public class GroupPermissionController {
 

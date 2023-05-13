@@ -31,7 +31,6 @@ import java.util.stream.Stream;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/group")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @Tag(name = "Group", description = "The Group API. Contains all operations that can be performed on a group")
 public class GroupController {
 

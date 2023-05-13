@@ -37,7 +37,6 @@ import java.util.stream.Stream;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/role")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @Tag(name = "Role", description = "The Role API. Contains all operations that can be performed on a Role")
 public class RoleController {
 

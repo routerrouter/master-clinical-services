@@ -1,4 +1,4 @@
-package master.ao.authuser.api.config;
+package master.ao.storage.api.config;
 
 
 import java.util.Collections;

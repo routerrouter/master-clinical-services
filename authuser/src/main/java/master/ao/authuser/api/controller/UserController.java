@@ -37,7 +37,6 @@ import java.util.stream.Stream;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/user")
 @Tag(name = "User", description = "The User API. Contains all operations that can be performed on a user.")
 public class UserController {
