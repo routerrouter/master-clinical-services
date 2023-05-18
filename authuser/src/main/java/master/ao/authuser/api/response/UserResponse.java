@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import master.ao.authuser.core.domain.enums.UserStatus;
+import master.ao.authuser.core.domain.model.Group;
 import master.ao.authuser.core.domain.model.Role;
 
 import java.time.LocalDateTime;
@@ -21,5 +22,6 @@ public class UserResponse {
     private boolean enabled;
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime creationDate;
+    private Group group;
 
 }

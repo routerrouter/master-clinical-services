@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-
 
 @Setter
 @Getter
@@ -37,4 +37,7 @@ public class Group implements Serializable {
 
     @Column(nullable = false)
     private UUID userGroup;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
 }

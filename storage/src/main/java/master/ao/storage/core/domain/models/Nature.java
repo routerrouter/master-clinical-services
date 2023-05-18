@@ -7,6 +7,8 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -34,5 +36,8 @@ public class Nature implements Serializable {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "nature", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
 
 }

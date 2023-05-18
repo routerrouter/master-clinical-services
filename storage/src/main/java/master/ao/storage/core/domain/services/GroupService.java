@@ -1,6 +1,6 @@
-package master.ao.authuser.core.domain.service;
+package master.ao.storage.core.domain.services;
 
-import master.ao.authuser.core.domain.model.Group;
+import master.ao.storage.core.domain.models.Group;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
@@ -13,10 +13,6 @@ public interface GroupService {
     Group update(Group group, UUID groupId);
 
     void delete(UUID groupId);
-
-    void disassociatePermission(UUID groupId, List<UUID> permissionId);
-
-    void associatePermissions(UUID groupId, List<UUID> permissions);
 
     Optional<Group> fetchOrFail(UUID groupId);
 

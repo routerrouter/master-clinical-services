@@ -7,6 +7,8 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -37,4 +39,8 @@ public class Category implements Serializable {
 
     @Column(nullable = false)
     private UUID userGroup;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
+
 }

@@ -8,6 +8,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Setter
@@ -46,4 +48,8 @@ public class Location implements Serializable {
     private Storage storage;
 
     private boolean enabeld;
+
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    private List<Stock> stocks = new ArrayList<>();
+
 }

@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Setter
@@ -57,6 +56,10 @@ public class Product implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Storage storage;
+
+    @ManyToOne(cascade = CascadeType.ALL, optional = true)
+    @JoinColumn(name = "nature_id", insertable = false, updatable = true)
+    private Nature nature;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Stock> itens = new ArrayList<>();

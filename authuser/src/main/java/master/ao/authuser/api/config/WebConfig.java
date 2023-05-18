@@ -9,12 +9,13 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    //private final ResponseMessage m200 = simpleMessage(200,"Chamada realizada com sucesso!");
 
     @Bean
     public OpenAPI customizeOpenAPI() {
@@ -38,6 +39,10 @@ public class WebConfig implements WebMvcConfigurer {
                                 .bearerFormat("JWT")));
 
     }
+
+    /*private ResponseMessage simpleMessage(int code, String msg) {
+        return ResponseMessageBuilder().code(code).message(msg).build();
+    }*/
 
 
 

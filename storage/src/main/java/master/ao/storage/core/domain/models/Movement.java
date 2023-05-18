@@ -67,12 +67,12 @@ public class Movement implements Serializable {
     private String description;
 
     @OneToMany(mappedBy = "movement", cascade = CascadeType.ALL)
-    private List<ItemsMovement> itens = new ArrayList<>();
+    private List<ItemsMovement> items = new ArrayList<>();
 
     public void calculateTotalValue() {
-        getItens().forEach(ItemsMovement::calculateTotalValue);
+        getItems().forEach(ItemsMovement::calculateTotalValue);
 
-        this.total = getItens().stream()
+        this.total = getItems().stream()
                 .map(item -> item.getTotalValue())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
