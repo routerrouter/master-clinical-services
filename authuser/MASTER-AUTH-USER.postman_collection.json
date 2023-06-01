@@ -1,1157 +1,1157 @@
 {
-	"info": {
-		"_postman_id": "dcf45ce4-2fc1-4160-9469-ee0d7bf8c148",
-		"name": "MASTER-AUTH-USER",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "18249841",
-		"_collection_link": "https://interstellar-zodiac-154986.postman.co/workspace/My-Workspace~45d8c806-1c67-4793-8c39-f015359acf35/collection/18249841-dcf45ce4-2fc1-4160-9469-ee0d7bf8c148?action=share&creator=18249841&source=collection_link"
-	},
-	"item": [
-		{
-			"name": "AUTH",
-			"item": [
-				{
-					"name": "LOGIN",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (responseCode.code >= 200 && responseCode.code <= 299) {\r",
-									"    var jsonData = JSON.parse(responseBody);\r",
-									"    postman.setEnvironmentVariable('bearer_token', jsonData.token);\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"user.admin\",\r\n    \"password\": \"1234\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/auth/login",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"auth",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SIGNUP",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"gildo3.francisco\",\r\n    \"email\": \"gildo3.francisco@socompser.com\",\r\n    \"password\": \"123\",\r\n    \"fullName\": \"Gildo Antonio Francisco\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/auth/signup/0b36efde-148e-4ee4-881e-900976503e3c/group",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"auth",
-								"signup",
-								"0b36efde-148e-4ee4-881e-900976503e3c",
-								"group"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "USER",
-			"item": [
-				{
-					"name": "GET ALL USERS",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URL_LOCAL}}/user?size=10&sort=fullName,Desc&page=0&enabled=false",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"user"
-							],
-							"query": [
-								{
-									"key": "groupId",
-									"value": "f5b2794c-4ef7-422f-a05d-48d671bdd4b2",
-									"disabled": true
-								},
-								{
-									"key": "size",
-									"value": "10"
-								},
-								{
-									"key": "sort",
-									"value": "fullName,Desc"
-								},
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "enabled",
-									"value": "false"
-								},
-								{
-									"key": "email",
-									"value": "",
-									"disabled": true
-								},
-								{
-									"key": "username",
-									"value": "est",
-									"disabled": true
-								},
-								{
-									"key": "fullName",
-									"value": "",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET ONE USER",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URL_LOCAL}}/user/7d3acd3f-39b4-4d3a-867e-8dae0a3b2323",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"user",
-								"7d3acd3f-39b4-4d3a-867e-8dae0a3b2323"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DELETE USER",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{URL_LOCAL}}/user/c443f68e-c8b3-4934-aeb5-820f2779996f",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"user",
-								"c443f68e-c8b3-4934-aeb5-820f2779996f"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UPDATE USER",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"user.patrimonio\",\r\n    \"email\": \"patrimonio@master.com\",\r\n    \"fullName\": \"Usuário Patrimonio\"\r\n}"
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/user/c443f68e-c8b3-4934-aeb5-820f2779996e",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"user",
-								"c443f68e-c8b3-4934-aeb5-820f2779996e"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT PASSWORD",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"password\": \"1234\",\r\n    \"oldPassword\": \"1234\"\r\n}"
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/user/c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff/password",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"user",
-								"c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff",
-								"password"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "PERMISSION",
-			"item": [
-				{
-					"name": "CREATE-PERMISSION",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"description\":\"Gestão Documental\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8083/master-authuser/permission/cf9a1818-c392-4875-a448-162552ca100f/group",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8083",
-							"path": [
-								"master-authuser",
-								"permission",
-								"cf9a1818-c392-4875-a448-162552ca100f",
-								"group"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UPDATE-PERMISSION",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"Cadastros do Patrimonio\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/permission/42e1430c-f17b-4b03-a63f-8a0bab4a011f/group",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"permission",
-								"42e1430c-f17b-4b03-a63f-8a0bab4a011f",
-								"group"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "GROUP",
-			"item": [
-				{
-					"name": "CREATE-GROUP",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"Teste 018e\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/group",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"group"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "LIST-ALL",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URL_LOCAL}}/group",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"group"
-							],
-							"query": [
-								{
-									"key": "description",
-									"value": "AD",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "FIND-ONE",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URL_LOCAL}}/group/22007640-8c35-486a-b097-6e294c70867f",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"group",
-								"22007640-8c35-486a-b097-6e294c70867f"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UPDATE-GROUP",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"Teste 001\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/group/eba78f99-e005-4d30-afb1-401ebf768527",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"group",
-								"eba78f99-e005-4d30-afb1-401ebf768527"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DELETE-GROUP",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{URL_LOCAL}}/group/09e05c6b-66bd-4ed3-bf4a-10e432464190",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"group",
-								"09e05c6b-66bd-4ed3-bf4a-10e432464190"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "ROLE",
-			"item": [
-				{
-					"name": "FETCH-ALL",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8083/master-authuser/role?permissionId=63164a28-d557-4514-9699-5a0daf57ff8f&page=0&size=15",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8083",
-							"path": [
-								"master-authuser",
-								"role"
-							],
-							"query": [
-								{
-									"key": "permissionId",
-									"value": "63164a28-d557-4514-9699-5a0daf57ff8f"
-								},
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "size",
-									"value": "15"
-								},
-								{
-									"key": "sort",
-									"value": "description",
-									"disabled": true
-								},
-								{
-									"key": "description",
-									"value": "Conta",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "CREATE -ROLE",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"Devoluções\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/role/63164a28-d557-4514-9699-5a0daf57ff8f/permission",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"role",
-								"63164a28-d557-4514-9699-5a0daf57ff8f",
-								"permission"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "UPDATE-ROLE",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"Balancete\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/role/7ee57f6c-0b92-4e8a-8352-b4d657ecebbd",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"role",
-								"7ee57f6c-0b92-4e8a-8352-b4d657ecebbd"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "USER-ROLES",
-			"item": [
-				{
-					"name": "FETCH-ROLES-USER",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URL_LOCAL}}/role_user?userId=c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff&page=1&size=10",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"role_user"
-							],
-							"query": [
-								{
-									"key": "userId",
-									"value": "c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff"
-								},
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "size",
-									"value": "10"
-								},
-								{
-									"key": "description",
-									"value": "Ac",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "INSERT-ROLES-USER",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "[\r\n    \"3477c406-17fb-4571-a5a6-229d77d11bcb\",\r\n    \"472507ff-1b64-4884-bb74-e6acc7d6f75e\",\r\n    \"c5cd86a3-d87e-4fe0-b90e-4a10fe6abb5c\",\r\n    \"671e58f4-01ba-46ac-9989-1ec5f7f87a36\",\r\n    \"3a7aa3a5-7b6a-422c-bf98-2fa243c1f82c\",\r\n    \"3aa67549-2a53-446e-9910-9f06083241ee\",\r\n    \"f9b864f0-e16a-41d8-92e7-88b932917ce5\",\r\n    \"ec4bcca0-6338-4431-a410-ceae884837ef\",\r\n    \"55171e74-cca7-4c2f-b858-3025ed07e8be\",\r\n    \"350612ac-078d-4459-9f18-e8e181938eb0\"\r\n]",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/role_user/e2ac2869-6a27-45ad-bd1e-69149a4adc54/user",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"role_user",
-								"e2ac2869-6a27-45ad-bd1e-69149a4adc54",
-								"user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET-ACCESS-USER",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URL_LOCAL}}/role_user/access?userId=c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"role_user",
-								"access"
-							],
-							"query": [
-								{
-									"key": "userId",
-									"value": "c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff"
-								},
-								{
-									"key": "page",
-									"value": "0",
-									"disabled": true
-								},
-								{
-									"key": "size",
-									"value": "10",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "REMOVE-ROLES",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "[\r\n    \"671e58f4-01ba-46ac-9989-1ec5f7f87a36\"\r\n]",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/role_user/e2ac2869-6a27-45ad-bd1e-69149a4adc54/user",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"role_user",
-								"e2ac2869-6a27-45ad-bd1e-69149a4adc54",
-								"user"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "GROUP-PERMISSIONS",
-			"item": [
-				{
-					"name": "INSERT-PERMISSIONS-GROUP",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "[ \r\n    \"782286f5-42a8-46cc-86d2-7834a2a02999\",\r\n    \"63164a28-d557-4514-9699-5a0daf57ff8f\",\r\n    \"7efb8b6e-ef7d-4527-84b0-183f480d4b22\"\r\n]",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8083/master-authuser/group_permissions/eba78f99-e005-4d30-afb1-401ebf768527",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8083",
-							"path": [
-								"master-authuser",
-								"group_permissions",
-								"eba78f99-e005-4d30-afb1-401ebf768527"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "FECTH-PERMISSIONS-GROUP",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8083/master-authuser/group_permissions?groupId=c83aeaa9-c4a5-4269-bd9f-cb4a1b6fe002&description=&size=10&page=0",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8083",
-							"path": [
-								"master-authuser",
-								"group_permissions"
-							],
-							"query": [
-								{
-									"key": "groupId",
-									"value": "c83aeaa9-c4a5-4269-bd9f-cb4a1b6fe002"
-								},
-								{
-									"key": "description",
-									"value": ""
-								},
-								{
-									"key": "size",
-									"value": "10"
-								},
-								{
-									"key": "page",
-									"value": "0"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DESASSOCIATE-PERMISSION",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "[ \r\n    \"782286f5-42a8-46cc-86d2-7834a2a02999\",\r\n    \"63164a28-d557-4514-9699-5a0daf57ff8f\",\r\n    \"7efb8b6e-ef7d-4527-84b0-183f480d4b22\"\r\n]",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8083/master-authuser/group_permissions/eba78f99-e005-4d30-afb1-401ebf768527",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8083",
-							"path": [
-								"master-authuser",
-								"group_permissions",
-								"eba78f99-e005-4d30-afb1-401ebf768527"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "ACCESS-LIMIT-USER",
-			"item": [
-				{
-					"name": "ListAccessLimit",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URL_LOCAL}}/accessLimit?page=0&size=10&sort=days",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"accessLimit"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "size",
-									"value": "10"
-								},
-								{
-									"key": "sort",
-									"value": "days"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Save",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"ativation\": \"2023-05-07\",\r\n    \"blockDate\": \"2024-05-07\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/accessLimit/45092757-2911-49ab-a558-af4dfa9b6c1a/user",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"accessLimit",
-								"45092757-2911-49ab-a558-af4dfa9b6c1a",
-								"user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"ativation\": \"2023-05-07\",\r\n    \"blockDate\": \"2023-05-07\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL_LOCAL}}/accessLimit/c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff/user",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"accessLimit",
-								"c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff",
-								"user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Find-by-user",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearer_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{URL_LOCAL}}/accessLimit/45092757-2911-49ab-a558-af4dfa9b6c1a",
-							"host": [
-								"{{URL_LOCAL}}"
-							],
-							"path": [
-								"accessLimit",
-								"45092757-2911-49ab-a558-af4dfa9b6c1a"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "{{URL_LOCAL}}/v3/api-docs",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL_LOCAL}}/v3/api-docs",
-					"host": [
-						"{{URL_LOCAL}}"
-					],
-					"path": [
-						"v3",
-						"api-docs"
-					]
-				}
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "dcf45ce4-2fc1-4160-9469-ee0d7bf8c148",
+    "name": "MASTER-AUTH-USER",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "18249841",
+    "_collection_link": "https://interstellar-zodiac-154986.postman.co/workspace/My-Workspace~45d8c806-1c67-4793-8c39-f015359acf35/collection/18249841-dcf45ce4-2fc1-4160-9469-ee0d7bf8c148?action=share&creator=18249841&source=collection_link"
+  },
+  "item": [
+    {
+      "name": "AUTH",
+      "item": [
+        {
+          "name": "LOGIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (responseCode.code >= 200 && responseCode.code <= 299) {\r",
+                  "    var jsonData = JSON.parse(responseBody);\r",
+                  "    postman.setEnvironmentVariable('bearer_token', jsonData.token);\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"user.admin\",\r\n    \"password\": \"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/auth/login",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SIGNUP",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"gildo3.francisco\",\r\n    \"email\": \"gildo3.francisco@socompser.com\",\r\n    \"password\": \"123\",\r\n    \"fullName\": \"Gildo Antonio Francisco\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/auth/signup/0b36efde-148e-4ee4-881e-900976503e3c/group",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "auth",
+                "signup",
+                "0b36efde-148e-4ee4-881e-900976503e3c",
+                "group"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "USER",
+      "item": [
+        {
+          "name": "GET ALL USERS",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_LOCAL}}/user?size=10&sort=fullName,Desc&page=0&enabled=false",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "user"
+              ],
+              "query": [
+                {
+                  "key": "groupId",
+                  "value": "f5b2794c-4ef7-422f-a05d-48d671bdd4b2",
+                  "disabled": true
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "sort",
+                  "value": "fullName,Desc"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "enabled",
+                  "value": "false"
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "username",
+                  "value": "est",
+                  "disabled": true
+                },
+                {
+                  "key": "fullName",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET ONE USER",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_LOCAL}}/user/7d3acd3f-39b4-4d3a-867e-8dae0a3b2323",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "user",
+                "7d3acd3f-39b4-4d3a-867e-8dae0a3b2323"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE USER",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL_LOCAL}}/user/c443f68e-c8b3-4934-aeb5-820f2779996f",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "user",
+                "c443f68e-c8b3-4934-aeb5-820f2779996f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UPDATE USER",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"user.patrimonio\",\r\n    \"email\": \"patrimonio@master.com\",\r\n    \"fullName\": \"Usuário Patrimonio\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/user/c443f68e-c8b3-4934-aeb5-820f2779996e",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "user",
+                "c443f68e-c8b3-4934-aeb5-820f2779996e"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT PASSWORD",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\": \"1234\",\r\n    \"oldPassword\": \"1234\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/user/c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff/password",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "user",
+                "c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff",
+                "password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PERMISSION",
+      "item": [
+        {
+          "name": "CREATE-PERMISSION",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"description\":\"Gestão Documental\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8083/master-authuser/permission/cf9a1818-c392-4875-a448-162552ca100f/group",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "master-authuser",
+                "permission",
+                "cf9a1818-c392-4875-a448-162552ca100f",
+                "group"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UPDATE-PERMISSION",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"description\": \"Cadastros do Patrimonio\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/permission/42e1430c-f17b-4b03-a63f-8a0bab4a011f/group",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "permission",
+                "42e1430c-f17b-4b03-a63f-8a0bab4a011f",
+                "group"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "GROUP",
+      "item": [
+        {
+          "name": "CREATE-GROUP",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"description\": \"Teste 018e\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/group",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "group"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "LIST-ALL",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_LOCAL}}/group",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "group"
+              ],
+              "query": [
+                {
+                  "key": "description",
+                  "value": "AD",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FIND-ONE",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_LOCAL}}/group/22007640-8c35-486a-b097-6e294c70867f",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "group",
+                "22007640-8c35-486a-b097-6e294c70867f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UPDATE-GROUP",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"description\": \"Teste 001\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/group/eba78f99-e005-4d30-afb1-401ebf768527",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "group",
+                "eba78f99-e005-4d30-afb1-401ebf768527"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE-GROUP",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL_LOCAL}}/group/09e05c6b-66bd-4ed3-bf4a-10e432464190",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "group",
+                "09e05c6b-66bd-4ed3-bf4a-10e432464190"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ROLE",
+      "item": [
+        {
+          "name": "FETCH-ALL",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/master-authuser/role?permissionId=63164a28-d557-4514-9699-5a0daf57ff8f&page=0&size=15",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "master-authuser",
+                "role"
+              ],
+              "query": [
+                {
+                  "key": "permissionId",
+                  "value": "63164a28-d557-4514-9699-5a0daf57ff8f"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "15"
+                },
+                {
+                  "key": "sort",
+                  "value": "description",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "Conta",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CREATE -ROLE",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"description\": \"Devoluções\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/role/63164a28-d557-4514-9699-5a0daf57ff8f/permission",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "role",
+                "63164a28-d557-4514-9699-5a0daf57ff8f",
+                "permission"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UPDATE-ROLE",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"description\": \"Balancete\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/role/7ee57f6c-0b92-4e8a-8352-b4d657ecebbd",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "role",
+                "7ee57f6c-0b92-4e8a-8352-b4d657ecebbd"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "USER-ROLES",
+      "item": [
+        {
+          "name": "FETCH-ROLES-USER",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_LOCAL}}/role_user?userId=c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff&page=1&size=10",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "role_user"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "description",
+                  "value": "Ac",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "INSERT-ROLES-USER",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\r\n    \"3477c406-17fb-4571-a5a6-229d77d11bcb\",\r\n    \"472507ff-1b64-4884-bb74-e6acc7d6f75e\",\r\n    \"c5cd86a3-d87e-4fe0-b90e-4a10fe6abb5c\",\r\n    \"671e58f4-01ba-46ac-9989-1ec5f7f87a36\",\r\n    \"3a7aa3a5-7b6a-422c-bf98-2fa243c1f82c\",\r\n    \"3aa67549-2a53-446e-9910-9f06083241ee\",\r\n    \"f9b864f0-e16a-41d8-92e7-88b932917ce5\",\r\n    \"ec4bcca0-6338-4431-a410-ceae884837ef\",\r\n    \"55171e74-cca7-4c2f-b858-3025ed07e8be\",\r\n    \"350612ac-078d-4459-9f18-e8e181938eb0\"\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/role_user/e2ac2869-6a27-45ad-bd1e-69149a4adc54/user",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "role_user",
+                "e2ac2869-6a27-45ad-bd1e-69149a4adc54",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET-ACCESS-USER",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_LOCAL}}/role_user/access?userId=c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "role_user",
+                "access"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff"
+                },
+                {
+                  "key": "page",
+                  "value": "0",
+                  "disabled": true
+                },
+                {
+                  "key": "size",
+                  "value": "10",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "REMOVE-ROLES",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\r\n    \"671e58f4-01ba-46ac-9989-1ec5f7f87a36\"\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/role_user/e2ac2869-6a27-45ad-bd1e-69149a4adc54/user",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "role_user",
+                "e2ac2869-6a27-45ad-bd1e-69149a4adc54",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "GROUP-PERMISSIONS",
+      "item": [
+        {
+          "name": "INSERT-PERMISSIONS-GROUP",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[ \r\n    \"782286f5-42a8-46cc-86d2-7834a2a02999\",\r\n    \"63164a28-d557-4514-9699-5a0daf57ff8f\",\r\n    \"7efb8b6e-ef7d-4527-84b0-183f480d4b22\"\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8083/master-authuser/group_permissions/eba78f99-e005-4d30-afb1-401ebf768527",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "master-authuser",
+                "group_permissions",
+                "eba78f99-e005-4d30-afb1-401ebf768527"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FECTH-PERMISSIONS-GROUP",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/master-authuser/group_permissions?groupId=c83aeaa9-c4a5-4269-bd9f-cb4a1b6fe002&description=&size=10&page=0",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "master-authuser",
+                "group_permissions"
+              ],
+              "query": [
+                {
+                  "key": "groupId",
+                  "value": "c83aeaa9-c4a5-4269-bd9f-cb4a1b6fe002"
+                },
+                {
+                  "key": "description",
+                  "value": ""
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DESASSOCIATE-PERMISSION",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[ \r\n    \"782286f5-42a8-46cc-86d2-7834a2a02999\",\r\n    \"63164a28-d557-4514-9699-5a0daf57ff8f\",\r\n    \"7efb8b6e-ef7d-4527-84b0-183f480d4b22\"\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8083/master-authuser/group_permissions/eba78f99-e005-4d30-afb1-401ebf768527",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8083",
+              "path": [
+                "master-authuser",
+                "group_permissions",
+                "eba78f99-e005-4d30-afb1-401ebf768527"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ACCESS-LIMIT-USER",
+      "item": [
+        {
+          "name": "ListAccessLimit",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_LOCAL}}/accessLimit?page=0&size=10&sort=days",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "accessLimit"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "sort",
+                  "value": "days"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"ativation\": \"2023-05-07\",\r\n    \"blockDate\": \"2024-05-07\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/accessLimit/45092757-2911-49ab-a558-af4dfa9b6c1a/user",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "accessLimit",
+                "45092757-2911-49ab-a558-af4dfa9b6c1a",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"ativation\": \"2023-05-07\",\r\n    \"blockDate\": \"2023-05-07\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL_LOCAL}}/accessLimit/c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff/user",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "accessLimit",
+                "c32ffa6f-0c8b-4414-97cf-bff8a8ab6eff",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Find-by-user",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_LOCAL}}/accessLimit/45092757-2911-49ab-a558-af4dfa9b6c1a",
+              "host": [
+                "{{URL_LOCAL}}"
+              ],
+              "path": [
+                "accessLimit",
+                "45092757-2911-49ab-a558-af4dfa9b6c1a"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "{{URL_LOCAL}}/v3/api-docs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL_LOCAL}}/v3/api-docs",
+          "host": [
+            "{{URL_LOCAL}}"
+          ],
+          "path": [
+            "v3",
+            "api-docs"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
 }

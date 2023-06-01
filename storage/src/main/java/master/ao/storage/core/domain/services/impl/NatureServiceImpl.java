@@ -3,6 +3,7 @@ package master.ao.storage.core.domain.services.impl;
 import lombok.RequiredArgsConstructor;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.exceptions.EntityInUseException;
+import master.ao.storage.core.domain.exceptions.ExistingDataException;
 import master.ao.storage.core.domain.exceptions.NatureNotFoundException;
 import master.ao.storage.core.domain.models.Nature;
 import master.ao.storage.core.domain.repositories.NatureRepository;
@@ -23,17 +24,17 @@ import java.util.UUID;
 public class NatureServiceImpl implements NatureService {
 
     private static final String MSG_NATURE_IN_USE
-            = "Grupo não pode ser removido, pois está em uso";
+            = "Natureza não pode ser removido, pois está em uso";
 
 
     private final NatureRepository natureRepository;
 
     @Override
     @Transactional
-    public Nature save(Nature nature) {
+    public Nature save(Nature nature, UUID userId) {
         var natureOptional = natureRepository.findByName(nature.getName());
         if (natureOptional.isPresent()) {
-            throw new BussinessException("Natureza informada já existe.");
+            throw new ExistingDataException("Natureza informada já existe.");
         }
 
         return natureRepository.save(nature);

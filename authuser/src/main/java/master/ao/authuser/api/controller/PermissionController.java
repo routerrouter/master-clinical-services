@@ -42,13 +42,13 @@ public class PermissionController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping("/{groupId}/group")
     public ResponseEntity<PermissionResponse> savePermission(@Valid @RequestBody PermissionRequest request,
-                                                             @Parameter(description = "id of the group that belongs to the permission") @PathVariable("groupId") UUID groupId){
+                                                             @Parameter(description = "id of the group that belongs to the permission") @PathVariable("groupId") UUID groupId) {
         log.debug("POST createPermission request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toPermission)
                 .map(permission -> permissionService.save(permission))
                 .map(mapper::toPermissionResponse)
-                .map(PermissionResponse -> ResponseEntity.status(HttpStatus.CREATED).body(PermissionResponse))
+                .map(permissionResponse -> ResponseEntity.status(HttpStatus.CREATED).body(permissionResponse))
                 .findFirst()
                 .get();
     }
@@ -62,8 +62,8 @@ public class PermissionController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PutMapping("/{permissionId}")
-    public ResponseEntity<PermissionResponse> updatePermission(@Valid @RequestBody  PermissionRequest request,
-                                                               @Parameter(description = "id of permission to be updated")  @PathVariable("permissionId") UUID permissionId){
+    public ResponseEntity<PermissionResponse> updatePermission(@Valid @RequestBody PermissionRequest request,
+                                                               @Parameter(description = "id of permission to be updated") @PathVariable("permissionId") UUID permissionId) {
         log.debug("PUT updatePermission request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toPermission)
@@ -78,7 +78,7 @@ public class PermissionController {
     @Operation(summary = "Get a permission by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the permission",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = PermissionResponse.class))),
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PermissionResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Permission not found"),

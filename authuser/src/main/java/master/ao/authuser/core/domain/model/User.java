@@ -19,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name="USERS")
+@Table(name = "USERS")
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -42,11 +42,11 @@ public class User implements Serializable {
     private String password;
 
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime creationDate;
 
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime lastUpdateDate;
 
 
@@ -56,7 +56,7 @@ public class User implements Serializable {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(    name = "USERS_ROLES",
+    @JoinTable(name = "USERS_ROLES",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
@@ -73,7 +73,7 @@ public class User implements Serializable {
     private boolean accountNonExpired;
 
     @Column(name = "credentials_non_expired")
-    private boolean credentialsNonExpired ;
+    private boolean credentialsNonExpired;
 
     private boolean enabled;
 
@@ -85,7 +85,6 @@ public class User implements Serializable {
 
     @Transient
     private String oldPassword;
-
 
 
 }

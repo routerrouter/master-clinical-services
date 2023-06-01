@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface GroupService {
-    Group save(Group group);
+    Group save(Group group, UUID userId);
 
     Group update(Group group, UUID groupId);
 

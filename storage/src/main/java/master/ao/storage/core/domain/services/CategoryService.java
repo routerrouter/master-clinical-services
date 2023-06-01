@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CategoryService {
-    Category save(Category category);
+    Category save(Category category, UUID userId);
 
     Category update(Category category, UUID categoryId);
 

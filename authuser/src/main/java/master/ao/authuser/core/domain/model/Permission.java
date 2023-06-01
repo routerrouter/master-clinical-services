@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name="PERMISSIONS")
+@Table(name = "PERMISSIONS")
 public class Permission implements Serializable {
 
     @Id
@@ -27,7 +27,7 @@ public class Permission implements Serializable {
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "permission", fetch = FetchType.EAGER )
+    @OneToMany(mappedBy = "permission", fetch = FetchType.EAGER)
     //@Fetch(FetchMode.SUBSELECT)
     private Set<Role> roles;
 

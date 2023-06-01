@@ -31,7 +31,7 @@ public class UserAttempsServiceImpl implements UserAttemptsService {
 
         if (userAttemptsOptional.isPresent()) {
             userAttempts = userAttemptsOptional.get();
-            userAttempts.setFailedAttempt(userAttempts.getFailedAttempt()+1);
+            userAttempts.setFailedAttempt(userAttempts.getFailedAttempt() + 1);
         } else {
             userAttempts.setUsername(username);
             userAttempts.setFailedAttempt(1);
@@ -44,12 +44,18 @@ public class UserAttempsServiceImpl implements UserAttemptsService {
     @Override
     public void resetFailAttempts(String username) {
         var userAttemptsOptional = attemptsRepository.findByUsername(username);
-        var userAttempts = userAttemptsOptional.get();
-        userAttempts.setFailedAttempt(0);
-        userAttempts.setLastModified(LocalDateTime.now(ZoneId.of("UTC")));
-
+        var userAttempts = new UserAttempts();
+        if (userAttemptsOptional.isPresent()) {
+            userAttempts = userAttemptsOptional.get();
+            userAttempts.setFailedAttempt(0);
+            userAttempts.setLastModified(LocalDateTime.now(ZoneId.of("UTC")));
+        } else {
+            userAttempts.setFailedAttempt(0);
+            userAttempts.setLastModified(LocalDateTime.now(ZoneId.of("UTC")));
+            userAttempts.setUsername(username);
+        }
         var user = userRepository.findByUsername(username)
-                .orElseThrow(()-> new UsernameNotFoundException("Usuário informado não encontrado."));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário informado não encontrado."));
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);
         user.setAccountNonExpired(true);
@@ -90,7 +96,7 @@ public class UserAttempsServiceImpl implements UserAttemptsService {
     }
 
     @Override
-    public void onAuthenticationFailure(String username)  {
+    public void onAuthenticationFailure(String username) {
         var userAttempts = attemptsRepository.findByUsername(username);
         var user = userRepository.findByUsername(username).get();
 
@@ -116,7 +122,7 @@ public class UserAttempsServiceImpl implements UserAttemptsService {
     }
 
     @Override
-    public void onAuthenticationSuccess(String username)  {
+    public void onAuthenticationSuccess(String username) {
         var userAttempts = attemptsRepository.findByUsername(username);
         if (userAttempts.isPresent()) {
             var user = userRepository.findByUsername(username).get();

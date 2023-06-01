@@ -2,6 +2,7 @@ package master.ao.storage.core.domain.models;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -18,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name="LOCATIONS")
+@Table(name = "LOCATIONS")
 public class Location implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -26,12 +27,10 @@ public class Location implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID locationId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss'Z'")
-    @Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime registeredAt;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss'Z'")
-    @Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime lastUpdateAt;
 
     @Column(nullable = false)
@@ -41,7 +40,7 @@ public class Location implements Serializable {
     private String partition;
 
     @Column(nullable = false)
-    private String desription;
+    private String description;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -49,7 +48,15 @@ public class Location implements Serializable {
 
     private boolean enabeld;
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Stock> stocks = new ArrayList<>();
+
+    public String setDescriptionLocation() {
+        return storage.getName()
+                .concat("-")
+                .concat(this.shelf)
+                .concat("-").concat(this.partition);
+    }
 
 }

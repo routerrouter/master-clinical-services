@@ -60,7 +60,7 @@ public class GroupPermissionController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping()
     public ResponseEntity<Page<PermissionResponse>> getAll(@ParameterObject SpecificationTemplate.PermissionSpec spec,
-                                                           @ParameterObject  @PageableDefault(page = 0, size = 10, sort = "description", direction = Sort.Direction.ASC) Pageable pageable,
+                                                           @ParameterObject @PageableDefault(page = 0, size = 10, sort = "description", direction = Sort.Direction.ASC) Pageable pageable,
                                                            @RequestParam(required = false) UUID groupId) {
 
         List<PermissionResponse> permissionResponseList = new ArrayList<>();
@@ -98,8 +98,8 @@ public class GroupPermissionController {
     @PostMapping("/{groupId}/group")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Object> savePermissionsIntoGroup(@RequestBody List<UUID> permissions,
-                                                           @Parameter(description = "id of group to be associated")  @PathVariable("groupId") UUID groupId){
-        groupService.associatePermissions(groupId,permissions);
+                                                           @Parameter(description = "id of group to be associated") @PathVariable("groupId") UUID groupId) {
+        groupService.associatePermissions(groupId, permissions);
         return ResponseEntity.noContent().build();
     }
 
@@ -118,8 +118,6 @@ public class GroupPermissionController {
         groupService.disassociatePermission(groupId, permissions);
         return ResponseEntity.noContent().build();
     }
-
-    
 
 
 }

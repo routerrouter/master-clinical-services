@@ -13,7 +13,7 @@ import java.util.*;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name="GROUPS")
+@Table(name = "GROUPS")
 public class Group implements Serializable {
 
     @Id
@@ -29,7 +29,7 @@ public class Group implements Serializable {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable( name = "GROUPS_PERMISSIONS",
+    @JoinTable(name = "GROUPS_PERMISSIONS",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private List<Permission> permissions = new ArrayList<>();

@@ -52,7 +52,7 @@ public class RoleController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping("/{permissionId}/permission")
     public ResponseEntity<RoleResponse> saveRole(@Valid @RequestBody RoleRequest request,
-                                                 @Parameter(description = "id of permission to be associated with the role") @PathVariable("permissionId") UUID permissionId){
+                                                 @Parameter(description = "id of permission to be associated with the role") @PathVariable("permissionId") UUID permissionId) {
         log.debug("POST createRole request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toRole)
@@ -70,8 +70,8 @@ public class RoleController {
             @ApiResponse(responseCode = "404", description = "Role not found"),
             @ApiResponse(responseCode = "500", description = "System error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PutMapping("/{roleId}")
-    public ResponseEntity<RoleResponse> updateRole(@Valid @RequestBody  RoleRequest request,
-                                                   @Parameter(description = "id of role to be updated")  @PathVariable("roleId") UUID roleId){
+    public ResponseEntity<RoleResponse> updateRole(@Valid @RequestBody RoleRequest request,
+                                                   @Parameter(description = "id of role to be updated") @PathVariable("roleId") UUID roleId) {
         log.debug("PUT updateRole request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toRole)
@@ -122,7 +122,7 @@ public class RoleController {
     @Operation(summary = "Get a role by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the role",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = RoleResponse.class))),
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = RoleResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Role not found"),

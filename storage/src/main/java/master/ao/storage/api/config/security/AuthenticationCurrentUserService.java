@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationCurrentUserService {
 
-    public UserDetailsImpl getCurrentUser(){
+    public UserDetailsImpl getCurrentUser() {
         return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public Authentication getAuthentication(){
+    public Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 }

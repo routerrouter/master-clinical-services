@@ -12,6 +12,7 @@ import java.util.UUID;
 public interface StorageRepository extends JpaRepository<Storage, UUID>, JpaSpecificationExecutor<Storage> {
 
     Optional<Storage> findByName(String name);
+
     Optional<Storage> findById(UUID storageId);
 
 }

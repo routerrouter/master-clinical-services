@@ -20,7 +20,8 @@ public class SpecificationTemplate {
             @Spec(path = "username", spec = Like.class),
             @Spec(path = "fullName", spec = Like.class)
     })
-    public interface UserSpec extends Specification<User> {}
+    public interface UserSpec extends Specification<User> {
+    }
 
     public static Specification<User> usersGroupId(final UUID groupId) {
         return (root, query, cb) -> {
@@ -36,12 +37,14 @@ public class SpecificationTemplate {
     @And({
             @Spec(path = "description", spec = Like.class)
     })
-    public interface GroupSpec extends Specification<Group> {}
+    public interface GroupSpec extends Specification<Group> {
+    }
 
     @And({
             @Spec(path = "description", spec = Like.class)
     })
-    public interface RoleSpec extends Specification<Role> {}
+    public interface RoleSpec extends Specification<Role> {
+    }
 
     public static Specification<Role> rolePermissionId(final UUID permissionId) {
         return (root, query, cb) -> {
@@ -66,7 +69,8 @@ public class SpecificationTemplate {
     @And({
             @Spec(path = "description", spec = Like.class)
     })
-    public interface PermissionSpec extends Specification<Permission> {}
+    public interface PermissionSpec extends Specification<Permission> {
+    }
 
     public static Specification<Permission> permissionGroupId(final UUID groupId) {
         return (root, query, cb) -> {

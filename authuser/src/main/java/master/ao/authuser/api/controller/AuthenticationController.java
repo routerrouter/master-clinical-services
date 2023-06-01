@@ -10,11 +10,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import master.ao.authuser.api.clients.UserClient;
 import master.ao.authuser.api.config.security.JwtProvider;
 import master.ao.authuser.api.mapper.UserMapper;
 import master.ao.authuser.api.request.LoginResponseDetail;
 import master.ao.authuser.api.request.LoginRequest;
 import master.ao.authuser.api.request.UserRequest;
+import master.ao.authuser.api.request.UserStorageRequest;
 import master.ao.authuser.api.response.GroupResponse;
 import master.ao.authuser.api.response.UserResponse;
 import master.ao.authuser.core.domain.exception.*;
@@ -53,7 +55,7 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final AccessLimitUserService limitUserService;
     private final RoleService roleService;
-
+    private final UserClient userClient;
 
     @Operation(summary = "Create account user")
     @ApiResponses(value = {
@@ -64,12 +66,14 @@ public class AuthenticationController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping("/signup/{groupId}/group")
     public ResponseEntity<UserResponse> registerUser(@RequestBody @JsonView(UserRequest.UserView.RegistrationPost.class) UserRequest request,
-                                                     @Parameter(description = "id of group to be associate") @PathVariable("groupId") UUID groupId) {
+                                                     @Parameter(description = "id of group to be associate") @PathVariable("groupId") UUID groupId,
+                                                     @RequestHeader("Authorization") String token) {
         log.debug("POST createUser request received {} ", request.toString());
+
 
         return Stream.of(request)
                 .map(mapper::toUser)
-                .map(user -> userService.saveUser(user, groupId))
+                .map(user -> userService.saveUser(user, groupId, token))
                 .map(mapper::toUserResponse)
                 .map(userResponse -> ResponseEntity.status(HttpStatus.CREATED).body(userResponse))
                 .findFirst()
@@ -79,7 +83,7 @@ public class AuthenticationController {
 
     @Operation(summary = "Authentication|Login")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User Logged!",content = @Content()),
+            @ApiResponse(responseCode = "200", description = "User Logged!", content = @Content()),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "401", description = "No authorized"),
             @ApiResponse(responseCode = "500", description = "Internal server error",
@@ -117,7 +121,7 @@ public class AuthenticationController {
                     throw new AccountLockedException("Sua conta foi bloqueada devido a 3 tentativas malsucedidas."
                             + " Ele será desbloqueado após 24 horas.");
                 }
-            }else {
+            } else {
                 throw new AccountAccessLimitException("Sua conta atingiu o limite de acesso. Por favor consultar o Administrador do sistema.");
             }
 

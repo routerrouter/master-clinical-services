@@ -9,6 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface PermissionRepository extends JpaRepository<Permission, UUID> , JpaSpecificationExecutor<Permission> {
+public interface PermissionRepository extends JpaRepository<Permission, UUID>, JpaSpecificationExecutor<Permission> {
     Optional<Permission> findByDescription(String description);
 }

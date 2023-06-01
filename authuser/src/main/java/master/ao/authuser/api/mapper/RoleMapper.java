@@ -17,7 +17,7 @@ public class RoleMapper {
 
     private final ModelMapper mapper;
 
-    public Role toRole(RoleRequest request){
+    public Role toRole(RoleRequest request) {
         return mapper.map(request, Role.class);
     }
 

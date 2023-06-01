@@ -14,21 +14,21 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name="USER_ATTEMPTS")
+@Table(name = "USER_ATTEMPTS")
 public class UserAttempts implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
-	@Column(nullable = false)
-	private String username;
+    @Column(nullable = false)
+    private String username;
 
-	@Column(name = "failed_attempt")
-	private int failedAttempt;
+    @Column(name = "failed_attempt")
+    private int failedAttempt;
 
-	@Column(nullable = false, name = "last_modified")
-	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
-	private LocalDateTime lastModified;
+    @Column(nullable = false, name = "last_modified")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private LocalDateTime lastModified;
 
 }

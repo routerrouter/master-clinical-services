@@ -16,7 +16,7 @@ public class AccessLimitUserMapper {
 
     private final ModelMapper mapper;
 
-    public AcessLimitUser toAcessLimitUser(AccessLimitRequest request){
+    public AcessLimitUser toAcessLimitUser(AccessLimitRequest request) {
         return mapper.map(request, AcessLimitUser.class);
     }
 

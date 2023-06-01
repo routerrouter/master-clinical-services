@@ -1,6 +1,7 @@
 package master.ao.storage.core.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name="STORAGES")
+@Table(name = "STORAGES")
 public class Storage implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -36,15 +37,20 @@ public class Storage implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
     private Long capacity;
 
+    @JsonIgnore
     @Column(nullable = false)
     private UUID userGroup;
 
-    @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Location> locations = new ArrayList<>();
 }

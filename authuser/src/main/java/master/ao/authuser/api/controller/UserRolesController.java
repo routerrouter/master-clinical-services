@@ -55,9 +55,9 @@ public class UserRolesController {
                                                      @Parameter(description = "id of associated user") @RequestParam(required = false) UUID userId) {
 
         List<RoleResponse> roleResponseList = roleResponseList = roleService.findAll(SpecificationTemplate.roleUserId(userId).and(spec))
-                    .stream()
-                    .map(mapper::toRoleResponse)
-                    .collect(Collectors.toList());
+                .stream()
+                .map(mapper::toRoleResponse)
+                .collect(Collectors.toList());
 
         int start = (int) (pageable.getOffset() > roleResponseList.size() ? roleResponseList.size() : pageable.getOffset());
         int end = (int) ((start + pageable.getPageSize()) > roleResponseList.size() ? roleResponseList.size()
@@ -70,10 +70,10 @@ public class UserRolesController {
 
     @GetMapping("/access")
     public ResponseEntity<?> getAllAccessUser(@ParameterObject SpecificationTemplate.RoleSpec spec,
-                                                                 @RequestParam(required = false) UUID userId) {
+                                              @RequestParam(required = false) UUID userId) {
 
         Optional<User> userOptional = userService.fetchOrFail(userId);
-        if(!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário informado não foi encontrado!");
         }
         List<Role> roleList = roleService.findAll(SpecificationTemplate.roleUserId(userId).and(spec));
@@ -94,19 +94,17 @@ public class UserRolesController {
     @PostMapping("/{userId}/user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associateRolesIntoUser(@RequestBody List<UUID> roles,
-                                                                  @PathVariable("userId") UUID userId){
-        userService.associateRoles(userId,roles);
+                                                       @PathVariable("userId") UUID userId) {
+        userService.associateRoles(userId, roles);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{userId}/user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> removeRoles(@PathVariable UUID userId, @RequestBody List<UUID> roles) {
-        userService.removeRoles(userId,roles);
+        userService.removeRoles(userId, roles);
         return ResponseEntity.noContent().build();
     }
-
-    
 
 
 }

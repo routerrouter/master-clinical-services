@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name="USERS_ACCESS_LIMIT")
+@Table(name = "USERS_ACCESS_LIMIT")
 public class AcessLimitUser {
 
     @Id
@@ -22,11 +22,11 @@ public class AcessLimitUser {
     private UUID accessLimitId;
 
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate ativation;
 
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate blockDate;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

@@ -4,14 +4,14 @@ import java.util.UUID;
 
 public class RoleNotFoundException extends EntityNotFoundException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public RoleNotFoundException(String mensagem) {
-		super(mensagem);
-	}
-	
-	public RoleNotFoundException(UUID roleId) {
-		this(String.format("Não existe um cadastro de grupo com código %s", roleId));
-	}
-	
+    public RoleNotFoundException(String mensagem) {
+        super(mensagem);
+    }
+
+    public RoleNotFoundException(UUID roleId) {
+        this(String.format("Não existe um cadastro de grupo com código %s", roleId));
+    }
+
 }

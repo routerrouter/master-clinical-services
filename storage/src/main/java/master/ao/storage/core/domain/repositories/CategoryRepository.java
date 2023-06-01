@@ -13,6 +13,7 @@ import java.util.UUID;
 public interface CategoryRepository extends JpaRepository<Category, UUID>, JpaSpecificationExecutor<Category> {
 
     Optional<Category> findByName(String name);
+
     Optional<Category> findById(UUID categoryId);
 
 }

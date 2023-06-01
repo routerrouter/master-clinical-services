@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface GroupRepository extends JpaRepository<Group, UUID> , JpaSpecificationExecutor<Group> {
+public interface GroupRepository extends JpaRepository<Group, UUID>, JpaSpecificationExecutor<Group> {
     Optional<Group> findByDescription(String description);
 
     @Modifying

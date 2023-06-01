@@ -11,7 +11,8 @@ import java.util.UUID;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, UUID>, JpaSpecificationExecutor<Location> {
 
-    Optional<Location> findByDesription(String description);
+    Optional<Location> findByShelfAndPartition(String shelf, String partition);
+
     Optional<Location> findById(UUID locationId);
 
 }

@@ -15,41 +15,60 @@ import java.util.UUID;
 public class SpecificationTemplate {
 
     @And({
+            @Spec(path = "userGroup", spec = Equal.class),
             @Spec(path = "name", spec = Like.class)
     })
-    public interface GroupSpec extends Specification<Group> {}
+    public interface GroupSpec extends Specification<Group> {
+    }
+
+    @And({
+            @Spec(path = "userGroup", spec = Equal.class),
+            @Spec(path = "name", spec = Like.class)
+    })
+    public interface CategorySpec extends Specification<Category> {
+    }
 
     @And({
             @Spec(path = "name", spec = Like.class)
     })
-    public interface CategorySpec extends Specification<Category> {}
+    public interface NatureSpec extends Specification<Nature> {
+    }
 
     @And({
-            @Spec(path = "name", spec = Like.class)
-    })
-    public interface NatureSpec extends Specification<Nature> {}
-
-    @And({
+            @Spec(path = "userGroup", spec = Equal.class),
             @Spec(path = "description", spec = Like.class)
     })
-    public interface StorageSpec extends Specification<Storage> {}
+    public interface StorageSpec extends Specification<Storage> {
+    }
 
     @And({
             @Spec(path = "description", spec = Like.class),
             @Spec(path = "shelf", spec = Like.class),
             @Spec(path = "partition", spec = Like.class)
     })
-    public interface LocationSpec extends Specification<Location> {}
+    public interface LocationSpec extends Specification<Location> {
+    }
+
+    public static Specification<Location> locationStorageId(final UUID storageId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            Root<Location> location = root;
+            Root<Storage> storage = query.from(Storage.class);
+            Expression<Collection<Location>> locationsStorageList = storage.get("locations");
+            return cb.and(cb.equal(storage.get("storageId"), storageId), cb.isMember(location, locationsStorageList));
+        };
+    }
 
     @And({
             @Spec(path = "name", spec = Like.class),
             @Spec(path = "phoneNumber", spec = Like.class),
             @Spec(path = "email", spec = Like.class),
             @Spec(path = "nif", spec = Like.class),
-            @Spec(path = "entityType", spec = Like.class),
+            @Spec(path = "entityType", spec = Equal.class),
             @Spec(path = "enabled", spec = Equal.class)
     })
-    public interface EntitySpec extends Specification<Entities> {}
+    public interface EntitySpec extends Specification<Entities> {
+    }
 
     @And({
             @Spec(path = "movementDate", spec = Equal.class),
@@ -58,7 +77,9 @@ public class SpecificationTemplate {
             @Spec(path = "movementStatus", spec = Like.class),
             @Spec(path = "devolutionType", spec = Like.class)
     })
-    public interface MovementSpec extends Specification<Movement> {}
+    public interface MovementSpec extends Specification<Movement> {
+    }
+
     public static Specification<Movement> movementEntityId(final UUID entityId) {
         return (root, query, cb) -> {
             query.distinct(true);
@@ -70,9 +91,12 @@ public class SpecificationTemplate {
     }
 
     @And({
+            @Spec(path = "natureId", spec = Equal.class),
             @Spec(path = "name", spec = Like.class)
     })
-    public interface ProductSpec extends Specification<Product> {}
+    public interface ProductSpec extends Specification<Product> {
+    }
+
     public static Specification<Product> productGroupId(final UUID groupId) {
         return (root, query, cb) -> {
             query.distinct(true);
@@ -82,6 +106,7 @@ public class SpecificationTemplate {
             return cb.and(cb.equal(group.get("groupId"), groupId), cb.isMember(product, productsGroupList));
         };
     }
+
     public static Specification<Product> productCategoryId(final UUID categoryId) {
         return (root, query, cb) -> {
             query.distinct(true);
@@ -91,29 +116,9 @@ public class SpecificationTemplate {
             return cb.and(cb.equal(category.get("categoryId"), categoryId), cb.isMember(product, productsCategoryList));
         };
     }
-    public static Specification<Product> productNatureId(final UUID natureId) {
-        return (root, query, cb) -> {
-            query.distinct(true);
-            Root<Product> product = root;
-            Root<Nature> nature = query.from(Nature.class);
-            Expression<Collection<Product>> productsNatureList = nature.get("products");
-            return cb.and(cb.equal(nature.get("natureId"), natureId), cb.isMember(product, productsNatureList));
-        };
-    }
 
 
 
-  /*
-
-    public static Specification<Role> rolePermissionId(final UUID permissionId) {
-        return (root, query, cb) -> {
-            query.distinct(true);
-            Root<Role> role = root;
-            Root<Permission> permission = query.from(Permission.class);
-            Expression<Collection<Role>> rolesPermissions = permission.get("roles");
-            return cb.and(cb.equal(permission.get("permissionId"), permissionId), cb.isMember(role, rolesPermissions));
-        };
-    }*/
 
 
 }

@@ -1,11 +1,10 @@
 package master.ao.storage.core.domain.services.impl;
 
 import lombok.RequiredArgsConstructor;
-import master.ao.storage.core.domain.exceptions.BussinessException;
-import master.ao.storage.core.domain.exceptions.EntityInUseException;
-import master.ao.storage.core.domain.exceptions.CategoryNotFoundException;
+import master.ao.storage.core.domain.exceptions.*;
 import master.ao.storage.core.domain.models.Category;
 import master.ao.storage.core.domain.repositories.CategoryRepository;
+import master.ao.storage.core.domain.repositories.UserRepository;
 import master.ao.storage.core.domain.services.CategoryService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,6 +12,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,23 +28,26 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public Category save(Category Category) {
-        var categoryOptional = categoryRepository.findByName(Category.getName());
+    public Category save(Category category, UUID userId) {
+        var categoryOptional = categoryRepository.findByName(category.getName());
         if (categoryOptional.isPresent()) {
-            throw new BussinessException("Categoria informado já existe.");
+            throw new ExistingDataException("Categoria informado já existe.");
         }
+        var userGroup = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        category.setUserGroup(userGroup.getGroupId());
 
-        return categoryRepository.save(Category);
+        return categoryRepository.save(category);
     }
 
     @Override
     public Category update(Category category, UUID categoryId) {
         var categoryOptional = fetchOrFail(categoryId).get();
         categoryOptional.setName(category.getName());
-
+        categoryOptional.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
         return categoryRepository.save(categoryOptional);
     }
 

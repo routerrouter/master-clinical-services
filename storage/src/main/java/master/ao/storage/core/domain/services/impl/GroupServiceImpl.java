@@ -1,11 +1,10 @@
 package master.ao.storage.core.domain.services.impl;
 
 import lombok.RequiredArgsConstructor;
-import master.ao.storage.core.domain.exceptions.BussinessException;
-import master.ao.storage.core.domain.exceptions.EntityInUseException;
-import master.ao.storage.core.domain.exceptions.GroupNotFoundException;
+import master.ao.storage.core.domain.exceptions.*;
 import master.ao.storage.core.domain.models.Group;
 import master.ao.storage.core.domain.repositories.GroupRepository;
+import master.ao.storage.core.domain.repositories.UserRepository;
 import master.ao.storage.core.domain.services.GroupService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,6 +12,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,14 +28,17 @@ public class GroupServiceImpl implements GroupService {
 
 
     private final GroupRepository groupRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public Group save(Group group) {
+    public Group save(Group group, UUID userId) {
         var groupOptional = groupRepository.findByName(group.getName());
         if (groupOptional.isPresent()) {
-            throw new BussinessException("Grupo informado já existe.");
+            throw new ExistingDataException("Grupo informado já existe.");
         }
+        var userGroup = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        group.setUserGroup(userGroup.getGroupId());
         return groupRepository.save(group);
     }
 
@@ -42,6 +46,7 @@ public class GroupServiceImpl implements GroupService {
     public Group update(Group group, UUID groupId) {
         var groupOptional = fetchOrFail(groupId).get();
         groupOptional.setName(group.getName());
+        groupOptional.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
 
         return groupRepository.save(groupOptional);
     }

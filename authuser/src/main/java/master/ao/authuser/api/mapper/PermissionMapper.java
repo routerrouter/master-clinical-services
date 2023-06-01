@@ -16,7 +16,7 @@ public class PermissionMapper {
 
     private final ModelMapper mapper;
 
-    public Permission toPermission(PermissionRequest request){
+    public Permission toPermission(PermissionRequest request) {
         return mapper.map(request, Permission.class);
     }
 

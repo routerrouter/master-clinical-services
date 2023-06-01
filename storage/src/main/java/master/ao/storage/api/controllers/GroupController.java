@@ -2,11 +2,17 @@ package master.ao.storage.api.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import master.ao.storage.api.config.security.UserDetailsImpl;
 import master.ao.storage.api.mapper.GroupMapper;
 import master.ao.storage.api.request.GroupRequest;
 import master.ao.storage.api.response.GroupResponse;
 import master.ao.storage.core.domain.services.GroupService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -32,11 +38,11 @@ public class GroupController {
     @PostMapping()
     public ResponseEntity<GroupResponse> saveGroup(@Valid @RequestBody GroupRequest request,
                                                    Authentication authentication) {
-        System.out.println(authentication.getPrincipal());
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         log.debug("POST createGroup request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toGroup)
-                .map(group -> groupService.save(group))
+                .map(group -> groupService.save(group, userDetails.getUserId()))
                 .map(mapper::toGroupResponse)
                 .map(groupResponse -> ResponseEntity.status(HttpStatus.CREATED).body(groupResponse))
                 .findFirst()
@@ -59,13 +65,21 @@ public class GroupController {
 
 
     @GetMapping
-    public ResponseEntity<List<GroupResponse>> getAll(SpecificationTemplate.GroupSpec spec) {
+    public ResponseEntity<Page<GroupResponse>> getAll(SpecificationTemplate.GroupSpec spec,
+                                                      @PageableDefault(page = 0, size = 10, sort = "groupId", direction = Sort.Direction.ASC) Pageable pageable) {
         var groupsList = groupService.findAll(spec)
                 .stream()
                 .map(mapper::toGroupResponse)
+                .sorted((o1, o2) -> o1.getName().
+                        compareTo(o2.getName()))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body(groupsList);
+        int start = (int) (pageable.getOffset() > groupsList.size() ? groupsList.size() : pageable.getOffset());
+        int end = (int) ((start + pageable.getPageSize()) > groupsList.size() ? groupsList.size()
+                : (start + pageable.getPageSize()));
+        Page<GroupResponse> groupsPageList = new PageImpl<>(groupsList.subList(start, end), pageable, groupsList.size());
+
+        return ResponseEntity.status(HttpStatus.OK).body(groupsPageList);
 
     }
 

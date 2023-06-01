@@ -13,7 +13,7 @@ public class AccessLimitRequest {
     private LocalDate ativation;
 
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate blockDate;
 
     @Column(nullable = false)

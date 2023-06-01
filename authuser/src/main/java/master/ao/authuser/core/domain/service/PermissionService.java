@@ -9,7 +9,10 @@ import java.util.UUID;
 
 public interface PermissionService {
     Permission save(Permission permission);
+
     Permission update(Permission permission, UUID permisssionId);
+
     Optional<Permission> fetchOrFail(UUID permissionId);
+
     List<Permission> findAll(Specification<Permission> spec);
 }

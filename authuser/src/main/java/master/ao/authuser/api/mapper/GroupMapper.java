@@ -16,7 +16,7 @@ public class GroupMapper {
 
     private final ModelMapper mapper;
 
-    public Group toGroup(GroupRequest request){
+    public Group toGroup(GroupRequest request) {
         return mapper.map(request, Group.class);
     }
 

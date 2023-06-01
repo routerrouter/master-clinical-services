@@ -7,6 +7,9 @@ master:
   auth:
     jwtSecret: B&E)H@McQfTjWnZr4u7w!z%C*F-JaNdRgUkXp2s5v8y/A?D(G+KbPeShVmYq3t6w
     jwtExpirationMs: 36000000
+  api:
+    url:
+      storage: 'http://master-storage-service'
 
 spring:
   application:
@@ -29,3 +32,11 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui-custom.html
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost

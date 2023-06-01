@@ -21,15 +21,15 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository repository;
     private final PermissionService permissionService;
-    
+
 
     @Override
     public Role save(Role role, UUID permissionId) {
         var permission = permissionService.fetchOrFail(permissionId);
 
-        var roleOptional = repository.findByDescription(role.getDescription());
+        var roleOptional = repository.findByDescriptionAndPermission(role.getDescription(), permission.get());
         if (roleOptional.isPresent()) {
-             throw new BussinessException("Acesso informado já existe!");
+            throw new BussinessException("Acesso informado já existe para esta permissão!");
         }
         role.setPermission(permission.get());
         return repository.save(role);
@@ -58,7 +58,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Map<String, Object> findAllByUser(UUID userId) {
-        List<Role> roleList =repository.findAllByUser(userId);
+        List<Role> roleList = repository.findAllByUser(userId);
         List<UserRoleAccsses> userRoleAccssesList = new ArrayList<>();
 
         Map<String, List<Role>> listMap =

@@ -52,11 +52,11 @@ public class AccessLimitUserController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping("/{userId}/user")
     public ResponseEntity<AccessLimitResponse> saveAccessLimit(@Valid @RequestBody AccessLimitRequest request,
-                                                               @Parameter(description = "id user to be associated with the access limit") @PathVariable(value = "userId") UUID userId){
+                                                               @Parameter(description = "id user to be associated with the access limit") @PathVariable(value = "userId") UUID userId) {
         log.debug("POST saveAccessLimit request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toAcessLimitUser)
-                .map(limit -> service.save(limit,userId))
+                .map(limit -> service.save(limit, userId))
                 .map(mapper::toAccessLimitResponse)
                 .map(accessLimitUserResponse -> ResponseEntity.status(HttpStatus.CREATED).body(accessLimitUserResponse))
                 .findFirst()
@@ -73,7 +73,7 @@ public class AccessLimitUserController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PutMapping("/{userId}/user")
     public ResponseEntity<AccessLimitResponse> updateAccessLimit(@Parameter(description = "id user to be searched") @PathVariable(value = "userId") UUID userId,
-                                                                 @Valid @RequestBody AccessLimitRequest request){
+                                                                 @Valid @RequestBody AccessLimitRequest request) {
         log.debug("PUT updateAccessLimit AccessLimitRequest received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toAcessLimitUser)
@@ -94,12 +94,12 @@ public class AccessLimitUserController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping()
     public ResponseEntity<Page<AccessLimitResponse>> getAll(@ParameterObject
-                                                                @PageableDefault(page = 0, size = 10, sort = "ativation", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                            @PageableDefault(page = 0, size = 10, sort = "ativation", direction = Sort.Direction.DESC) Pageable pageable) {
 
         List<AccessLimitResponse> accessLimitResponses = service.findAll()
-                    .stream()
-                    .map(mapper::toAccessLimitResponse)
-                    .collect(Collectors.toList());
+                .stream()
+                .map(mapper::toAccessLimitResponse)
+                .collect(Collectors.toList());
 
 
         int start = (int) (pageable.getOffset() > accessLimitResponses.size() ? accessLimitResponses.size() : pageable.getOffset());
@@ -114,7 +114,7 @@ public class AccessLimitUserController {
     @Operation(summary = "Get a accessLimitUser by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the AccessLimitUser",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = AccessLimitResponse.class))),
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AccessLimitResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "AccessLimitUser not found"),
@@ -122,7 +122,7 @@ public class AccessLimitUserController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<AccessLimitResponse> findByUserId(@Parameter(description = "id user to be searched") @PathVariable(value = "userId") UUID userId){
+    public ResponseEntity<AccessLimitResponse> findByUserId(@Parameter(description = "id user to be searched") @PathVariable(value = "userId") UUID userId) {
         return service.fetchOrFailByUserId(userId)
                 .map(mapper::toAccessLimitResponse)
                 .map(accessLimitUserResponse -> ResponseEntity.status(HttpStatus.OK).body(accessLimitUserResponse))

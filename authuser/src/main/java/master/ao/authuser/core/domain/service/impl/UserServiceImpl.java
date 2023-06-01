@@ -2,12 +2,13 @@ package master.ao.authuser.core.domain.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import master.ao.authuser.api.clients.UserClient;
+import master.ao.authuser.api.request.UserStorageRequest;
+import master.ao.authuser.core.domain.exception.BadCredentialsException;
 import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.exception.UserNotFoundException;
 import master.ao.authuser.core.domain.model.User;
-import master.ao.authuser.core.domain.repository.GroupRepository;
 import master.ao.authuser.core.domain.repository.UserRepository;
-import master.ao.authuser.core.domain.service.AccessLimitUserService;
 import master.ao.authuser.core.domain.service.GroupService;
 import master.ao.authuser.core.domain.service.UserService;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final GroupService groupService;
     private final PasswordEncoder passwordEncoder;
-    private final AccessLimitUserService accessLimitUserService;
+    private final UserClient userClient;
 
 
     @Override
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByUsername(String username) {
         var user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nome de usuário informado não encontrado!"));
+                .orElseThrow(() -> new UserNotFoundException("Nome de usuário informado não encontrado!"));
         return Optional.of(user);
     }
 
@@ -97,8 +98,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Transactional
     @Override
-    public User saveUser(User user, UUID groupId) {
+    public User saveUser(User user, UUID groupId, String token) {
 
         if (existsByUsername(user.getUsername())) {
             log.warn("Username {} is Already Taken ", user.getUsername());
@@ -123,8 +125,11 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
         log.debug("POST registerUser userId saved {} ", user.getUserId());
         log.info("User saved successfully userId {} ", user.getUserId());
+        saveOrUpdateUserToStorage(user, token);
+
         return user;
     }
+
 
     @Override
     public void deleteUser(UUID userId) {
@@ -134,8 +139,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     @Override
-    public User updateUser(User userRequest, UUID userId) {
+    public User updateUser(User userRequest, UUID userId, String token) {
         var user = fetchOrFail(userId).get();
 
         user.setUsername(userRequest.getUsername());
@@ -143,6 +149,9 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userRequest.getEmail());
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         user = userRepository.save(user);
+
+        saveOrUpdateUserToStorage(user, token);
+
         return user;
     }
 
@@ -153,18 +162,30 @@ public class UserServiceImpl implements UserService {
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        if (passwordIsMatched(user.getOldPassword(), userUpdated.getPassword())){
+        if (passwordIsMatched(user.getOldPassword(), userUpdated.getPassword())) {
             userUpdated.setPassword(passwordEncoder.encode(user.getPassword()));
             userUpdated.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
             userRepository.save(userUpdated);
         } else {
-            throw  new BussinessException("Senhas não combinam. Certifica-se que está inserindo correctamente a senha antiga");
+            throw new BussinessException("Senhas não combinam. Certifica-se que está inserindo correctamente a senha antiga");
         }
 
     }
 
-    public boolean passwordIsMatched(String password,String oldPawword) {
-        return  passwordEncoder.matches(password,oldPawword);
+    public boolean passwordIsMatched(String password, String oldPawword) {
+        return passwordEncoder.matches(password, oldPawword);
+    }
+
+    private void saveOrUpdateUserToStorage(User user, String token) {
+        var userStorage = new UserStorageRequest();
+        userStorage.setCreationDate(user.getCreationDate());
+        userStorage.setLastUpdateDate(user.getLastUpdateDate());
+        userStorage.setEmail(user.getEmail());
+        userStorage.setUsername(user.getUsername());
+        userStorage.setFullName(user.getFullName());
+        userStorage.setGroupId(user.getGroup().getGroupId());
+        userStorage.setUserId(user.getUserId());
+        userClient.saveUserToStorageAndOuther(userStorage, token);
     }
 
 }

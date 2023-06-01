@@ -24,7 +24,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name="MOVEMENTS")
+@Table(name = "MOVEMENTS")
 public class Movement implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -32,11 +32,11 @@ public class Movement implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID movementId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @Column(nullable = false)
     private LocalDateTime registeredAt;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(nullable = false)
     private LocalDate movementDate;
 
@@ -76,6 +76,14 @@ public class Movement implements Serializable {
                 .map(item -> item.getTotalValue())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+    }
+
+    public void setMovementStatus() {
+        if (this.getMovementType().equals(MovementType.REQUEST) || this.getMovementType().equals(MovementType.ORDER)) {
+            this.movementStatus = MovementStatus.PENDING;
+        } {
+            this.movementStatus = MovementStatus.FINISHED;
+        }
     }
 
 

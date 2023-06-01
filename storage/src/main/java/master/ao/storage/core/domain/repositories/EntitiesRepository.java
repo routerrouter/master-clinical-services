@@ -12,6 +12,7 @@ import java.util.UUID;
 public interface EntitiesRepository extends JpaRepository<Entities, UUID>, JpaSpecificationExecutor<Entities> {
 
     Optional<Entities> findByName(String name);
+
     Optional<Entities> findById(UUID entityId);
 
 }

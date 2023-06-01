@@ -18,9 +18,14 @@ import java.util.UUID;
 public class UserRequest {
 
     public interface UserView {
-        public static interface RegistrationPost {}
-        public static interface UserPut {}
-        public static interface PasswordPut {}
+        public static interface RegistrationPost {
+        }
+
+        public static interface UserPut {
+        }
+
+        public static interface PasswordPut {
+        }
     }
 
     @NotBlank(groups = {UserView.RegistrationPost.class, UserView.UserPut.class})
@@ -45,11 +50,6 @@ public class UserRequest {
     @Size(min = 6, max = 20, groups = UserView.PasswordPut.class)
     @JsonView({UserView.PasswordPut.class})
     private String oldPassword;
-
-
-
-
-
 
 
 }

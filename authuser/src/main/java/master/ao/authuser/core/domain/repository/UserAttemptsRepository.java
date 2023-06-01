@@ -10,6 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserAttemptsRepository extends JpaRepository<UserAttempts, UUID>{
+public interface UserAttemptsRepository extends JpaRepository<UserAttempts, UUID> {
     Optional<UserAttempts> findByUsername(String username);
 }

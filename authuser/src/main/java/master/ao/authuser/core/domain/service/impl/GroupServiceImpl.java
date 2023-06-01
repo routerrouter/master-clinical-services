@@ -68,9 +68,9 @@ public class GroupServiceImpl implements GroupService {
     public void disassociatePermission(UUID groupId, List<UUID> permissions) {
         var group = fetchOrFail(groupId).get();
 
-        permissions.forEach( permissionId -> {
-            if (groupRepository.existGroupPermission(group.getGroupId(),permissionId) > 0L) {
-                groupRepository.desassociatePermission(group.getGroupId(),permissionId);
+        permissions.forEach(permissionId -> {
+            if (groupRepository.existGroupPermission(group.getGroupId(), permissionId) > 0L) {
+                groupRepository.desassociatePermission(group.getGroupId(), permissionId);
             }
         });
     }
@@ -80,9 +80,9 @@ public class GroupServiceImpl implements GroupService {
     public void associatePermissions(UUID groupId, List<UUID> permissions) {
         var group = fetchOrFail(groupId).get();
 
-        permissions.forEach( permissionId -> {
-            if (groupRepository.existGroupPermission(group.getGroupId(),permissionId) == 0L) {
-                groupRepository.associatePermissions(group.getGroupId(),permissionId);
+        permissions.forEach(permissionId -> {
+            if (groupRepository.existGroupPermission(group.getGroupId(), permissionId) == 0L) {
+                groupRepository.associatePermissions(group.getGroupId(), permissionId);
             }
         });
 

@@ -12,6 +12,7 @@ import java.util.UUID;
 public interface GroupRepository extends JpaRepository<Group, UUID>, JpaSpecificationExecutor<Group> {
 
     Optional<Group> findByName(String name);
+
     Optional<Group> findById(UUID groupId);
 
 }

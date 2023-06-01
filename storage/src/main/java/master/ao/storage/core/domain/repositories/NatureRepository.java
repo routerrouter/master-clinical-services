@@ -12,6 +12,7 @@ import java.util.UUID;
 public interface NatureRepository extends JpaRepository<Nature, UUID>, JpaSpecificationExecutor<Nature> {
 
     Optional<Nature> findByName(String name);
+
     Optional<Nature> findById(UUID natureId);
 
 }

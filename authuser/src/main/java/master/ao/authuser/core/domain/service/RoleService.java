@@ -10,8 +10,12 @@ import java.util.UUID;
 
 public interface RoleService {
     Role save(Role role, UUID permissionId);
+
     Role update(Role role, UUID roleId);
+
     Optional<Role> fetchOrFail(UUID roleId);
+
     List<Role> findAll(Specification<Role> spec);
+
     Map<String, Object> findAllByUser(UUID userId);
 }

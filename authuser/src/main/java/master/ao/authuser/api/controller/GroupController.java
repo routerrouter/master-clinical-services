@@ -97,7 +97,7 @@ public class GroupController {
     @Operation(summary = "Get a group by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the group",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = GroupResponse.class))),
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = GroupResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Group not found"),

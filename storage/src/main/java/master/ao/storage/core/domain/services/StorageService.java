@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface StorageService {
-    Storage save(Storage Storage);
+    Storage save(Storage Storage, UUID userId);
 
     Storage update(Storage Storage, UUID storageId);
 

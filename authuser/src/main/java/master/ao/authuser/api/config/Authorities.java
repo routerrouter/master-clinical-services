@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-public class Authorities implements Comparable<Authorities>{
+public class Authorities implements Comparable<Authorities> {
 
     private Permission permission;
     private List<Role> roles;

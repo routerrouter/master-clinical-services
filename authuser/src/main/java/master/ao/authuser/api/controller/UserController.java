@@ -29,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -57,22 +58,22 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<UserResponse>> getAllUsers(@ParameterObject SpecificationTemplate.UserSpec spec,
                                                           @ParameterObject @PageableDefault(page = 0, size = 10, sort = "fullName", direction = Sort.Direction.ASC) Pageable pageable,
-                                                          @Parameter(description = "id of group which associated")  @RequestParam(required = false) UUID groupId) {
+                                                          @Parameter(description = "id of group which associated") @RequestParam(required = false) UUID groupId) {
 
-        List<UserResponse> usersList = null;
+        List<UserResponse> usersList = new ArrayList<>();
 
         if (groupId != null) {
             usersList = userService.findAll(SpecificationTemplate.usersGroupId(groupId).and(spec))
                     .stream()
                     .map(mapper::toUserResponse)
-                    .sorted((o1, o2)->o1.getFullName().
+                    .sorted((o1, o2) -> o1.getFullName().
                             compareTo(o2.getFullName()))
                     .collect(Collectors.toList());
         } else {
             usersList = userService.findAll(spec)
                     .stream()
                     .map(mapper::toUserResponse)
-                    .sorted((o1, o2)->o1.getFullName().
+                    .sorted((o1, o2) -> o1.getFullName().
                             compareTo(o2.getFullName()))
                     .collect(Collectors.toList());
         }
@@ -89,7 +90,7 @@ public class UserController {
     @Operation(summary = "Get a user by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the user",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,schema = @Schema(implementation = UserResponse.class))),
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found"),
@@ -97,7 +98,7 @@ public class UserController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponse> getOneUser(@Parameter(description = "id of user to be searched") @PathVariable(value = "userId") UUID userId){
+    public ResponseEntity<UserResponse> getOneUser(@Parameter(description = "id of user to be searched") @PathVariable(value = "userId") UUID userId) {
         return userService.fetchOrFail(userId)
                 .map(mapper::toUserResponse)
                 .map(userResponse -> ResponseEntity.status(HttpStatus.OK).body(userResponse))
@@ -115,7 +116,7 @@ public class UserController {
                     content = @Content)})
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@Parameter(description = "id of user to be deleted") @PathVariable(value = "userId") UUID userId){
+    public void deleteUser(@Parameter(description = "id of user to be deleted") @PathVariable(value = "userId") UUID userId) {
         log.debug("DELETE deleteUser userId received {} ", userId);
         userService.deleteUser(userId);
     }
@@ -129,12 +130,13 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponse> updateUser(@Parameter(description = "id of user to be updated") @PathVariable(value = "userId") UUID userId,
-                                             @RequestBody @Validated(UserRequest.UserView.UserPut.class)
-                                             @JsonView(UserRequest.UserView.UserPut.class) UserRequest UserRequest){
+                                                   @RequestBody @Validated(UserRequest.UserView.UserPut.class)
+                                                   @JsonView(UserRequest.UserView.UserPut.class) UserRequest UserRequest,
+                                                   @RequestHeader("Authorization") String token) {
         log.debug("PUT updateUser UserRequest received {} ", UserRequest.toString());
         return Stream.of(UserRequest)
                 .map(mapper::toUser)
-                .map(group -> userService.updateUser(group, userId))
+                .map(user -> userService.updateUser(user, userId, token))
                 .map(mapper::toUserResponse)
                 .map(userResponse -> ResponseEntity.status(HttpStatus.OK).body(userResponse))
                 .findFirst()
@@ -151,15 +153,13 @@ public class UserController {
     @PutMapping("/{userId}/password")
     @JsonView(UserRequest.UserView.PasswordPut.class)
     public ResponseEntity<Object> updatePassword(@Parameter(description = "id of user to be updated") @PathVariable(value = "userId") UUID userId,
-                                                 @RequestBody UserRequest userRequest){
+                                                 @RequestBody UserRequest userRequest) {
         log.debug("PUT updatePassword UserRequest received {} ", userRequest.toString());
         var user = mapper.toUser(userRequest);
         userService.resetPassword(userId, user);
         return ResponseEntity.status(HttpStatus.OK).body(" Senha atualizada com sucesso!");
 
     }
-
-
 
 
 }

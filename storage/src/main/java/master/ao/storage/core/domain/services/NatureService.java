@@ -8,13 +8,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface NatureService {
-    Nature save(Nature nature);
+    Nature save(Nature nature, UUID userId);
 
-    Nature update(Nature nature, UUID NatureId);
+    Nature update(Nature nature, UUID natureId);
 
     void delete(UUID natureId);
 
-    Optional<Nature> fetchOrFail(UUID NatureId);
+    Optional<Nature> fetchOrFail(UUID natureId);
 
     List<Nature> findAll(Specification<Nature> spec);
 }

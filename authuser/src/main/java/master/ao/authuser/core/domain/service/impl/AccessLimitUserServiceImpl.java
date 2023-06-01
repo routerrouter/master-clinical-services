@@ -45,7 +45,7 @@ public class AccessLimitUserServiceImpl implements AccessLimitUserService {
     @Override
     public AcessLimitUser update(AcessLimitUser acessLimitUser, UUID userId) {
 
-        var userOptional =  userService.fetchOrFail(userId).get();
+        var userOptional = userService.fetchOrFail(userId).get();
         var accessLimitOptional = fetchOrFailByUserId(userId).get();
 
         long days = dateUtils.getDiferenceBetweenDatesIndDays(acessLimitUser.getAtivation(), acessLimitUser.getBlockDate());
@@ -64,8 +64,8 @@ public class AccessLimitUserServiceImpl implements AccessLimitUserService {
     public Optional<AcessLimitUser> fetchOrFailByUserId(UUID userId) {
 
         var userOptional = userService.fetchOrFail(userId).get();
-        var acessLimit =  repository.findAcessLimitUserByUser(userOptional.getUserId())
-                .orElseThrow( ()-> new AccessLimitNotFoundException(userId));
+        var acessLimit = repository.findAcessLimitUserByUser(userOptional.getUserId())
+                .orElseThrow(() -> new AccessLimitNotFoundException(userId));
 
         return Optional.of(acessLimit);
 
