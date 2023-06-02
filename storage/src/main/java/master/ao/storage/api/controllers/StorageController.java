@@ -1,11 +1,19 @@
 package master.ao.storage.api.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import master.ao.storage.api.config.security.UserDetailsImpl;
 import master.ao.storage.api.mapper.StorageMapper;
 import master.ao.storage.api.request.StorageRequest;
 import master.ao.storage.api.response.StorageResponse;
+import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.StorageService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
 import org.springframework.data.domain.Page;
@@ -14,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +37,19 @@ import java.util.stream.Stream;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/storage")
-
+@Tag(name = "Storage", description = "The Storage API. Contains all operations that can be performed on a Storage")
 public class StorageController {
 
     private final StorageService storageService;
     private final StorageMapper mapper;
 
-
+    @Operation(summary = "Create storage")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Storage created!",
+                    content = @Content(schema = @Schema(implementation = StorageResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping()
     public ResponseEntity<StorageResponse> saveStorage(@Valid @RequestBody StorageRequest request,
                                                        Authentication authentication) {
@@ -50,9 +65,15 @@ public class StorageController {
     }
 
 
+    @Operation(summary = "Update storage")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Updated storage", content = @Content(schema = @Schema(implementation = StorageResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
+            @ApiResponse(responseCode = "404", description = "Storage not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PutMapping("/{storageId}")
     public ResponseEntity<StorageResponse> updateStorage(@Valid @RequestBody StorageRequest request,
-                                                         @PathVariable("storageId") UUID storageId) {
+                                                         @Parameter(description = "id of storage to be updated")  @PathVariable("storageId") UUID storageId) {
         log.debug("PUT updateStorage request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toStorage)
@@ -63,7 +84,13 @@ public class StorageController {
                 .get();
     }
 
-
+    @Operation(summary = "Get all storages for login page")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Storages",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping("/forLogin")
     public ResponseEntity<List<StorageResponse>> getListStorage(SpecificationTemplate.StorageSpec spec) {
         var storagesList = storageService.findAll(spec)
@@ -74,6 +101,13 @@ public class StorageController {
         return ResponseEntity.status(HttpStatus.OK).body(storagesList);
 
     }
+    @Operation(summary = "Get all storages")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Storages",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
 
     @GetMapping
     public ResponseEntity<Page<StorageResponse>> getAll(SpecificationTemplate.StorageSpec spec,
@@ -95,8 +129,19 @@ public class StorageController {
     }
 
 
+    @Operation(summary = "Get a storage by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the storage",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = StorageResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Storage not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))
+    })
     @GetMapping("/{storageId}")
-    public ResponseEntity<StorageResponse> fetchOrFail(@PathVariable("storageId") UUID storageId) {
+    public ResponseEntity<StorageResponse> fetchOrFail(@Parameter(description = "id of storage to be searched")
+                                                           @PathVariable("storageId") UUID storageId) {
         return storageService.fetchOrFail(storageId)
                 .map(mapper::toStorageResponse)
                 .map(storageResponse -> ResponseEntity.status(HttpStatus.OK).body(storageResponse))
@@ -104,10 +149,18 @@ public class StorageController {
 
     }
 
-
+    @Operation(summary = "Delete a storage")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Deleted storage!",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Storage not found",
+                    content = @Content)})
     @DeleteMapping("/{storageId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remove(@PathVariable UUID storageId) {
+    public void remove(@Parameter(description = "id of storage to be deleted")
+                           @PathVariable UUID storageId) {
         storageService.delete(storageId);
     }
 

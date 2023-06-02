@@ -1,5 +1,6 @@
 package master.ao.storage.api.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import master.ao.storage.api.config.security.UserDetailsImpl;
@@ -22,7 +23,7 @@ import java.util.stream.Stream;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/movements")
-
+@Tag(name = "Movement", description = "The Movement API. Contains all operations that can be performed on a movement")
 public class MovementController {
 
     private final MovementService movementService;

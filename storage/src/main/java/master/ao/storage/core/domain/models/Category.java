@@ -19,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "CATEGORIES")
+@Table(name = "TB_CATEGORIES")
 public class Category implements Serializable {
     private static final long serialVersionUID = 1L;
 

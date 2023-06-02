@@ -19,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "MOVEMENT_PRODUCTS")
+@Table(name = "TB_MOVEMENT_PRODUCTS")
 public class ItemsMovement implements Serializable {
     private static final long serialVersionUID = 1L;
 

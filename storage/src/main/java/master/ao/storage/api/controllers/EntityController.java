@@ -1,5 +1,11 @@
 package master.ao.storage.api.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -7,7 +13,7 @@ import master.ao.storage.api.config.security.UserDetailsImpl;
 import master.ao.storage.api.mapper.EntityMapper;
 import master.ao.storage.api.request.EntityRequest;
 import master.ao.storage.api.response.EntityResponse;
-import master.ao.storage.core.domain.models.Entities;
+import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.EntityService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
 import org.springframework.data.domain.Page;
@@ -16,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -30,13 +37,20 @@ import java.util.stream.Stream;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/entity")
-@Tag(name = "Entities", description = "The Entities API. Contains all operations that can be performed on a Entity")
+@Tag(name = "Entity", description = "The Entities API. Contains all operations that can be performed on a Entity")
 public class EntityController {
 
     private final EntityService entityService;
     private final EntityMapper mapper;
 
 
+    @Operation(summary = "Create entity")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Entity created!",
+                    content = @Content(schema = @Schema(implementation = EntityResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping()
     public ResponseEntity<EntityResponse> saveEntity(@Valid @RequestBody EntityRequest request,
                                                    Authentication authentication) {
@@ -52,9 +66,15 @@ public class EntityController {
     }
 
 
+    @Operation(summary = "Update entity")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Updated entity", content = @Content(schema = @Schema(implementation = EntityResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
+            @ApiResponse(responseCode = "404", description = "Entity not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PutMapping("/{entityId}")
     public ResponseEntity<EntityResponse> updateEntity(@Valid @RequestBody EntityRequest request,
-                                                     @PathVariable("entityId") UUID entityId) {
+                                                       @Parameter(description = "id of entity to be updated") @PathVariable("entityId") UUID entityId) {
         log.debug("PUT updateEntity request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toEntity)
@@ -66,6 +86,13 @@ public class EntityController {
     }
 
 
+    @Operation(summary = "Get all categories")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Categories",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
     public ResponseEntity<Page<EntityResponse>> getAll(SpecificationTemplate.EntitySpec spec,
                                                       @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -85,9 +112,19 @@ public class EntityController {
 
     }
 
-
+    @Operation(summary = "Get a entity by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the entity",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = EntityResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Entity not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))
+    })
     @GetMapping("/{entityId}")
-    public ResponseEntity<EntityResponse> fetchOrFail(@PathVariable("entityId") UUID entityId) {
+    public ResponseEntity<EntityResponse> fetchOrFail(@Parameter(description = "id of entity to be searched")
+                                                          @PathVariable("entityId") UUID entityId) {
         return entityService.fetchOrFail(entityId)
                 .map(mapper::toEntityResponse)
                 .map(entityResponse -> ResponseEntity.status(HttpStatus.OK).body(entityResponse))
@@ -95,10 +132,17 @@ public class EntityController {
 
     }
 
-
+    @Operation(summary = "Delete a entity")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Deleted entity!",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Entity not found",
+                    content = @Content)})
     @DeleteMapping("/{entityId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remove(@PathVariable UUID entityId) {
+    public void remove(@Parameter(description = "id of entity to be deleted") @PathVariable UUID entityId) {
         entityService.delete(entityId);
     }
 

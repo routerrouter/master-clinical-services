@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "ENTITIES")
+@Table(name = "TB_ENTITIES")
 public class Entities implements Serializable {
     private static final long serialVersionUID = 1L;
 
