@@ -15,6 +15,7 @@ import master.ao.storage.api.response.LocationResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.LocationService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -92,8 +93,8 @@ public class LocationController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
-    public ResponseEntity<Page<LocationResponse>> getAll(SpecificationTemplate.LocationSpec spec,
-                                                         @PageableDefault(page = 0, size = 10, sort = "locationId", direction = Sort.Direction.ASC)
+    public ResponseEntity<Page<LocationResponse>> getAll(@ParameterObject SpecificationTemplate.LocationSpec spec,
+                                                         @ParameterObject  @PageableDefault(page = 0, size = 10, sort = "locationId", direction = Sort.Direction.ASC)
                                                                  Pageable pageable, @RequestParam(required = false) UUID storageId) {
         List<LocationResponse> locationsList = new ArrayList<>();
         if (storageId != null) {

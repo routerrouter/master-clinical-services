@@ -6,7 +6,7 @@ import master.ao.authuser.api.response.UserRoleAccsses;
 import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.exception.RoleNotFoundException;
 import master.ao.authuser.core.domain.model.Role;
-import master.ao.authuser.core.domain.repository.RoleRepository;
+import master.ao.authuser.core.domain.repositories.RoleRepository;
 import master.ao.authuser.core.domain.service.PermissionService;
 import master.ao.authuser.core.domain.service.RoleService;
 import org.springframework.data.jpa.domain.Specification;

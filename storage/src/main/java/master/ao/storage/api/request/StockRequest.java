@@ -23,7 +23,7 @@ public class StockRequest {
     private Storage storage;
     @NotNull
     private Location location;
-    @NotBlank
+
     private String lote;
     private String model;
     private String barcode;

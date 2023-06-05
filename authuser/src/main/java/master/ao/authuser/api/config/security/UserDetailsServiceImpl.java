@@ -2,7 +2,7 @@ package master.ao.authuser.api.config.security;
 
 
 import master.ao.authuser.core.domain.model.User;
-import master.ao.authuser.core.domain.repository.UserRepository;
+import master.ao.authuser.core.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;

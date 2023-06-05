@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.exception.PermissionNotFoundException;
 import master.ao.authuser.core.domain.model.Permission;
-import master.ao.authuser.core.domain.repository.PermissionRepository;
+import master.ao.authuser.core.domain.repositories.PermissionRepository;
 import master.ao.authuser.core.domain.service.PermissionService;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;

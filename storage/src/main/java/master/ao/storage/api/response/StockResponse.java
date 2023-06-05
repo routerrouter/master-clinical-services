@@ -1,5 +1,6 @@
 package master.ao.storage.api.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import master.ao.storage.core.domain.enums.UnitType;
@@ -13,11 +14,11 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StockResponse {
-    private UUID uuid;
-    private Product product;
-    private Storage storage;
-    private Location location;
+    private ProductResponse product;
+    private StorageResponse storage;
+    private LocationResponse location;
     private String lote;
     private String model;
     private String barcode;

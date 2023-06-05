@@ -16,6 +16,7 @@ import master.ao.storage.api.response.StorageResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.StorageService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -52,12 +53,13 @@ public class StorageController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping()
     public ResponseEntity<StorageResponse> saveStorage(@Valid @RequestBody StorageRequest request,
-                                                       Authentication authentication) {
+                                                       Authentication authentication,
+                                                       @RequestHeader("Authorization") String token) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         log.debug("POST createStorage request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toStorage)
-                .map(storage -> storageService.save(storage, userDetails.getUserId()))
+                .map(storage -> storageService.save(storage, userDetails.getUserId(), token))
                 .map(mapper::toStorageResponse)
                 .map(StorageResponse -> ResponseEntity.status(HttpStatus.CREATED).body(StorageResponse))
                 .findFirst()
@@ -73,11 +75,13 @@ public class StorageController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PutMapping("/{storageId}")
     public ResponseEntity<StorageResponse> updateStorage(@Valid @RequestBody StorageRequest request,
-                                                         @Parameter(description = "id of storage to be updated")  @PathVariable("storageId") UUID storageId) {
+                                                         @Parameter(description = "id of storage to be updated")
+                                                         @PathVariable("storageId") UUID storageId,
+                                                         @RequestHeader("Authorization") String token) {
         log.debug("PUT updateStorage request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toStorage)
-                .map(storage -> storageService.update(storage, storageId))
+                .map(storage -> storageService.update(storage, storageId, token))
                 .map(mapper::toStorageResponse)
                 .map(StorageResponse -> ResponseEntity.status(HttpStatus.OK).body(StorageResponse))
                 .findFirst()
@@ -92,7 +96,7 @@ public class StorageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping("/forLogin")
-    public ResponseEntity<List<StorageResponse>> getListStorage(SpecificationTemplate.StorageSpec spec) {
+    public ResponseEntity<List<StorageResponse>> getListStorage(@ParameterObject SpecificationTemplate.StorageSpec spec) {
         var storagesList = storageService.findAll(spec)
                 .stream()
                 .map(mapper::toStorageResponse)
@@ -110,7 +114,7 @@ public class StorageController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
 
     @GetMapping
-    public ResponseEntity<Page<StorageResponse>> getAll(SpecificationTemplate.StorageSpec spec,
+    public ResponseEntity<Page<StorageResponse>> getAll(@ParameterObject SpecificationTemplate.StorageSpec spec,
                                                         @PageableDefault(page = 0, size = 10, sort = "StorageId", direction = Sort.Direction.ASC) Pageable pageable) {
         var storagesList = storageService.findAll(spec)
                 .stream()
@@ -160,8 +164,9 @@ public class StorageController {
     @DeleteMapping("/{storageId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@Parameter(description = "id of storage to be deleted")
-                           @PathVariable UUID storageId) {
-        storageService.delete(storageId);
+                           @PathVariable UUID storageId,
+                       @RequestHeader("Authorization") String token) {
+        storageService.delete(storageId, token);
     }
 
 

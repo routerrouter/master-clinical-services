@@ -16,6 +16,7 @@ import master.ao.storage.api.response.GroupResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.GroupService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -94,8 +95,8 @@ public class GroupController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
-    public ResponseEntity<Page<GroupResponse>> getAll(SpecificationTemplate.GroupSpec spec,
-                                                      @PageableDefault(page = 0, size = 10, sort = "groupId", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<GroupResponse>> getAll(@ParameterObject SpecificationTemplate.GroupSpec spec,
+                                                      @ParameterObject @PageableDefault(page = 0, size = 10, sort = "groupId", direction = Sort.Direction.ASC) Pageable pageable) {
         var groupsList = groupService.findAll(spec)
                 .stream()
                 .map(mapper::toGroupResponse)

@@ -16,6 +16,7 @@ import master.ao.storage.api.response.NatureResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.NatureService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -93,9 +95,9 @@ public class NatureController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
-    public ResponseEntity<Page<NatureResponse>> getAll(SpecificationTemplate.NatureSpec spec,
-                                                       @PageableDefault(page = 0, size = 10, sort = "natureId", direction = Sort.Direction.ASC) Pageable pageable) {
-        var naturesList = natureService.findAll(spec)
+    public ResponseEntity<Page<NatureResponse>> getAll(@ParameterObject SpecificationTemplate.NatureSpec spec,
+                                                       @ParameterObject  @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        List<NatureResponse> naturesList = natureService.findAll(spec)
                 .stream()
                 .map(mapper::toNatureResponse)
                 .sorted((o1, o2) -> o1.getName().

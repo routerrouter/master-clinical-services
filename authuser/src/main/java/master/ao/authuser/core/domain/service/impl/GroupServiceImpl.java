@@ -5,7 +5,7 @@ import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.exception.EntityInUseException;
 import master.ao.authuser.core.domain.exception.GroupNotFoundException;
 import master.ao.authuser.core.domain.model.Group;
-import master.ao.authuser.core.domain.repository.GroupRepository;
+import master.ao.authuser.core.domain.repositories.GroupRepository;
 import master.ao.authuser.core.domain.service.GroupService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;

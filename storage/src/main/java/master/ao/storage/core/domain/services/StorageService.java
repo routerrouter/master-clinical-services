@@ -8,13 +8,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface StorageService {
-    Storage save(Storage Storage, UUID userId);
+    Storage save(Storage Storage, UUID userId, String token);
 
-    Storage update(Storage Storage, UUID storageId);
+    Storage update(Storage Storage, UUID storageId,String token);
 
     void disabledOrEnabled(UUID storageId);
 
-    void delete(UUID storageId);
+    void delete(UUID storageId,String token);
 
     Optional<Storage> fetchOrFail(UUID storageId);
 

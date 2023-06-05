@@ -1,9 +1,8 @@
-package master.ao.authuser.core.domain.repository;
+package master.ao.authuser.core.domain.repositories;
 
 
 import master.ao.authuser.core.domain.model.UserAttempts;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface MovementService {
     Movement save(Movement movement, UUID userId);
     List<Movement> listAll();
+
 }

@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "ROLES")
+@Table(name = "TB_ROLES")
 public class Role implements Serializable {
 
     @Id

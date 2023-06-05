@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "USERS_ACCESS_LIMIT")
+@Table(name = "TB_USERS_ACCESS_LIMIT")
 public class AcessLimitUser {
 
     @Id

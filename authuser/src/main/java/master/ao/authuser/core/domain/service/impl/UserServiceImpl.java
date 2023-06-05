@@ -4,19 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import master.ao.authuser.api.clients.UserClient;
 import master.ao.authuser.api.request.UserStorageRequest;
-import master.ao.authuser.core.domain.exception.BadCredentialsException;
 import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.exception.UserNotFoundException;
 import master.ao.authuser.core.domain.model.User;
-import master.ao.authuser.core.domain.repository.UserRepository;
+import master.ao.authuser.core.domain.repositories.UserRepository;
 import master.ao.authuser.core.domain.service.GroupService;
 import master.ao.authuser.core.domain.service.UserService;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -45,6 +42,7 @@ public class UserServiceImpl implements UserService {
         return Optional.of(user);
     }
 
+    @Transactional
     @Override
     public Optional<User> findByUsername(String username) {
         var user = userRepository.findByUsername(username)
@@ -175,6 +173,7 @@ public class UserServiceImpl implements UserService {
     public boolean passwordIsMatched(String password, String oldPawword) {
         return passwordEncoder.matches(password, oldPawword);
     }
+
 
     private void saveOrUpdateUserToStorage(User user, String token) {
         var userStorage = new UserStorageRequest();

@@ -20,10 +20,8 @@ import master.ao.authuser.api.request.UserStorageRequest;
 import master.ao.authuser.api.response.GroupResponse;
 import master.ao.authuser.api.response.UserResponse;
 import master.ao.authuser.core.domain.exception.*;
-import master.ao.authuser.core.domain.service.AccessLimitUserService;
-import master.ao.authuser.core.domain.service.RoleService;
-import master.ao.authuser.core.domain.service.UserAttemptsService;
-import master.ao.authuser.core.domain.service.UserService;
+import master.ao.authuser.core.domain.model.Storage;
+import master.ao.authuser.core.domain.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -55,7 +54,7 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final AccessLimitUserService limitUserService;
     private final RoleService roleService;
-    private final UserClient userClient;
+    private final StorageService storageService;
 
     @Operation(summary = "Create account user")
     @ApiResponses(value = {
@@ -108,9 +107,13 @@ public class AuthenticationController {
                         var loginUsrDetails = new LoginResponseDetail();
                         ArrayList<Object> valueList = new ArrayList<Object>(roleService.findAllByUser(user.getUserId()).values());
                         loginUsrDetails.setAccsses(valueList);
-                        var userResponse = Stream.of(user).map(mapper::toUserResponse).findFirst().get();
-                        loginUsrDetails.setUser(userResponse);
+                        var userResponse = Stream.of(user)
+                                .map(mapper::toUserResponse)
+                                .findFirst();
+                        List<Storage> storages = storageService.findAll(user.getGroup().getGroupId());
+                        loginUsrDetails.setUser(userResponse.get());
                         loginUsrDetails.setToken(jwt);
+                        loginUsrDetails.setStotages(storages);
 
                         return ResponseEntity.ok(loginUsrDetails);
                     } else {

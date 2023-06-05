@@ -7,6 +7,9 @@ master:
   auth:
     jwtSecret: B&E)H@McQfTjWnZr4u7w!z%C*F-JaNdRgUkXp2s5v8y/A?D(G+KbPeShVmYq3t6w
     jwtExpirationMs: 36000000
+  api:
+    url:
+      authuser: 'http://localhost:8083'
 
 spring:
   application:

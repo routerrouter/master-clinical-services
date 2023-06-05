@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "PERMISSIONS")
+@Table(name = "TB_PERMISSIONS")
 public class Permission implements Serializable {
 
     @Id

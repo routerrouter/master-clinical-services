@@ -1,0 +1,1344 @@
+{
+	"info": {
+		"_postman_id": "3a60f225-3601-41a0-8c45-37b0fb9b0113",
+		"name": "MASTER-STORAGE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18249841",
+		"_collection_link": "https://interstellar-zodiac-154986.postman.co/workspace/My-Workspace~45d8c806-1c67-4793-8c39-f015359acf35/collection/18249841-3a60f225-3601-41a0-8c45-37b0fb9b0113?action=share&creator=18249841&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "STORAGES",
+			"item": [
+				{
+					"name": "GET ALL FOR LOGIN",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/storage/forLogin",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"storage",
+								"forLogin"
+							],
+							"query": [
+								{
+									"key": "userGroup",
+									"value": "f5b2794c-4ef7-422f-a05d-48d671bdd4b2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"ARMAZEM TESTE\",\n    \"description\": \"ARMAZEM DE TESTE\",\n    \"capacity\": 2000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/storage",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"storage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/storage",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"storage"
+							],
+							"query": [
+								{
+									"key": "userGroup",
+									"value": "c83aeaa9-c4a5-4269-bd9f-cb4a1b6fe002",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FIND ONE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/storage/ab80afb8-3d68-47e4-b857-5b48c1dca9cc",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"storage",
+								"ab80afb8-3d68-47e4-b857-5b48c1dca9cc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Armazém de Injectavéis\",\n    \"description\": \"Armazém de Injectáveis 001\",\n    \"capacity\": 550\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/storage/e73183b5-427d-4e1e-9fda-6e2bfc476bb7",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"storage",
+								"e73183b5-427d-4e1e-9fda-6e2bfc476bb7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/storage/ab80afb8-3d68-47e4-b857-5b48c1dca9cc",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"storage",
+								"ab80afb8-3d68-47e4-b857-5b48c1dca9cc"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GROUPS",
+			"item": [
+				{
+					"name": "CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"OUTROS\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/group",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"group"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Materiais Consumiveis\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/group/22680c0d-415d-437e-9824-6f1a2997e14b",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"group",
+								"22680c0d-415d-437e-9824-6f1a2997e14b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ONE",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Materiais Consumiveis\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/group/22680c0d-415d-437e-9824-6f1a2997e14b",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"group",
+								"22680c0d-415d-437e-9824-6f1a2997e14b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Materiais Consumiveis\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/group",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"group"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "inf",
+									"disabled": true
+								},
+								{
+									"key": "userGroup",
+									"value": "f5b2794c-4ef7-422f-a05d-48d671bdd4b2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Materiais informáticos\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/group/dba254aa-061a-491d-be9f-5e3e90144b1e",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"group",
+								"dba254aa-061a-491d-be9f-5e3e90144b1e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CATEGORY",
+			"item": [
+				{
+					"name": "GET ALL",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/category?page=0&size=40&name=MAT",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"category"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "40"
+								},
+								{
+									"key": "userGroup",
+									"value": "106c496c-a3e8-41de-bee5-ca26ee9db491",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "MAT"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ONE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/category/94d682e1-d20c-4eb6-bebd-14a469bf8395",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"category",
+								"94d682e1-d20c-4eb6-bebd-14a469bf8395"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/category/0141d5c7-58ab-4853-ab97-c70ffd6be0ef",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"category",
+								"0141d5c7-58ab-4853-ab97-c70ffd6be0ef"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Injetaveis\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/category/94d682e1-d20c-4eb6-bebd-14a469bf8395",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"category",
+								"94d682e1-d20c-4eb6-bebd-14a469bf8395"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"CATEGORIA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/category",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"category"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LOCATION",
+			"item": [
+				{
+					"name": "CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"shelf\": \"Prateleira 001\",\n    \"partition\": \"Divisoria 010\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/location/915a93a2-0b2d-4dbc-949f-7e557acd1ffc/storage",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"location",
+								"915a93a2-0b2d-4dbc-949f-7e557acd1ffc",
+								"storage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/location?storageId=915a93a2-0b2d-4dbc-949f-7e557acd1ffc&shelf=001&partition=002",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"location"
+							],
+							"query": [
+								{
+									"key": "storageId",
+									"value": "915a93a2-0b2d-4dbc-949f-7e557acd1ffc"
+								},
+								{
+									"key": "shelf",
+									"value": "001"
+								},
+								{
+									"key": "partition",
+									"value": "002"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ONE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/location/f708c775-f7cb-4bfb-9664-1e5ecf8b80fe",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"location",
+								"f708c775-f7cb-4bfb-9664-1e5ecf8b80fe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/location/3dbbba08-12e2-4eb4-8e7f-965ef17f4fc1",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"location",
+								"3dbbba08-12e2-4eb4-8e7f-965ef17f4fc1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"shelf\": \"Prateleira 001\",\n    \"partition\": \"Divisoria 0111\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/location/3dbbba08-12e2-4eb4-8e7f-965ef17f4fc1",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"location",
+								"3dbbba08-12e2-4eb4-8e7f-965ef17f4fc1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "NATURE",
+			"item": [
+				{
+					"name": "GET ALL",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/nature",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"nature"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ONE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/nature/ee6e157d-a190-49f5-80ee-96f5b326727b",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"nature",
+								"ee6e157d-a190-49f5-80ee-96f5b326727b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/nature/5935f59c-f4d9-44a1-9ebe-b78ac6d99add",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"nature",
+								"5935f59c-f4d9-44a1-9ebe-b78ac6d99add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Materiais Gstável\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/nature/5935f59c-f4d9-44a1-9ebe-b78ac6d99add",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"nature",
+								"5935f59c-f4d9-44a1-9ebe-b78ac6d99add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"OUTROS MATERIAIS DE CONSUMO CORRENTE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/nature",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"nature"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PRODUCTS",
+			"item": [
+				{
+					"name": "CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"IMPRESSORA WINTECH\",\n    \"criticalAmount\": 0,\n    \"minimumAmount\": 0,\n    \"brand\": \"WINTECH\",\n    \"category\": {\n        \"categoryId\": \"4898a417-5d2e-4eb5-9897-b4f847a136ad\",\n        \"name\": \"MAT. INFORMÁTICOS\"\n    },\n    \"group\": {\n        \"groupId\": \"671b9c17-167a-470d-b53e-dd817feb9199\",\n        \"name\": \"EQUIPAMENTOS\"\n    },\n    \"storage\": {\n        \"storageId\": \"915a93a2-0b2d-4dbc-949f-7e557acd1ffc\",\n        \"name\": \"Armazém 1\"\n    },\n    \"natureId\": \"5c6a1e8d-f955-49a8-8249-153575f59623\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/product",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Computador Portatil edição\",\n    \"criticalAmount\": 1,\n    \"minimumAmount\": 2,\n    \"brand\": \"HP\",\n    \"category\": {\n        \"categoryId\": \"6e792165-09f7-46e5-b246-90708a36ae42\",\n        \"name\": \"Materiais Informático\"\n    },\n    \"group\": {\n        \"groupId\": \"f98e779f-0a4e-4709-9cbf-3a9f14461e4a\",\n        \"name\": \"Materiais informáticos\"\n    },\n    \"storage\": {\n        \"storageId\": \"3a054114-5cec-469c-bd60-fd4aa701358f\",\n        \"name\": \"Armazém 001\",\n        \"description\": null,\n        \"capacity\": null\n    },\n    \"natureId\": \"757cac53-b434-4692-ba86-8f3d062d759b\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/product/d29f729d-f086-4261-b4e4-f7e99a94a3b4",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"product",
+								"d29f729d-f086-4261-b4e4-f7e99a94a3b4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Gentemicina 80mg\",\n    \"criticalAmount\": 10,\n    \"minimumAmount\": 50,\n    \"category\": {\n        \"categoryId\": \"f306f269-4c03-46b1-b394-d68167385166\",\n        \"name\": \"Comprimidos\"\n    },\n    \"group\": {\n        \"groupId\": \"22680c0d-415d-437e-9824-6f1a2997e14b\",\n        \"name\": \"Materiais Consumiveis\"\n    },\n    \"storage\": {\n        \"storageId\": \"17b402ce-c201-4046-b377-65373a4b2b67\",\n        \"name\": \"Farmácia Central\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/product",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"product"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Amo",
+									"disabled": true
+								},
+								{
+									"key": "categoryId",
+									"value": "6e792165-09f7-46e5-b246-90708a36ae42",
+									"disabled": true
+								},
+								{
+									"key": "groupId",
+									"value": "f98e779f-0a4e-4709-9cbf-3a9f14461e4a",
+									"disabled": true
+								},
+								{
+									"key": "natureId",
+									"value": "757cac53-b434-4692-ba86-8f3d062d759b",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ONE",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Gentemicina 80mg\",\n    \"criticalAmount\": 10,\n    \"minimumAmount\": 50,\n    \"category\": {\n        \"categoryId\": \"f306f269-4c03-46b1-b394-d68167385166\",\n        \"name\": \"Comprimidos\"\n    },\n    \"group\": {\n        \"groupId\": \"22680c0d-415d-437e-9824-6f1a2997e14b\",\n        \"name\": \"Materiais Consumiveis\"\n    },\n    \"storage\": {\n        \"storageId\": \"17b402ce-c201-4046-b377-65373a4b2b67\",\n        \"name\": \"Farmácia Central\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/product/d29f729d-f086-4261-b4e4-f7e99a94a3b4",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"product",
+								"d29f729d-f086-4261-b4e4-f7e99a94a3b4"
+							],
+							"query": [
+								{
+									"key": "natureId",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Gentemicina 80mg\",\n    \"criticalAmount\": 10,\n    \"minimumAmount\": 50,\n    \"category\": {\n        \"categoryId\": \"f306f269-4c03-46b1-b394-d68167385166\",\n        \"name\": \"Comprimidos\"\n    },\n    \"group\": {\n        \"groupId\": \"22680c0d-415d-437e-9824-6f1a2997e14b\",\n        \"name\": \"Materiais Consumiveis\"\n    },\n    \"storage\": {\n        \"storageId\": \"17b402ce-c201-4046-b377-65373a4b2b67\",\n        \"name\": \"Farmácia Central\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/product/7dab3eba-db77-4b6f-998a-c83fd0e85803",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"product",
+								"7dab3eba-db77-4b6f-998a-c83fd0e85803"
+							],
+							"query": [
+								{
+									"key": "natureId",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ENTITIES",
+			"item": [
+				{
+					"name": "CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Departamento de Finanças\",\n    \"nif\":\"000000000000\",\n    \"email\":\"departamento@fincancas.com\",\n    \"address\":\"Segundo andar porta nº 234\",\n    \"phoneNumber\":\"920000000\",\n    \"responsible\":\"José Severino\",\n    \"entityType\":\"UNIT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/entity",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"entity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LIST ALL",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/entity",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"entity"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Bloco",
+									"disabled": true
+								},
+								{
+									"key": "entityType",
+									"value": "UNIT",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ONE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/entity/df970c99-d373-4eb0-a42a-386290e2ffb6",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"entity",
+								"df970c99-d373-4eb0-a42a-386290e2ffb6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Bloco Operatório 01\",\n    \"nif\":\"00000000000\",\n    \"email\":\"\",\n    \"address\":\"Primeiro andar ala 01\",\n    \"phoneNumber\":\"999999999\",\n    \"responsible\":\"Drº Eugenia Vandunem\",\n    \"entityType\":\"UNIT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/entity/df970c99-d373-4eb0-a42a-386290e2ffb6",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"entity",
+								"df970c99-d373-4eb0-a42a-386290e2ffb6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MOVEMENT",
+			"item": [
+				{
+					"name": "CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearer_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"entity\": {\n        \"entityId\": \"17264f1a-eff7-40e6-b870-4c6d63c17858\",\n        \"name\": \"Bloco Operatório 01\"\n    },\n    \"movementDate\": \"2023-05-30\",\n    \"movementType\": \"PATIENT_OUTPUT\",\n    \"documentNumber\": \"Saida 00/22\",\n    \"movementStatus\": \"FINISHED\",\n    \"description\": \"Saida de produto para paciente no ambulatório\",\n    \"items\": [\n        {\n            \"product\": {\n                \"productId\": \"e45210dc-6cdf-4b4e-82df-fe07e8377fc3\",\n                \"name\": \"IMPRESSORA WINTECH\"\n            },\n            \"location\": {\n                \"locationId\": \"13a53552-61fa-4d1a-a77a-0973b1a12038\",\n                \"description\": \"ARMAZEM1-Prateleira 001-Divisoria 002\"\n            },\n            \"lote\": \"\",\n            \"model\": \"WINTEC 2320\",\n            \"serialNumber\": \"00112233\",\n            \"lifespan\": 3,\n            \"barcode\": \"\",\n            \"cust\": 75000,\n            \"quantity\": 44,\n            \"unitType\": \"UN\",\n            \"acquisitionDate\": \"2023-05-29\",\n            \"manufactureDate\": null,\n            \"expirationDate\": null\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MASTER_STORAGE_URL_LOCAL}}/movements",
+							"host": [
+								"{{MASTER_STORAGE_URL_LOCAL}}"
+							],
+							"path": [
+								"movements"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

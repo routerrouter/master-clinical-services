@@ -1,5 +1,6 @@
 package master.ao.authuser.core.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -9,11 +10,12 @@ import java.util.*;
 
 @Setter
 @Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "GROUPS")
+@Table(name = "TB_GROUPS")
 public class Group implements Serializable {
 
     @Id
@@ -23,13 +25,13 @@ public class Group implements Serializable {
     @Column(nullable = false)
     private String description;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(mappedBy = "group",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<User> users;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "GROUPS_PERMISSIONS",
+    @JoinTable(name = "TB_GROUPS_PERMISSIONS",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private List<Permission> permissions = new ArrayList<>();

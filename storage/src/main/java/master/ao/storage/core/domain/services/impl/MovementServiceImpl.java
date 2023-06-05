@@ -71,7 +71,8 @@ public class MovementServiceImpl implements MovementService {
             item.setProduct(product);
             item.setLocation(location);
 
-            if (!movement.getMovementType().equals(MovementType.REQUEST) && !movement.getMovementType().equals(MovementType.ORDER) ) {
+            if (!movement.getMovementType().equals(MovementType.REQUEST)
+                    && !movement.getMovementType().equals(MovementType.ORDER) ) {
                 setStockForSave(item);
             }
 
@@ -92,8 +93,8 @@ public class MovementServiceImpl implements MovementService {
         stock.setSerialNumber(item.getSerialNumber());
         stock.setCust(item.getCust());
         stock.setUnitType(item.getUnitType());
-        stock.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
-        stock.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
+        //stock.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
+        //stock.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
         stock.setStorage(item.getLocation().getStorage());
         stock.setLocation(item.getLocation());
         stockService.saveOrUpdate(stock, item.getMovement().getMovementType());

@@ -49,6 +49,8 @@ public class Movement implements Serializable {
 
     private String documentNumber;
 
+    private String fileName;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Entities entity;
@@ -81,7 +83,7 @@ public class Movement implements Serializable {
     public void setMovementStatus() {
         if (this.getMovementType().equals(MovementType.REQUEST) || this.getMovementType().equals(MovementType.ORDER)) {
             this.movementStatus = MovementStatus.PENDING;
-        } {
+        } else {
             this.movementStatus = MovementStatus.FINISHED;
         }
     }

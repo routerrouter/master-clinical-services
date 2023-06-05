@@ -1,6 +1,8 @@
 package master.ao.storage.core.domain.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import master.ao.storage.api.clients.StorageClient;
+import master.ao.storage.api.mapper.StorageMapper;
 import master.ao.storage.core.domain.exceptions.*;
 import master.ao.storage.core.domain.models.Storage;
 import master.ao.storage.core.domain.repositories.StorageRepository;
@@ -29,26 +31,34 @@ public class StorageServiceImpl implements StorageService {
 
     private final StorageRepository storageRepository;
     private final UserRepository userRepository;
+    private final StorageClient storageClient;
+    private final StorageMapper mapper;
 
     @Override
     @Transactional
-    public Storage save(Storage storage, UUID userId) {
+    public Storage save(Storage storage, UUID userId, String token) {
         var storageOptional = storageRepository.findByName(storage.getName());
         if (storageOptional.isPresent()) {
             throw new ExistingDataException("Armazém informado já existe.");
         }
         var userGroup = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         storage.setUserGroup(userGroup.getGroupId());
-        return storageRepository.save(storage);
+        var storageSaved = storageRepository.saveAndFlush(storage);
+        saveOrUpdateStorageToAuthuser(storageSaved,token);
+        return storageSaved;
     }
 
     @Override
-    public Storage update(Storage nature, UUID storageId) {
+    @Transactional
+    public Storage update(Storage storage, UUID storageId, String token) {
         var storageOptional = fetchOrFail(storageId).get();
-        storageOptional.setName(nature.getName());
+        storageOptional.setName(storage.getName());
         storageOptional.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
+        storageOptional = storageRepository.save(storageOptional);
 
-        return storageRepository.save(storageOptional);
+        saveOrUpdateStorageToAuthuser(storageOptional, token);
+
+        return storageOptional;
     }
 
     @Override
@@ -72,14 +82,16 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     @Transactional
-    public void delete(UUID storageId) {
+    public void delete(UUID storageId, String token) {
         try {
-            var natureOptional = fetchOrFail(storageId).get();
-            storageRepository.delete(natureOptional);
+            var storageOptional = fetchOrFail(storageId).get();
+            storageRepository.delete(storageOptional);
             storageRepository.flush();
 
+            storageClient.deleteStorageToAuthuser(storageId,token);
+
         } catch (EmptyResultDataAccessException e) {
-            throw new NatureNotFoundException(storageId);
+            throw new StorageNotFoundException(storageId);
 
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(MSG_STORAGE_IN_USE);
@@ -99,5 +111,11 @@ public class StorageServiceImpl implements StorageService {
     public List<Storage> findAll(Specification<Storage> spec) {
         return storageRepository.findAll(spec);
     }
+
+
+    private void saveOrUpdateStorageToAuthuser(Storage storage, String token) {
+        storageClient.saveStorageToAuthuser(storage, token);
+    }
+
 
 }

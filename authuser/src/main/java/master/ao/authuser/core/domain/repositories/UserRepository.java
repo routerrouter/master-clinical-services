@@ -1,4 +1,4 @@
-package master.ao.authuser.core.domain.repository;
+package master.ao.authuser.core.domain.repositories;
 
 import master.ao.authuser.core.domain.model.User;
 import org.springframework.data.jpa.repository.*;
@@ -21,14 +21,14 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
     Optional<User> findById(UUID userId);
 
     @Modifying
-    @Query(value = "DELETE FROM users_roles WHERE role_id=:roleId AND user_id=:userId", nativeQuery = true)
+    @Query(value = "DELETE FROM tb_users_roles WHERE role_id=:roleId AND user_id=:userId", nativeQuery = true)
     void removeRoles(@Param("userId") UUID userId, @Param("roleId") UUID roleId);
 
     @Modifying
-    @Query(value = "Insert INTO users_roles(user_id,role_id) values(:userId, :roleId)", nativeQuery = true)
+    @Query(value = "Insert INTO tb_users_roles(user_id,role_id) values(:userId, :roleId)", nativeQuery = true)
     void associateRoles(UUID userId, UUID roleId);
 
-    @Query(value = "SELECT count(user_id) FROM users_roles ur " +
+    @Query(value = "SELECT count(user_id) FROM tb_users_roles ur " +
             "where ur.user_id=:userId AND ur.role_id=:roleId", nativeQuery = true)
     long existUserRoles(@Param("userId") UUID userId, @Param("roleId") UUID roleId);
 

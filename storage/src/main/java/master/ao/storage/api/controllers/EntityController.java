@@ -16,6 +16,7 @@ import master.ao.storage.api.response.EntityResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.EntityService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -94,8 +95,8 @@ public class EntityController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
-    public ResponseEntity<Page<EntityResponse>> getAll(SpecificationTemplate.EntitySpec spec,
-                                                      @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<EntityResponse>> getAll(@ParameterObject SpecificationTemplate.EntitySpec spec,
+                                                       @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         List<EntityResponse> entitiesList = entityService.findAll(spec)
                 .stream()
                 .map(mapper::toEntityResponse)

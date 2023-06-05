@@ -1,4 +1,4 @@
-package master.ao.authuser.core.domain.repository;
+package master.ao.authuser.core.domain.repositories;
 
 import master.ao.authuser.core.domain.model.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;

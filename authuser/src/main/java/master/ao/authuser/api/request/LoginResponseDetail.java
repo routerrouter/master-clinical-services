@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import master.ao.authuser.api.response.UserResponse;
+import master.ao.authuser.core.domain.model.Storage;
 import master.ao.authuser.core.domain.model.User;
 
 import java.util.List;
@@ -20,5 +21,6 @@ public class LoginResponseDetail {
     private String type = "Bearer";
     private UserResponse user;
     List<Object> accsses;
+    List<Storage> stotages;
 
 }

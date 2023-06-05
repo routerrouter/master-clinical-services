@@ -2,8 +2,8 @@ package master.ao.authuser.core.domain.service.impl;
 
 import master.ao.authuser.core.domain.exception.AccessLimitNotFoundException;
 import master.ao.authuser.core.domain.model.AcessLimitUser;
-import master.ao.authuser.core.domain.repository.AccessLimitUserRepository;
-import master.ao.authuser.core.domain.repository.UserRepository;
+import master.ao.authuser.core.domain.repositories.AccessLimitUserRepository;
+import master.ao.authuser.core.domain.repositories.UserRepository;
 import master.ao.authuser.core.domain.service.AccessLimitUserService;
 import master.ao.authuser.core.domain.service.UserService;
 import master.ao.authuser.core.domain.utils.DateUtils;
