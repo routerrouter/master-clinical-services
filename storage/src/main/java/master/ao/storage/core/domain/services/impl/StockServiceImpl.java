@@ -78,6 +78,11 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public List<Stock> findByLocation(UUID locationId) {
+        return null;
+    }
+
+    @Override
     public List<Stock> findCriticalProducts(UUID storageId) {
         storageService.fetchOrFail(storageId);
         List<Stock> criticalList = repository.findAll(storageId).stream()
@@ -92,7 +97,7 @@ public class StockServiceImpl implements StockService {
     public List<Stock> findExpiredProducts(UUID storageId) {
         storageService.fetchOrFail(storageId);
         List<Stock> expiredList = repository.findAll(storageId).stream()
-                .filter(product -> product.getExpirationDate().isBefore(systemDate))
+                .filter(product -> (product.getExpirationDate()==null ? LocalDate.now() :product.getExpirationDate()).isBefore(systemDate))
                 .sorted(getProductComparator())
                 .collect(Collectors.toList());
 

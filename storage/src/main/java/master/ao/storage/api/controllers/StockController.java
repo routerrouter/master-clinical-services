@@ -14,6 +14,12 @@ import master.ao.storage.api.response.ProductResponse;
 import master.ao.storage.api.response.StockResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.StockService;
+import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +46,15 @@ public class StockController {
             @ApiResponse(responseCode = "404", description = "Storage not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping("/{storageId}/storage")
-    public ResponseEntity<List<StockResponse>> getInventory(@Parameter(description = "id of storage to be searched") @PathVariable UUID storageId) {
-        var inventory = stockService.findInventory(storageId)
+    public ResponseEntity<Page<StockResponse>> getInventory(@Parameter(description = "id of storage to be searched")
+                                                            @PathVariable UUID storageId,
+                                                            @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        var inventoryList = stockService.findInventory(storageId)
                 .stream()
                 .map(mapper::toStockResponse)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body(inventory);
+        return getPageResponseEntity(pageable, inventoryList);
     }
 
     @Operation(summary = "Get all critical product in stock")
@@ -56,13 +64,14 @@ public class StockController {
             @ApiResponse(responseCode = "404", description = "Storage not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping("/critical/{storageId}/storage")
-    public ResponseEntity<List<StockResponse>> getAllCritical(@Parameter(description = "id of storage to be searched") @PathVariable UUID storageId) {
+    public ResponseEntity<Page<StockResponse>> getAllCritical(@Parameter(description = "id of storage to be searched") @PathVariable UUID storageId,
+                                                              @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         var criticalProductsList = stockService.findCriticalProducts(storageId)
                 .stream()
                 .map(mapper::toStockResponse)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body(criticalProductsList);
+        return getPageResponseEntity(pageable, criticalProductsList);
     }
 
     @Operation(summary = "Get all expired product in stock")
@@ -72,13 +81,14 @@ public class StockController {
             @ApiResponse(responseCode = "404", description = "Storage not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping("/expired/{storageId}/storage")
-    public ResponseEntity<List<StockResponse>> getAllExpired(@Parameter(description = "id of storage to be searched") @PathVariable UUID storageId) {
+    public ResponseEntity<Page<StockResponse>> getAllExpired(@Parameter(description = "id of storage to be searched") @PathVariable UUID storageId,
+                                                             @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         var expiredProductsList = stockService.findExpiredProducts(storageId)
                 .stream()
                 .map(mapper::toStockResponse)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body(expiredProductsList);
+        return getPageResponseEntity(pageable, expiredProductsList);
     }
 
     @Operation(summary = "Update product cost")
@@ -92,6 +102,16 @@ public class StockController {
     public void updateProductCost(@Valid @RequestBody StockRequest request) {
         var stock = mapper.toStock(request);
         stockService.updateProductCost(stock);
+    }
+
+    private ResponseEntity<Page<StockResponse>> getPageResponseEntity( @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+                                                                       List<StockResponse> stockProductsList) {
+        int start = (int) (pageable.getOffset() > stockProductsList.size() ? stockProductsList.size() : pageable.getOffset());
+        int end = (int) ((start + pageable.getPageSize()) > stockProductsList.size() ? stockProductsList.size()
+                : (start + pageable.getPageSize()));
+        Page<StockResponse> productStockPageList = new PageImpl<>(stockProductsList.subList(start, end), pageable, stockProductsList.size());
+
+        return ResponseEntity.status(HttpStatus.OK).body(productStockPageList);
     }
 
 }
