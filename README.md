@@ -20,6 +20,7 @@
   - Movements
   - MovementItens
   - Stocks
+  - Company
 ## Accounting
   - AccountClasses
   - Acounts
