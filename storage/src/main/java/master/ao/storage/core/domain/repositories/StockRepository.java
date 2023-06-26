@@ -37,6 +37,9 @@ public interface StockRepository extends JpaRepository<Stock, UUID>, JpaSpecific
     @Query(value = "select s from Stock s where s.storage.storageId =?1")
     List<Stock> findAll(@Param("storageId") UUID storageId);
 
+    @Query(value = "select s from Stock s where s.location.locationId =?1")
+    List<Stock> findAllProductStockByLocation(@Param("locationId") UUID locationId);
+
     @Query(value = "select s from Stock s where s.storage.storageId =?1 and s.product.productId=?2 and s.expirationDate=?3 and s.lote=?4")
     Optional<Stock> findIsProductStocked(@Param("storageId") UUID storageId, @Param("productId") UUID productId, @Param("expirationDate") LocalDate expirationDate, @Param("lote") String lote);
 

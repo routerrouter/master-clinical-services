@@ -52,10 +52,6 @@ public class ItemsMovement implements Serializable {
 
     private BigDecimal totalValue;
 
-    private UUID originTransfer;
-
-    private UUID destineTransfer;
-
     @Column(nullable = false)
     private Long quantity;
 

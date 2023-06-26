@@ -11,19 +11,17 @@ import master.ao.storage.core.domain.services.MovementService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/movements")
-@Tag(name = "Movement", description = "The Movement API. Contains all operations that can be performed on a movement")
+@Tag(name = "Movement", description = "The Movement API. Contains all operations that can be performed on a movement. INPUT|ALL OUTPUTS|BUY|ORDER|TRANSFER|REQUEST")
 public class MovementController {
 
     private final MovementService movementService;
@@ -31,15 +29,32 @@ public class MovementController {
 
 
     @PostMapping()
-    public ResponseEntity<MovementResponse> saveGroup(@Valid @RequestBody MovementRequest request,
+    public ResponseEntity<MovementResponse> saveMovement(@Valid @RequestBody MovementRequest request,
                                                       Authentication authentication) {
         var userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        log.debug("POST createGroup request received {} ", request.toString());
+        log.debug("POST saveMovement request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toMovement)
-                .map(movement -> movementService.save(movement, userDetails.getUserId()))
+                .map(movement -> movementService.save(movement, userDetails.getUserId(),null))
                 .map(mapper::toMovementResponse)
-                .map(groupResponse -> ResponseEntity.status(HttpStatus.CREATED).body(groupResponse))
+                .map(groupResponse -> ResponseEntity
+                        .status(HttpStatus.CREATED).body(groupResponse))
+                .findFirst()
+                .get();
+    }
+
+    @PostMapping("transfer/{storageId}/storage-origin")
+    public ResponseEntity<MovementResponse> saveMovementTransfer(@Valid @RequestBody MovementRequest request,
+                                                         @PathVariable("storageId") UUID originStorageId,
+                                                         Authentication authentication) {
+        var userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        log.debug("POST saveMovement request received {} ", request.toString());
+        return Stream.of(request)
+                .map(mapper::toMovement)
+                .map(movement -> movementService.save(movement, userDetails.getUserId(), originStorageId))
+                .map(mapper::toMovementResponse)
+                .map(groupResponse -> ResponseEntity
+                        .status(HttpStatus.CREATED).body(groupResponse))
                 .findFirst()
                 .get();
     }

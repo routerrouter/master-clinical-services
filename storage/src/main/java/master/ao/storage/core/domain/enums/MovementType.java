@@ -49,10 +49,6 @@ public enum MovementType implements QuantityUpdated {
             return quantity - newQuantity;
         }
     },
-    TRANSFER {
-        public Long quantityUpdated(Long quantity, Long newQuantity) {
-            return quantity - newQuantity;
-        }
-    };
+
 
 }

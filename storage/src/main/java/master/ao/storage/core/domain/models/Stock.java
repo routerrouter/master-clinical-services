@@ -2,16 +2,14 @@ package master.ao.storage.core.domain.models;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import master.ao.storage.core.domain.audit.AuditableBase;
+import master.ao.storage.core.domain.audit.Auditable;
 import master.ao.storage.core.domain.enums.UnitType;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Setter
@@ -21,23 +19,20 @@ import java.util.UUID;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "TB_STOCKS")
-public class Stock extends AuditableBase implements Serializable {
+public class Stock extends Auditable implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID Id;
 
-    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Storage storage;
 
-    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Location location;
 
@@ -52,7 +47,7 @@ public class Stock extends AuditableBase implements Serializable {
     @Column(nullable = false)
     private BigDecimal cust;
 
-    private Long lifespan;
+    private Integer lifespan;
 
     @Column(nullable = false)
     private Long quantity;

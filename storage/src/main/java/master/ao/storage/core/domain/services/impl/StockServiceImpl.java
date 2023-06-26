@@ -1,10 +1,10 @@
 package master.ao.storage.core.domain.services.impl;
 
+import master.ao.storage.core.domain.enums.DevolutionType;
 import master.ao.storage.core.domain.enums.MovementType;
 import master.ao.storage.core.domain.exceptions.StockNotFoundException;
 import master.ao.storage.core.domain.models.Product;
 import master.ao.storage.core.domain.models.Stock;
-import master.ao.storage.core.domain.models.Storage;
 import master.ao.storage.core.domain.repositories.StockRepository;
 import master.ao.storage.core.domain.services.ProductService;
 import master.ao.storage.core.domain.services.StockService;
@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +36,7 @@ public class StockServiceImpl implements StockService {
 
     @Transactional
     @Override
-    public Stock saveOrUpdate(Stock stockRequest, MovementType movementType) {
+    public Stock saveOrUpdate(Stock stockRequest, MovementType movementType, UUID originStorageId) {
 
         // Verificar o tipo do movimento enviado(INPUT/OUTPUT)
         // Verificar existencia do item pelo armazem informado
@@ -53,7 +51,6 @@ public class StockServiceImpl implements StockService {
             stocked = repository.existEquipmentOnStock(stockRequest);
             if (stocked.isPresent()) {
                 stock = stocked.get();
-                //stock.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
                 stock.setModel(stockRequest.getModel());
                 stock.setSerialNumber(stockRequest.getSerialNumber());
                 stock.setLifespan(stockRequest.getLifespan());
@@ -65,7 +62,6 @@ public class StockServiceImpl implements StockService {
             stocked = repository.existProductOnStock(stockRequest);
             if (stocked.isPresent()) {
                 stock = stocked.get();
-               // stock.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
                 stock.setLocation(stockRequest.getLocation());
                 stock.setQuantity(movementType.quantityUpdated(stock.getQuantity(), stockRequest.getQuantity()));
                 repository.updateStockExistence(stock);
@@ -79,7 +75,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<Stock> findByLocation(UUID locationId) {
-        return null;
+        return repository.findAllProductStockByLocation(locationId);
     }
 
     @Override
@@ -119,11 +115,10 @@ public class StockServiceImpl implements StockService {
         var storage = storageService.fetchOrFail(stock.getStorage().getStorageId());
         var product = productService.fetchOrFail(stock.getProduct().getProductId());
         if (isEquipment(product.get())) {
-            var equipmentStockOptional = repository.findIsEquipmentStocked(storage.get().getStorageId(),
-                    product.get().getProductId(),stock.getLifespan(), stock.getModel()).get();
+            /*var equipmentStockOptional = repository.findIsEquipmentStocked(storage.get().getStorageId(),product.get().getProductId(),stock.getLifespan(), stock.getModel()).get();
 
             equipmentStockOptional.setCust(stock.getCust());
-            repository.save(equipmentStockOptional);
+            repository.save(equipmentStockOptional);*/
 
         } else {
             var productStockOptional = repository.findIsProductStocked(storage.get().getStorageId(),
@@ -149,4 +144,6 @@ public class StockServiceImpl implements StockService {
         storageService.fetchOrFail(stock.getStorage().getStorageId());
         productService.fetchOrFail(stock.getProduct().getProductId());
     }
+
+
 }

@@ -54,7 +54,7 @@ public class StorageServiceImpl implements StorageService {
         var storageOptional = fetchOrFail(storageId).get();
         storageOptional.setName(storage.getName());
         storageOptional.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
-        storageOptional = storageRepository.save(storageOptional);
+        storageOptional = storageRepository.saveAndFlush(storageOptional);
 
         saveOrUpdateStorageToAuthuser(storageOptional, token);
 

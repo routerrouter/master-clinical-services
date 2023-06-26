@@ -1,6 +1,7 @@
 package master.ao.storage.api.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.Setter;
 import master.ao.storage.core.domain.enums.UnitType;

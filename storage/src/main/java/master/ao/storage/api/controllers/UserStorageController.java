@@ -1,5 +1,6 @@
 package master.ao.storage.api.controllers;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import master.ao.storage.api.mapper.UserMapper;
@@ -13,17 +14,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Hidden
 @Log4j2
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserStorageController {
 
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    UserMapper mapper;
+    private final UserService userService;
+    private final UserMapper mapper;
 
     @PostMapping()
     public ResponseEntity<?> saveUserToStorage(@RequestBody UserRequest request) {

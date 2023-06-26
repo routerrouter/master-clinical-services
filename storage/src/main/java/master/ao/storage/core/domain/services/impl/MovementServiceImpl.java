@@ -1,6 +1,7 @@
 package master.ao.storage.core.domain.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import master.ao.storage.core.domain.enums.DevolutionType;
 import master.ao.storage.core.domain.enums.MovementType;
 import master.ao.storage.core.domain.exceptions.MovementNotFoundException;
 import master.ao.storage.core.domain.exceptions.UserNotFoundException;
@@ -11,6 +12,7 @@ import master.ao.storage.core.domain.models.Stock;
 import master.ao.storage.core.domain.repositories.MovementRepository;
 import master.ao.storage.core.domain.repositories.UserRepository;
 import master.ao.storage.core.domain.services.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -33,9 +35,10 @@ public class MovementServiceImpl implements MovementService {
 
     @Transactional
     @Override
-    public Movement save(Movement movement, UUID userId) {
+    public Movement save(Movement movement, UUID userId, UUID originStorageId) {
+
         validateMovement(movement,userId);
-        validateItems(movement);
+        validateItems(movement, originStorageId);
 
         movement.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
         movement.calculateTotalValue();
@@ -57,13 +60,14 @@ public class MovementServiceImpl implements MovementService {
         return null;
     }
 
-    private void validateItems(Movement movement) {
+    private void validateItems(Movement movement,UUID originStorageId ) {
         movement.getItems().forEach(item -> {
             var product = productService.fetchOrFail(
                     item.getProduct().getProductId()).get();
 
             var location = locationService.fetchOrFail(
                     item.getLocation().getLocationId()).get();
+
 
             item.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
             item.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
@@ -73,31 +77,18 @@ public class MovementServiceImpl implements MovementService {
 
             if (!movement.getMovementType().equals(MovementType.REQUEST)
                     && !movement.getMovementType().equals(MovementType.ORDER) ) {
-                setStockForSave(item);
+                setStockForSave(item, originStorageId);
             }
 
-            //
         });
     }
 
-    private void setStockForSave(ItemsMovement item) {
+    private void setStockForSave(ItemsMovement item, UUID originStorageId) {
         var stock = new Stock();
-        stock.setQuantity(item.getQuantity());
-        stock.setProduct(item.getProduct());
-        stock.setLote(item.getLote());
-        stock.setLifespan(item.getLifespan());
-        stock.setExpirationDate(item.getExpirationDate());
-        stock.setAcquisitionDate(item.getAcquisitionDate());
-        stock.setManufactureDate(item.getManufactureDate());
-        stock.setModel(item.getModel());
-        stock.setSerialNumber(item.getSerialNumber());
-        stock.setCust(item.getCust());
-        stock.setUnitType(item.getUnitType());
-        //stock.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
-        //stock.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
-        stock.setStorage(item.getLocation().getStorage());
-        stock.setLocation(item.getLocation());
-        stockService.saveOrUpdate(stock, item.getMovement().getMovementType());
+        item.setQuantity(getQuantity(item.getMovement().getMovementType(),item.getQuantity(),item.getMovement().getDevolutionType()));
+        BeanUtils.copyProperties(item,stock);
+
+        stockService.saveOrUpdate(stock, item.getMovement().getMovementType(), originStorageId);
     }
 
     private void validateMovement(Movement movement,UUID userId) {
@@ -118,5 +109,13 @@ public class MovementServiceImpl implements MovementService {
                 .orElseThrow(() -> new MovementNotFoundException(movementId));
 
         return Optional.of(movement);
+    }
+
+    private Long getQuantity(MovementType type, Long quantity, DevolutionType devolutionType) {
+        if (type.equals(MovementType.DEVOLUTION) && DevolutionType.EXTERNAL.equals(devolutionType)) {
+            return -quantity;
+        } else {
+            return quantity;
+        }
     }
 }

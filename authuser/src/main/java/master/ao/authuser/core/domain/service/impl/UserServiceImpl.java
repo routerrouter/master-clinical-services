@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         user.setLockTime(new Date());
         user.setGroup(group.get());
-        user = userRepository.save(user);
+        user = userRepository.saveAndFlush(user);
         log.debug("POST registerUser userId saved {} ", user.getUserId());
         log.info("User saved successfully userId {} ", user.getUserId());
         saveOrUpdateUserToStorage(user, token);
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService {
         user.setFullName(userRequest.getFullName());
         user.setEmail(userRequest.getEmail());
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        user = userRepository.save(user);
+        user = userRepository.saveAndFlush(user);
 
         saveOrUpdateUserToStorage(user, token);
 

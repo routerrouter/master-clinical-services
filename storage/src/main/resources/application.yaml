@@ -9,7 +9,7 @@ master:
     jwtExpirationMs: 36000000
   api:
     url:
-      authuser: 'http://localhost:8083'
+      authuser: 'http://master-authuser-service'
 
 spring:
   application:

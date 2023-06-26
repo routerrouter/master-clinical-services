@@ -1,7 +1,7 @@
 package master.ao.storage.core.domain.models;
 
 import lombok.Data;
-import master.ao.storage.core.domain.audit.AuditableBase;
+import master.ao.storage.core.domain.audit.Auditable;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "TB_COMPANY_IMAGE")
-public class CompanyImage extends AuditableBase {
+public class CompanyImage extends Auditable {
 
     private static final long serialVersionUID = 1L;
 

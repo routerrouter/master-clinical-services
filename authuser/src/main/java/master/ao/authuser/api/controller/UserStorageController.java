@@ -17,7 +17,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/storage")
 @RequiredArgsConstructor
-public class StorageController {
+public class UserStorageController {
 
     @Autowired
     StorageService storageService;

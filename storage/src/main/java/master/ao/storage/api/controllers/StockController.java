@@ -1,5 +1,6 @@
 package master.ao.storage.api.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import master.ao.storage.api.mapper.StockMapper;
 import master.ao.storage.api.request.StockRequest;
+import master.ao.storage.api.response.LocationResponse;
 import master.ao.storage.api.response.ProductResponse;
 import master.ao.storage.api.response.StockResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
@@ -91,13 +93,30 @@ public class StockController {
         return getPageResponseEntity(pageable, expiredProductsList);
     }
 
+    @Operation(summary = "Get all product stock by location")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products stock items found ", content = @Content(schema = @Schema(implementation = ProductResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
+            @ApiResponse(responseCode = "404", description = "Location not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
+    @GetMapping("/{locationId}/location")
+    public ResponseEntity<Page<StockResponse>> getAllProductStockInLocation(@Parameter(description = "id of location to be searched") @PathVariable UUID locationId,
+                                                             @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        var inLocationProductsList = stockService.findByLocation(locationId)
+                .stream()
+                .map(mapper::toStockResponse)
+                .collect(Collectors.toList());
+
+        return getPageResponseEntity(pageable, inLocationProductsList);
+    }
+
     @Operation(summary = "Update product cost")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Updated product cost", content = @Content()),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
             @ApiResponse(responseCode = "404", description = "Group not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
-    @PutMapping("")
+    @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProductCost(@Valid @RequestBody StockRequest request) {
         var stock = mapper.toStock(request);
