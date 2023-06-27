@@ -13,6 +13,7 @@ import master.ao.storage.api.mapper.TransferMapper;
 import master.ao.storage.api.request.TransferRequest;
 import master.ao.storage.api.response.TransferResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
+import master.ao.storage.core.domain.models.Transfer;
 import master.ao.storage.core.domain.services.TransferService;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -46,23 +47,30 @@ public class TransferController {
             @ApiResponse(responseCode = "201", description = "Transfer saved", content = @Content()),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
-    @PutMapping
+    @PostMapping
     public ResponseEntity<TransferResponse> saveTransfer(@Valid @RequestBody TransferRequest request,
-                                                         Authentication authentication, UUID originStorageId) {
+                                                         Authentication authentication,
+                                                         @RequestParam  UUID originStorageId) {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         log.debug("POST createStorage request received {} ", request.toString());
-        return Stream.of(request)
+
+        Transfer transfer = mapper.toTransfer(request);
+        Transfer transferSave = transferService.saveTransfer(transfer, originStorageId, userDetails.getUserId());
+        TransferResponse transferResponse = mapper.toTransferResponse(transferSave);
+        return ResponseEntity.status(HttpStatus.CREATED).body(transferResponse);
+
+        /*return Stream.of(request)
                 .map(mapper::toTransfer)
-                .map(transfer -> transferService.saveTransfer(transfer, originStorageId))
+                .map(transfer -> transferService.saveTransfer(transfer, originStorageId, userDetails.getUserId()))
                 .map(mapper::toTransferResponse)
                 .map(transferResponse -> ResponseEntity.status(HttpStatus.CREATED).body(transferResponse))
                 .findFirst()
-                .get();
+                .get();*/
     }
 
-    private ResponseEntity<Page<TransferResponse>> getPageResponseEntity( @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
-                                                                       List<TransferResponse> stockProductsList) {
+    private ResponseEntity<Page<TransferResponse>> getPageResponseEntity(@ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+                                                                         List<TransferResponse> stockProductsList) {
         int start = (int) (pageable.getOffset() > stockProductsList.size() ? stockProductsList.size() : pageable.getOffset());
         int end = (int) ((start + pageable.getPageSize()) > stockProductsList.size() ? stockProductsList.size()
                 : (start + pageable.getPageSize()));

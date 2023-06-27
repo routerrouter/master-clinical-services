@@ -27,16 +27,16 @@ public class ItemsTransfer extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID itemTransferId;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Product product;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Transfer transfer;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Location location;
 
     @Column(nullable = false)

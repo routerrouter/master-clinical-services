@@ -8,16 +8,17 @@ import master.ao.storage.core.domain.models.Product;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class ItemsTransferRequest {
 
     @NotNull
-    private Product product;
+    private UUID productId;
 
     @NotNull
-    private Location location;
+    private UUID locationId;
 
     @NotNull
     private Long quantity;
@@ -26,6 +27,6 @@ public class ItemsTransferRequest {
     private Integer lifespan;
     private LocalDate expirationDate;
     private String model;
-
     private UnitType unitType;
+
 }

@@ -18,8 +18,8 @@ public class ProductRequest {
     private Long criticalAmount;
     private Long minimumAmount;
     private String brand;
-    private Category category;
-    private Group group;
-    private Storage storage;
+    private UUID categoryId;
+    private UUID groupId;
+    private UUID storageId;
     private UUID natureId;
 }

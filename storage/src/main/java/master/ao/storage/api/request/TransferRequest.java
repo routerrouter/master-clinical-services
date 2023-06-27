@@ -18,9 +18,6 @@ import java.util.UUID;
 @Getter
 public class TransferRequest {
 
-    @NotNull
-    private UUID userId;
-
     @NotBlank
     private String description;
 
@@ -28,8 +25,7 @@ public class TransferRequest {
     private LocalDate transferDate;
 
     @NotNull
-    private List<ItemsTransfer> items = new ArrayList<>();
-
+    private List<ItemsTransferRequest> items = new ArrayList<>();
 
 
 }

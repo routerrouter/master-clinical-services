@@ -28,13 +28,14 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public Transfer saveTransfer(Transfer transfer, UUID originStorageId) {
+    public Transfer saveTransfer(Transfer transfer, UUID originStorageId, UUID userId) {
 
         validateTransfer(transfer);
         validateItems(transfer);
 
-        var user = userRepository.findById(transfer.getUserId())
-                .orElseThrow(()-> new UserNotFoundException(transfer.getUserId()));
+        var user = userRepository.findById(userId)
+                .orElseThrow(()-> new UserNotFoundException(userId));
+
         transfer.setUserGroup(user.getGroupId());
         return repository.save(transfer);
     }

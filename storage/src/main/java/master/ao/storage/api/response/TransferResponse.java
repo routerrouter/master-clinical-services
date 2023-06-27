@@ -19,7 +19,6 @@ public class TransferResponse {
     private UUID userId;
     private String description;
     private LocalDate transferDate;
-    private List<ItemsTransfer> items = new ArrayList<>();
-    private UUID userGroup;
+    private List<ItemsTransferResponse> items = new ArrayList<>();
 
 }
