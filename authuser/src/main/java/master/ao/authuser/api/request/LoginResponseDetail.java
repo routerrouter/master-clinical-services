@@ -20,7 +20,7 @@ public class LoginResponseDetail {
     private String token;
     private String type = "Bearer";
     private UserResponse user;
-    List<Object> accsses;
-    List<Storage> stotages;
+    Object IMenuItem;
+    List<Storage> storages;
 
 }

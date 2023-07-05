@@ -14,11 +14,11 @@ import java.util.UUID;
 
 @Data
 public class MovementRequest {
+
+    private UUID entityId;
     private LocalDate movementDate;
-    private UUID userId;
     private MovementType movementType;
     private String documentNumber;
-    private Entities entity;
     private DevolutionType devolutionType;
     private BigDecimal total;
     private String description;

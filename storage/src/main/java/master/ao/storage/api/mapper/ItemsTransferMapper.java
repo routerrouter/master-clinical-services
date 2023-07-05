@@ -24,7 +24,7 @@ public class ItemsTransferMapper {
         product.setProductId(request.getProductId());
         item.setProduct(product);
         Location location = new Location();
-        location.setLocationId(request.getLocationId());
+        //location.setLocationId(request.getLocationId());
         item.setLocation(location);
         return item;
     }

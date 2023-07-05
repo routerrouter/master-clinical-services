@@ -35,7 +35,7 @@ public class MovementController {
         log.debug("POST saveMovement request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toMovement)
-                .map(movement -> movementService.save(movement, userDetails.getUserId(),null))
+                .map(movement -> movementService.save(movement, userDetails.getUserId()))
                 .map(mapper::toMovementResponse)
                 .map(groupResponse -> ResponseEntity
                         .status(HttpStatus.CREATED).body(groupResponse))
@@ -45,13 +45,12 @@ public class MovementController {
 
     @PostMapping("transfer/{storageId}/storage-origin")
     public ResponseEntity<MovementResponse> saveMovementTransfer(@Valid @RequestBody MovementRequest request,
-                                                         @PathVariable("storageId") UUID originStorageId,
                                                          Authentication authentication) {
         var userDetails = (UserDetailsImpl) authentication.getPrincipal();
         log.debug("POST saveMovement request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toMovement)
-                .map(movement -> movementService.save(movement, userDetails.getUserId(), originStorageId))
+                .map(movement -> movementService.save(movement, userDetails.getUserId()))
                 .map(mapper::toMovementResponse)
                 .map(groupResponse -> ResponseEntity
                         .status(HttpStatus.CREATED).body(groupResponse))

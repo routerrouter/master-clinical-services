@@ -14,7 +14,6 @@ import java.util.UUID;
 public class ItemsMovementResponse {
     private UUID id;
     private Product product;
-    private Movement movement;
     private Location location;
     private String lote;
     private String model;

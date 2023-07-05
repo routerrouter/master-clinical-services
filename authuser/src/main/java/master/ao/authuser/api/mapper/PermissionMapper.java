@@ -24,8 +24,8 @@ public class PermissionMapper {
         return mapper.map(Permission, PermissionResponse.class);
     }
 
-    public List<PermissionResponse> toPermissionResponseList(List<Permission> Permissions) {
-        return Permissions.stream()
+    public List<PermissionResponse> toPermissionResponseList(List<Permission> permissions) {
+        return permissions.stream()
                 .map(this::toPermissionResponse)
                 .collect(Collectors.toList());
     }

@@ -1,5 +1,6 @@
 package master.ao.authuser.core.domain.service;
 
+import master.ao.authuser.api.response.MenuView;
 import master.ao.authuser.core.domain.model.Permission;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -15,4 +16,6 @@ public interface PermissionService {
     Optional<Permission> fetchOrFail(UUID permissionId);
 
     List<Permission> findAll(Specification<Permission> spec);
+
+    List<Permission> findByAllByUser();
 }

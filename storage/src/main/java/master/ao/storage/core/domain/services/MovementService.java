@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface MovementService {
-    Movement save(Movement movement, UUID userId,UUID originStorageId);
+    Movement save(Movement movement, UUID userId);
     List<Movement> listAll();
 
 }

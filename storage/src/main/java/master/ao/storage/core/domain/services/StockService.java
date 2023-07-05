@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface StockService {
-    Stock saveOrUpdate(Stock stock, MovementType movementType,UUID originStorageId);
+    Stock saveOrUpdate(Stock stock, MovementType movementType);
     List<Stock> findByLocation(UUID locationId);
     List<Stock> findCriticalProducts(UUID storageId);
     List<Stock> findExpiredProducts(UUID storageId);

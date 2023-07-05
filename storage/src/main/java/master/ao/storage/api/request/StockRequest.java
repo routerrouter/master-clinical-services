@@ -12,25 +12,29 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class StockRequest {
 
     @NotNull
-    private Product product;
+    private UUID productId;
     @NotNull
-    private Storage storage;
+    private UUID storageId;
     @NotNull
-    private Location location;
+    private UUID locationId;
 
     private String lote;
     private String model;
     private String barcode;
     private String serialNumber;
+
     @NotNull @Min(value = 1)
     private BigDecimal cust;
+
     private Long lifespan;
+
     @NotNull @Min(value = 1)
     private Long quantity;
     private UnitType unitType;

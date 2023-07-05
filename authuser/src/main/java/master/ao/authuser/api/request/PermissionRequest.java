@@ -9,4 +9,6 @@ public class PermissionRequest {
 
     @NotBlank
     private String description;
+    private String icon;
+
 }

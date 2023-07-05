@@ -12,15 +12,13 @@ import java.util.UUID;
 
 @Data
 public class ItemsMovementRequest {
-    private Product product;
     private Movement movement;
+    private UUID productId;
     private Location location;
     private String lote;
     private String model;
     private String barcode;
     private String serialNumber;
-    private UUID originTransfer;
-    private UUID destineTransfer;
     private BigDecimal cust;
     private Long quantity;
     private UnitType unitType;

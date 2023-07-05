@@ -36,7 +36,7 @@ public class StockServiceImpl implements StockService {
 
     @Transactional
     @Override
-    public Stock saveOrUpdate(Stock stockRequest, MovementType movementType, UUID originStorageId) {
+    public Stock saveOrUpdate(Stock stockRequest, MovementType movementType) {
 
         // Verificar o tipo do movimento enviado(INPUT/OUTPUT)
         // Verificar existencia do item pelo armazem informado
@@ -46,6 +46,7 @@ public class StockServiceImpl implements StockService {
         Optional<Stock> stocked = null;
         Stock stock = new Stock();
         stock.setAcquisitionDate(stockRequest.getAcquisitionDate());
+        stockRequest.setStorage(stockRequest.getLocation().getStorage());
 
         if (isEquipment(stockRequest.getProduct())) {
             stocked = repository.existEquipmentOnStock(stockRequest);

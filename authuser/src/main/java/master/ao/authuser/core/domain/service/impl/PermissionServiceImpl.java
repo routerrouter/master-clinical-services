@@ -1,6 +1,7 @@
 package master.ao.authuser.core.domain.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import master.ao.authuser.api.response.MenuView;
 import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.exception.PermissionNotFoundException;
 import master.ao.authuser.core.domain.model.Permission;
@@ -13,6 +14,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +29,9 @@ public class PermissionServiceImpl implements PermissionService {
         if (permissionOptional.isPresent()) {
             throw new BussinessException("Permissão informada já existe.");
         }
-        var permissionSaved = permissionRepository.save(permission);
+        permission.setRoute();
+        return permissionRepository.save(permission);
 
-        return permissionSaved;
     }
 
     @Override
@@ -45,6 +47,12 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public List<Permission> findAll(Specification<Permission> spec) {
         return permissionRepository.findAll(spec);
+    }
+
+    @Override
+    public List<Permission> findByAllByUser() {
+        List<Permission> list = permissionRepository.findByAllByUser();
+        return list;
     }
 
     @Override

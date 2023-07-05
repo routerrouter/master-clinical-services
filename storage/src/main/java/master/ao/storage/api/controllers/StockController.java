@@ -1,6 +1,5 @@
 package master.ao.storage.api.controllers;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import master.ao.storage.api.mapper.StockMapper;
 import master.ao.storage.api.request.StockRequest;
-import master.ao.storage.api.response.LocationResponse;
 import master.ao.storage.api.response.ProductResponse;
 import master.ao.storage.api.response.StockResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;

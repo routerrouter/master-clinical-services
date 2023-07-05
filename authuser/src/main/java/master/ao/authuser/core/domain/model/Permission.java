@@ -26,9 +26,13 @@ public class Permission implements Serializable {
     @Column(nullable = false)
     private String description;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String icon;
+
+    private String route;
+
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "permission", fetch = FetchType.EAGER)
-    //@Fetch(FetchMode.SUBSELECT)
+    @Fetch(FetchMode.SUBSELECT)
     private Set<Role> roles;
 
     public boolean removeRole(Role role) {
@@ -37,5 +41,9 @@ public class Permission implements Serializable {
 
     public boolean addRole(Role role) {
         return getRoles().add(role);
+    }
+
+    public void setRoute() {
+        this.route = "/".concat(this.description.toLowerCase());
     }
 }

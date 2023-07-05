@@ -2,7 +2,9 @@ package master.ao.authuser.core.domain.service.impl;
 
 
 import lombok.RequiredArgsConstructor;
-import master.ao.authuser.api.response.UserRoleAccsses;
+import master.ao.authuser.api.mapper.RoleMapper;
+import master.ao.authuser.api.response.RoleMenuResponse;
+import master.ao.authuser.api.response.UserRoleAccesses;
 import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.exception.RoleNotFoundException;
 import master.ao.authuser.core.domain.model.Role;
@@ -21,6 +23,7 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository repository;
     private final PermissionService permissionService;
+    private final RoleMapper mapper;
 
 
     @Override
@@ -58,16 +61,27 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Map<String, Object> findAllByUser(UUID userId) {
-        List<Role> roleList = repository.findAllByUser(userId);
-        List<UserRoleAccsses> userRoleAccssesList = new ArrayList<>();
 
-        Map<String, List<Role>> listMap =
-                roleList.stream()
-                        .collect(Collectors.groupingBy(permission -> permission.getPermission().getDescription()));
+        List<RoleMenuResponse> roleMenu = new ArrayList<>();
+        List<Role> roleList = repository.findAllByUser(userId);
+        for (Role role : roleList) {
+            roleMenu.add(mapper.toRoleResponseRoleMenuResponse(role));
+        }
+
+        List<UserRoleAccesses> userRoleAccessesList = new ArrayList<>();
+
+        Map<Object, List<RoleMenuResponse>> listMap =
+                roleMenu.stream()
+                        .collect(Collectors.groupingBy(permission -> permission.getPermissionMenuResponse()));
 
         Map<String, Object> permissionRole = new HashMap<>();
-        listMap.forEach((permission, roles) -> userRoleAccssesList.add(new UserRoleAccsses(permission, roles)));
-        permissionRole.put("access", userRoleAccssesList);
+
+        listMap
+                .forEach((permission, roles) -> userRoleAccessesList
+                        .add(new UserRoleAccesses(permission, roles)));
+
+
+        permissionRole.put("MenuItem", userRoleAccessesList);
         return permissionRole;
     }
 

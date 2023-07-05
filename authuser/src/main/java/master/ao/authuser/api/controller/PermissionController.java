@@ -11,16 +11,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import master.ao.authuser.api.mapper.PermissionMapper;
 import master.ao.authuser.api.request.PermissionRequest;
+import master.ao.authuser.api.response.GroupResponse;
+import master.ao.authuser.api.response.MenuView;
 import master.ao.authuser.api.response.PermissionResponse;
 import master.ao.authuser.core.domain.exception.BussinessException;
+import master.ao.authuser.core.domain.model.Permission;
+import master.ao.authuser.core.domain.model.Role;
 import master.ao.authuser.core.domain.service.PermissionService;
+import master.ao.authuser.core.domain.specifications.SpecificationTemplate;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Log4j2
@@ -85,12 +95,30 @@ public class PermissionController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))
     })
-    @GetMapping("/{PermissionId}")
-    public ResponseEntity<PermissionResponse> fetchOrFail(@PathVariable("permissionId") UUID PermissionId) {
-        return permissionService.fetchOrFail(PermissionId)
+    @GetMapping("/{permissionId}")
+    public ResponseEntity<PermissionResponse> fetchOrFail(@PathVariable("permissionId") UUID permissionId) {
+        return permissionService.fetchOrFail(permissionId)
                 .map(mapper::toPermissionResponse)
                 .map(permissionResponse -> ResponseEntity.status(HttpStatus.OK).body(permissionResponse))
                 .orElse(ResponseEntity.notFound().build());
+
+    }
+
+    @Operation(summary = "Get all permissions")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Permission",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
+    @GetMapping
+    public ResponseEntity<List<PermissionResponse>> getAll(@ParameterObject SpecificationTemplate.PermissionSpec spec) {
+        var permissionResponseList = permissionService.findAll(spec)
+                .stream()
+                .map(mapper::toPermissionResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(permissionResponseList);
 
     }
 

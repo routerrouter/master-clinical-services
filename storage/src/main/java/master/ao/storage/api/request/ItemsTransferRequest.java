@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import master.ao.storage.core.domain.enums.UnitType;
 import master.ao.storage.core.domain.models.Location;
-import master.ao.storage.core.domain.models.Product;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -18,7 +17,7 @@ public class ItemsTransferRequest {
     private UUID productId;
 
     @NotNull
-    private UUID locationId;
+    private Location location;
 
     @NotNull
     private Long quantity;

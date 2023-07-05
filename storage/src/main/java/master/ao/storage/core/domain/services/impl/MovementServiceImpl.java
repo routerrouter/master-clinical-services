@@ -35,16 +35,15 @@ public class MovementServiceImpl implements MovementService {
 
     @Transactional
     @Override
-    public Movement save(Movement movement, UUID userId, UUID originStorageId) {
+    public Movement save(Movement movement, UUID userId) {
 
         validateMovement(movement,userId);
-        validateItems(movement, originStorageId);
+        validateItems(movement);
 
         movement.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
         movement.calculateTotalValue();
         movement.setMovementStatus();
         Movement movementSaved =  movementRepository.save(movement);
-        stockMovementation(movementSaved);
         return  movementSaved;
     }
     private void stockMovementation(Movement movementSaved) {
@@ -60,7 +59,7 @@ public class MovementServiceImpl implements MovementService {
         return null;
     }
 
-    private void validateItems(Movement movement,UUID originStorageId ) {
+    private void validateItems(Movement movement) {
         movement.getItems().forEach(item -> {
             var product = productService.fetchOrFail(
                     item.getProduct().getProductId()).get();
@@ -77,18 +76,18 @@ public class MovementServiceImpl implements MovementService {
 
             if (!movement.getMovementType().equals(MovementType.REQUEST)
                     && !movement.getMovementType().equals(MovementType.ORDER) ) {
-                setStockForSave(item, originStorageId);
+                setStockForSave(item);
             }
 
         });
     }
 
-    private void setStockForSave(ItemsMovement item, UUID originStorageId) {
+    private void setStockForSave(ItemsMovement item) {
         var stock = new Stock();
         item.setQuantity(getQuantity(item.getMovement().getMovementType(),item.getQuantity(),item.getMovement().getDevolutionType()));
         BeanUtils.copyProperties(item,stock);
 
-        stockService.saveOrUpdate(stock, item.getMovement().getMovementType(), originStorageId);
+        stockService.saveOrUpdate(stock, item.getMovement().getMovementType());
     }
 
     private void validateMovement(Movement movement,UUID userId) {

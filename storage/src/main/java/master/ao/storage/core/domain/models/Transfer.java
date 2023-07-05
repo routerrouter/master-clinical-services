@@ -41,11 +41,8 @@ public class Transfer implements Serializable {
     @Column(nullable = false)
     private LocalDate transferDate;
 
-    @OneToMany(mappedBy = "transfer", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "transfer", cascade = CascadeType.ALL)
     private List<ItemsTransfer> items = new ArrayList<>();
-
-    @Enumerated(EnumType.STRING)
-    private TransferType type;
 
     private UUID userGroup;
 
@@ -64,6 +61,10 @@ public class Transfer implements Serializable {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     protected Date lastModifiedDate;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TransferType transferType;
 
 
 

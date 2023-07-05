@@ -58,7 +58,7 @@ public class Product implements Serializable {
     private UUID natureId;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Stock> itens = new ArrayList<>();
 
 

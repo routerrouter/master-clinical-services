@@ -8,10 +8,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import master.ao.authuser.api.mapper.RoleMapper;
 import master.ao.authuser.api.response.RoleResponse;
-import master.ao.authuser.api.response.UserRoleAccsses;
+import master.ao.authuser.api.response.UserRoleAccesses;
 import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.model.Role;
 import master.ao.authuser.core.domain.model.User;
@@ -77,14 +76,14 @@ public class UserRolesController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário informado não foi encontrado!");
         }
         List<Role> roleList = roleService.findAll(SpecificationTemplate.roleUserId(userId).and(spec));
-        List<UserRoleAccsses> userRoleAccssesList = new ArrayList<>();
+        List<UserRoleAccesses> userRoleAccssesList = new ArrayList<>();
 
         Map<String, List<Role>> listMap =
                 roleList.stream()
                         .collect(Collectors.groupingBy(permission -> permission.getPermission().getDescription()));
 
         Map<String, Object> response = new HashMap<>();
-        listMap.forEach((permission, roles) -> userRoleAccssesList.add(new UserRoleAccsses(permission, roles)));
+        //listMap.forEach((permission, roles) -> userRoleAccssesList.add(new UserRoleAccsses(permission, roles)));
         response.put("access", userRoleAccssesList);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

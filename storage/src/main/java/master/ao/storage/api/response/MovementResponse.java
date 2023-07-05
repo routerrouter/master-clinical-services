@@ -16,8 +16,8 @@ import java.util.UUID;
 @Data
 public class MovementResponse {
     private UUID movementId;
-    private LocalDate movementDate;
     private UUID userId;
+    private LocalDate movementDate;
     private MovementType movementType;
     private String documentNumber;
     private Entities entity;

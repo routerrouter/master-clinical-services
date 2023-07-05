@@ -10,13 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import master.ao.authuser.api.clients.UserClient;
 import master.ao.authuser.api.config.security.JwtProvider;
 import master.ao.authuser.api.mapper.UserMapper;
 import master.ao.authuser.api.request.LoginResponseDetail;
 import master.ao.authuser.api.request.LoginRequest;
 import master.ao.authuser.api.request.UserRequest;
-import master.ao.authuser.api.request.UserStorageRequest;
 import master.ao.authuser.api.response.GroupResponse;
 import master.ao.authuser.api.response.UserResponse;
 import master.ao.authuser.core.domain.exception.*;
@@ -105,15 +103,18 @@ public class AuthenticationController {
 
                         userAttemptsService.onAuthenticationSuccess(requestLogin.getUsername());
                         var loginUsrDetails = new LoginResponseDetail();
-                        ArrayList<Object> valueList = new ArrayList<Object>(roleService.findAllByUser(user.getUserId()).values());
-                        loginUsrDetails.setAccsses(valueList);
+
+                        var valueList = roleService.findAllByUser(user.getUserId()).values();
+                        loginUsrDetails.setIMenuItem(valueList);
+
                         var userResponse = Stream.of(user)
                                 .map(mapper::toUserResponse)
                                 .findFirst();
+
                         List<Storage> storages = storageService.findAll(user.getGroup().getGroupId());
                         loginUsrDetails.setUser(userResponse.get());
                         loginUsrDetails.setToken(jwt);
-                        loginUsrDetails.setStotages(storages);
+                        loginUsrDetails.setStorages(storages);
 
                         return ResponseEntity.ok(loginUsrDetails);
                     } else {

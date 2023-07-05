@@ -19,7 +19,7 @@ import java.util.UUID;
 public class TransferRequest {
 
     @NotBlank
-    private String description;
+    private String description = "Transferencia de produtos";
 
     @NotNull
     private LocalDate transferDate;
