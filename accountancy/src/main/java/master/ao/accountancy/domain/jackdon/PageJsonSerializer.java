@@ -1,4 +1,4 @@
-package master.ao.storage.core.domain.jackdon;
+package master.ao.accountancy.domain.jackdon;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
