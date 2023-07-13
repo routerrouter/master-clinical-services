@@ -1,6 +1,6 @@
 package master.ao.storage.api.response;
 
-import lombok.Data;
+import lombok.*;
 import master.ao.storage.core.domain.enums.UnitType;
 import master.ao.storage.core.domain.models.Location;
 import master.ao.storage.core.domain.models.Movement;
@@ -10,7 +10,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemsMovementResponse {
     private UUID id;
     private Product product;

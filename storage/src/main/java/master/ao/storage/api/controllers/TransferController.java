@@ -28,8 +28,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -68,6 +70,7 @@ public class TransferController {
                 .get();
     }
 
+
     @Operation(summary = "Get all locations")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Locations",
@@ -83,8 +86,7 @@ public class TransferController {
         transferResponseList = transferService.listAll()
                 .stream()
                 .map(mapper::toTransferResponse)
-                .sorted((transfer1, transfer2) -> transfer1.getTransferDate().
-                        compareTo(transfer2.getTransferDate()))
+                .sorted(Comparator.comparing(TransferResponse::getTransferDate))
                 .collect(Collectors.toList());
 
         int start = (int) (pageable.getOffset() > transferResponseList.size() ? transferResponseList.size() : pageable.getOffset());

@@ -2,6 +2,7 @@ package master.ao.storage.core.domain.models;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import master.ao.storage.core.domain.audit.Auditable;
 import master.ao.storage.core.domain.enums.UnitType;
@@ -14,9 +15,6 @@ import java.util.UUID;
 
 @Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "TB_STOCKS")
 public class Stock extends Auditable implements Serializable {
@@ -26,14 +24,19 @@ public class Stock extends Auditable implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID Id;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "storage_storage_id")
     private Storage storage;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "location_location_id")
     private Location location;
 
     private String lote;

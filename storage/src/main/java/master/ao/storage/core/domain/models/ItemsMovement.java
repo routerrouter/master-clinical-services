@@ -15,9 +15,6 @@ import java.util.UUID;
 
 @Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "TB_MOVEMENT_PRODUCTS")
 public class ItemsMovement implements Serializable {

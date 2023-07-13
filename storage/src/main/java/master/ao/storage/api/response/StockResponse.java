@@ -2,7 +2,9 @@ package master.ao.storage.api.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import master.ao.storage.core.domain.enums.UnitType;
 import master.ao.storage.core.domain.models.Location;
@@ -15,6 +17,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StockResponse {
     private ProductResponse product;

@@ -20,9 +20,6 @@ import java.util.UUID;
 
 @Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "TB_MOVEMENTS")
 public class Movement implements Serializable {

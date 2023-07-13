@@ -1,11 +1,14 @@
 package master.ao.storage.api.response;
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserResponse {
     private UUID userId;
     private String fullName;

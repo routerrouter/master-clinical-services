@@ -1,27 +1,25 @@
 package master.ao.storage.core.domain.models;
 
-import lombok.*;
-import master.ao.storage.core.domain.audit.Auditable;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 import master.ao.storage.core.domain.enums.TransferType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-@Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Setter
 @Entity
 @Table(name = "TB_TRANSFERS")
 public class Transfer implements Serializable {
@@ -41,8 +39,8 @@ public class Transfer implements Serializable {
     @Column(nullable = false)
     private LocalDate transferDate;
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "transfer", cascade = CascadeType.ALL)
-    private List<ItemsTransfer> items = new ArrayList<>();
+    @OneToMany(mappedBy = "transfer", cascade = CascadeType.ALL)
+    private Set<ItemsTransfer> items;
 
     private UUID userGroup;
 

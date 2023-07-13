@@ -11,15 +11,16 @@ import master.ao.storage.core.domain.repositories.UserRepository;
 import master.ao.storage.core.domain.services.LocationService;
 import master.ao.storage.core.domain.services.ProductService;
 import master.ao.storage.core.domain.services.TransferService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TransferServiceImpl implements TransferService {
@@ -30,7 +31,11 @@ public class TransferServiceImpl implements TransferService {
     private final ProductService productService;
     private final LocationService locationService;
 
-    public TransferServiceImpl(TransferRepository repository, UserRepository userRepository, StockRepository stockRepository, ProductService productService, LocationService locationService) {
+    public TransferServiceImpl(TransferRepository repository,
+                               UserRepository userRepository,
+                               StockRepository stockRepository,
+                               ProductService productService,
+                               LocationService locationService) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.stockRepository = stockRepository;
@@ -38,21 +43,53 @@ public class TransferServiceImpl implements TransferService {
         this.locationService = locationService;
     }
 
-    @Transactional
+    //@Transactional
     @Override
     public Transfer saveTransfer(Transfer transfer, UUID originStorageId, UUID userId) {
 
-        Transfer transferSaved = new Transfer();
+        Transfer transferBeforeSaved = new Transfer();
+        BeanUtils.copyProperties(transfer,transferBeforeSaved);
+
+        Transfer transferAfterSaved = new Transfer();
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        transferSaved = saveTransferOut(transfer, user, originStorageId);
-        saveTransferIn(transfer, user, originStorageId);
+        transfer.setUserGroup(user.getGroupId());
+        transferAfterSaved = saveTransferOut(transfer, user, originStorageId);
 
-        return transferSaved;
+        saveTransferIn(transferBeforeSaved, user, originStorageId);
+
+        return transferAfterSaved;
     }
 
-    private Transfer save(Transfer transfer) {
+    private Transfer saveTransferOut(Transfer transfer, User user, UUID originStorageId) {
+        transfer.setUserId(user.getUserId());
+        transfer.setTransferType(TransferType.OUTPUT);
+
+        validateItemsOut(transfer, originStorageId);
+
+        return save(transfer);
+    }
+
+    private Transfer saveTransferIn(Transfer transfer, User user, UUID originStorageId) {
+        var transferInput = new Transfer();
+        transferInput.setTransferType(TransferType.INPUT);
+        transferInput.setUserId(user.getUserId());
+        transferInput.setUserGroup(user.getGroupId());
+        transferInput.setDescription(String.format("Recebimento de produtos via transferência pelo armazem: %s", originStorageId.toString()));
+        transferInput.setTransferDate(LocalDate.now());
+
+        Set<ItemsTransfer> itemsList = new HashSet<>();
+        transfer.getItems().forEach(items -> items.setItemTransferId(null));
+        transfer.getItems().forEach(items -> items.getTransfer().setTransferId(null));
+        itemsList.addAll(transfer.getItems());
+        transferInput.setItems(itemsList);
+        validateItemsIn(transferInput, originStorageId);
+
+        return save(transferInput);
+    }
+
+    public Transfer save(Transfer transfer) {
         return repository.save(transfer);
     }
 
@@ -60,7 +97,13 @@ public class TransferServiceImpl implements TransferService {
 
         transfer.getItems()
                 .forEach(item -> {
+
+                    Product product = productService.fetchOrFail(item.getProduct().getProductId()).get();
+                    Location location = locationService.fetchOrFail(item.getLocation().getLocationId()).get();
+
                     item.setTransfer(transfer);
+                    item.setProduct(product);
+                    item.setLocation(location);
 
                     if (isEquipment(item.getProduct())) {
                         validateEquipmentStock(storageOriginId, item);
@@ -106,10 +149,17 @@ public class TransferServiceImpl implements TransferService {
         }
     }
 
+
     private void validateItemsOut(Transfer transfer, UUID originStorageId) {
         transfer.getItems()
                 .forEach(item -> {
+
+                    Product product = productService.fetchOrFail(item.getProduct().getProductId()).get();
+                    Location location = locationService.fetchOrFail(item.getLocation().getLocationId()).get();
+
                     item.setTransfer(transfer);
+                    item.setProduct(product);
+                    item.setLocation(location);
 
                     if (isEquipment(item.getProduct())) {
                         var equipmentStockOptional = stockRepository.findIsEquipmentStocked(originStorageId,
@@ -153,29 +203,7 @@ public class TransferServiceImpl implements TransferService {
                 .getStorageId();
     }
 
-    private Transfer saveTransferOut(Transfer transfer, User user, UUID originStorageId) {
-        transfer.setUserId(user.getUserId());
-        transfer.setUserGroup(user.getGroupId());
-        transfer.setTransferType(TransferType.OUTPUT);
-        validateItemsOut(transfer, originStorageId);
-        return save(transfer);
-    }
 
-    private Transfer saveTransferIn(Transfer transfer, User user, UUID originStorageId) {
-        var transferInput = new Transfer();
-        transferInput.setTransferType(TransferType.INPUT);
-        transferInput.setUserId(user.getUserId());
-        transferInput.setUserGroup(user.getGroupId());
-        transferInput.setDescription(String.format("Recebimento de produtos via transferencia pelo armazem: %s", originStorageId.toString()));
-        transferInput.setTransferDate(LocalDate.now());
-
-        var itemsList = new ArrayList<ItemsTransfer>();
-        itemsList.addAll(transfer.getItems());
-        transferInput.setItems(itemsList);
-        validateItemsIn(transferInput, originStorageId);
-
-        return save(transferInput);
-    }
 
     private void updateProductStock(Stock stock) {
         stockRepository.save(stock);
@@ -198,7 +226,6 @@ public class TransferServiceImpl implements TransferService {
     }
 
 
-    @Transactional
     @Override
     public List<Transfer> listAll() {
         return repository.findAll();

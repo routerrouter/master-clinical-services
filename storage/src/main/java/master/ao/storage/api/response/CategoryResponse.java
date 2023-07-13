@@ -1,10 +1,13 @@
 package master.ao.storage.api.response;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CategoryResponse {
     private UUID categoryId;
     private String name;

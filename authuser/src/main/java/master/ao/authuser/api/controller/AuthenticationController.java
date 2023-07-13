@@ -130,7 +130,7 @@ public class AuthenticationController {
             }
 
 
-        } catch (org.springframework.security.authentication.BadCredentialsException e) {
+        } catch (BadCredentialsException e) {
             log.error("Problema ao fazer login do usuário com credenciais!", e);
             userAttemptsService.onAuthenticationFailure(requestLogin.getUsername());
             var attempts = userAttemptsService.getUserAttempts(requestLogin.getUsername()).getFailedAttempt();

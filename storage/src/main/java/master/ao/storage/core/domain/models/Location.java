@@ -3,21 +3,22 @@ package master.ao.storage.core.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-@Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Setter
 @Entity
 @Table(name = "TB_LOCATIONS")
 public class Location implements Serializable {
@@ -43,14 +44,12 @@ public class Location implements Serializable {
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "storage_storage_id", nullable = false)
     private Storage storage;
 
     private boolean enabeld;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Stock> stocks = new ArrayList<>();
 
     public String setDescriptionLocation() {
         return storage.getName()

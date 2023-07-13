@@ -12,9 +12,6 @@ import java.util.UUID;
 
 @Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "TB_ENTITIES")
 public class Entities implements Serializable {

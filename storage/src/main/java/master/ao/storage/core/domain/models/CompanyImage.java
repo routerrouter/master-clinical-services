@@ -1,12 +1,14 @@
 package master.ao.storage.core.domain.models;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import master.ao.storage.core.domain.audit.Auditable;
 
 import javax.persistence.*;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "TB_COMPANY_IMAGE")
 public class CompanyImage extends Auditable {

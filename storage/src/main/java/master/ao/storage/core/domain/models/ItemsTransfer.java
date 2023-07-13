@@ -1,12 +1,12 @@
 package master.ao.storage.core.domain.models;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import master.ao.storage.core.domain.audit.Auditable;
-import master.ao.storage.core.domain.enums.TransferType;
 import master.ao.storage.core.domain.enums.UnitType;
 
 import javax.persistence.*;
@@ -14,11 +14,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Setter
 @Entity
 @Table(name = "TB_ITEMS_TRANSFER")
 public class ItemsTransfer extends Auditable<String> implements Serializable {
@@ -28,14 +25,17 @@ public class ItemsTransfer extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID itemTransferId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "product_product_id")
     private Product product;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.EAGER,cascade = {CascadeType.ALL})
+    @ManyToOne
+    @JoinColumn(name = "transfer_id")
     private Transfer transfer;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "location_location_id")
     private Location location;
 
     @Column(nullable = false)

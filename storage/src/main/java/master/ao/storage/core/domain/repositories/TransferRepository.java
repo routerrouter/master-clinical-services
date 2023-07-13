@@ -12,6 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface TransferRepository extends JpaRepository<Transfer, UUID>, JpaSpecificationExecutor<Transfer> {
-    @EntityGraph(attributePaths = {"items"}, type = EntityGraph.EntityGraphType.FETCH)
+    @Query(value = "Select t From Transfer t join fetch t.items")
     List<Transfer> findAll();
 }

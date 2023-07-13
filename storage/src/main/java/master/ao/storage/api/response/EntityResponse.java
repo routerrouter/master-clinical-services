@@ -1,11 +1,14 @@
 package master.ao.storage.api.response;
 
-import lombok.Data;
+import lombok.*;
 import master.ao.storage.core.domain.enums.EntityType;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class EntityResponse {
     private UUID entityId;
     private String name;

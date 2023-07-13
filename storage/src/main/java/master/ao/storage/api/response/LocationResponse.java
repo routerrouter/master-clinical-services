@@ -1,12 +1,15 @@
 package master.ao.storage.api.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class LocationResponse {
 
     public interface LocationView {

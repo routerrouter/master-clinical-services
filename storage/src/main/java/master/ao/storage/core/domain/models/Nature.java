@@ -15,9 +15,6 @@ import java.util.UUID;
 
 @Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "TB_NATURES")
 public class Nature implements Serializable {

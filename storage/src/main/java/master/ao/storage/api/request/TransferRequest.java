@@ -12,20 +12,24 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-@Setter
+//@Builder
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TransferRequest {
 
-    @NotBlank
+    @NotBlank(message = "Descrição da transferencia é obrigatório")
     private String description = "Transferencia de produtos";
 
-    @NotNull
+    @NotNull(message = "Data da transferencia é obrigatório")
     private LocalDate transferDate;
 
     @NotNull
-    private List<ItemsTransferRequest> items = new ArrayList<>();
+    private List<ItemsTransferRequest> items  = new ArrayList<>();
 
 
 }

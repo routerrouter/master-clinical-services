@@ -1,10 +1,13 @@
 package master.ao.storage.api.response;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class GroupResponse {
     private UUID groupId;
     private String name;
