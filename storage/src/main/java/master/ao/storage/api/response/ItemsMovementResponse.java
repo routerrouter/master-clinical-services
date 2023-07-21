@@ -1,5 +1,6 @@
 package master.ao.storage.api.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import master.ao.storage.core.domain.enums.UnitType;
 import master.ao.storage.core.domain.models.Location;
@@ -14,10 +15,11 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemsMovementResponse {
     private UUID id;
-    private Product product;
-    private Location location;
+    private ProductShortResponse product;
+    private LocationResponse location;
     private String lote;
     private String model;
     private String barcode;

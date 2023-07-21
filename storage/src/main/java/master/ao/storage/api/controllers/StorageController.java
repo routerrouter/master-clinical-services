@@ -88,23 +88,6 @@ public class StorageController {
                 .get();
     }
 
-    @Operation(summary = "Get all storages for login page")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found Storages",
-                    content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
-    @GetMapping("/forLogin")
-    public ResponseEntity<List<StorageResponse>> getListStorage(@ParameterObject SpecificationTemplate.StorageSpec spec) {
-        var storagesList = storageService.findAll(spec)
-                .stream()
-                .map(mapper::toStorageResponse)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.status(HttpStatus.OK).body(storagesList);
-
-    }
     @Operation(summary = "Get all storages")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Storages",
@@ -115,7 +98,7 @@ public class StorageController {
 
     @GetMapping
     public ResponseEntity<Page<StorageResponse>> getAll(@ParameterObject SpecificationTemplate.StorageSpec spec,
-                                                        @PageableDefault(page = 0, size = 10, sort = "StorageId", direction = Sort.Direction.ASC) Pageable pageable) {
+                                                        @PageableDefault(page = 0, size = 10, sort = "storageId", direction = Sort.Direction.ASC) Pageable pageable) {
         var storagesList = storageService.findAll(spec)
                 .stream()
                 .map(mapper::toStorageResponse)

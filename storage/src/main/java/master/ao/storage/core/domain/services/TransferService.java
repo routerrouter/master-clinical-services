@@ -6,6 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TransferService {
-    Transfer saveTransfer(Transfer transfer, UUID originStorageId, UUID userId);
-    List<Transfer> listAll();
+    Transfer saveTransfer(Transfer transfer, UUID userId);
+    List<Transfer> listByStorage(UUID storageId);
 }

@@ -11,10 +11,8 @@ import lombok.extern.log4j.Log4j2;
 import master.ao.storage.api.config.security.UserDetailsImpl;
 import master.ao.storage.api.mapper.TransferMapper;
 import master.ao.storage.api.request.TransferRequest;
-import master.ao.storage.api.response.LocationResponse;
 import master.ao.storage.api.response.TransferResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
-import master.ao.storage.core.domain.models.Transfer;
 import master.ao.storage.core.domain.services.TransferService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
 import org.springdoc.api.annotations.ParameterObject;
@@ -28,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -55,15 +52,14 @@ public class TransferController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping
     public ResponseEntity<TransferResponse> saveTransfer(@Valid @RequestBody TransferRequest request,
-                                                         Authentication authentication,
-                                                         @RequestParam  UUID originStorageId) {
+                                                         Authentication authentication) {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         log.debug("POST createStorage request received {} ", request.toString());
 
         return Stream.of(request)
                 .map(mapper::toTransfer)
-                .map(transfer -> transferService.saveTransfer(transfer, originStorageId, userDetails.getUserId()))
+                .map(transfer -> transferService.saveTransfer(transfer, userDetails.getUserId()))
                 .map(mapper::toTransferResponse)
                 .map(transferResponse -> ResponseEntity.status(HttpStatus.CREATED).body(transferResponse))
                 .findFirst()
@@ -78,12 +74,12 @@ public class TransferController {
             @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
-    @GetMapping
+    @GetMapping("/{storageId}/storage")
     public ResponseEntity<Page<TransferResponse>> getAll(@ParameterObject SpecificationTemplate.LocationSpec spec,
                                                          @ParameterObject  @PageableDefault(page = 0, size = 10, sort = "locationId", direction = Sort.Direction.ASC)
-                                                                 Pageable pageable, @RequestParam(required = false) UUID storageId) {
+                                                                 Pageable pageable, @PathVariable UUID storageId) {
         List<TransferResponse> transferResponseList = new ArrayList<>();
-        transferResponseList = transferService.listAll()
+        transferResponseList = transferService.listByStorage(storageId)
                 .stream()
                 .map(mapper::toTransferResponse)
                 .sorted(Comparator.comparing(TransferResponse::getTransferDate))

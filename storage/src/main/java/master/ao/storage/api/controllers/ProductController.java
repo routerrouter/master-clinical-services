@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import master.ao.storage.api.config.security.UserDetailsImpl;
 import master.ao.storage.api.mapper.ProductMapper;
 import master.ao.storage.api.request.ProductRequest;
 import master.ao.storage.api.response.ProductResponse;
@@ -24,6 +25,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -52,11 +54,15 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping("")
-    public ResponseEntity<ProductResponse> saveProduct(@Valid @RequestBody ProductRequest request) {
+    public ResponseEntity<ProductResponse> saveProduct(@Valid @RequestBody ProductRequest request,
+                                                       Authentication authentication) {
+
         log.debug("POST createProduct request received {} ", request.toString());
+
+        var userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return Stream.of(request)
                 .map(mapper::toProduct)
-                .map(product -> productService.createProduct(product))
+                .map(product -> productService.createProduct(product,userDetails.getUserId()))
                 .map(mapper::toProductResponse)
                 .map(productResponse -> ResponseEntity.status(HttpStatus.CREATED).body(productResponse))
                 .findFirst()
@@ -92,10 +98,11 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
-    public ResponseEntity<Page<ProductResponse>> getAll(@ParameterObject SpecificationTemplate.ProductSpec spec,
+    public ResponseEntity<Page<ProductResponse>> getAllProducts(@ParameterObject SpecificationTemplate.ProductSpec spec,
                                                         @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                                                         @RequestParam(required = false) UUID categoryId,
                                                         @RequestParam(required = false) UUID productId,
+                                                        @RequestParam UUID userGroup,
                                                         @RequestParam(required = false) UUID natureId) {
 
         List<ProductResponse> productsList = new ArrayList<>();

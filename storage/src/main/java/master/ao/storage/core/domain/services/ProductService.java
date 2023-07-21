@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProductService {
-    Product createProduct(Product product);
+    Product createProduct(Product product, UUID userId);
     Product updateProduct(Product product, UUID productId);
     void delete(UUID productId);
     Optional<Product> fetchOrFail(UUID productId);

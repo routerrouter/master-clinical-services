@@ -49,10 +49,13 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Location update(Location location, UUID locationId) {
         var locationOptional = fetchOrFail(locationId).get();
+        var storage = storageService.fetchOrFail(location.getStorage().getStorageId());
+        locationOptional.setStorage(storage.get());
         locationOptional.setShelf(location.getShelf());
         locationOptional.setPartition(location.getPartition());
         locationOptional.setDescription(locationOptional.setDescriptionLocation());
         locationOptional.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
+
 
         return locationRepository.save(locationOptional);
     }

@@ -2,6 +2,7 @@ package master.ao.storage.core.domain.models;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import master.ao.storage.core.domain.enums.DevolutionType;
@@ -65,6 +66,11 @@ public class Movement implements Serializable {
     @Size(min = 15, max = 255)
     private String description;
 
+    private String patient;
+
+    private UUID userGroup;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "movement", cascade = CascadeType.ALL)
     private List<ItemsMovement> items = new ArrayList<>();
 

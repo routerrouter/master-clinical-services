@@ -72,10 +72,11 @@ public class SpecificationTemplate {
 
     @And({
             @Spec(path = "movementDate", spec = Equal.class),
-            @Spec(path = "movementType", spec = Like.class),
+            @Spec(path = "movementType", spec = Equal.class),
             @Spec(path = "documentNumber", spec = Like.class),
-            @Spec(path = "movementStatus", spec = Like.class),
-            @Spec(path = "devolutionType", spec = Like.class)
+            @Spec(path = "movementStatus", spec = Equal.class),
+            @Spec(path = "devolutionType", spec = Equal.class),
+            @Spec(path = "userGroup", spec = Equal.class)
     })
     public interface MovementSpec extends Specification<Movement> {
     }
@@ -85,13 +86,14 @@ public class SpecificationTemplate {
             query.distinct(true);
             Root<Movement> movement = root;
             Root<Entities> entity = query.from(Entities.class);
-            Expression<Collection<Movement>> movementsEntityList = entity.get("items");
+            Expression<Collection<Movement>> movementsEntityList = entity.get("movements");
             return cb.and(cb.equal(entity.get("entityId"), entityId), cb.isMember(movement, movementsEntityList));
         };
     }
 
     @And({
             @Spec(path = "natureId", spec = Equal.class),
+            @Spec(path = "userGroup", spec = Equal.class),
             @Spec(path = "name", spec = Like.class)
     })
     public interface ProductSpec extends Specification<Product> {

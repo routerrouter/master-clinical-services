@@ -1,5 +1,7 @@
 package master.ao.storage.api.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import master.ao.storage.api.request.ItemsMovementRequest;
 import master.ao.storage.core.domain.enums.DevolutionType;
@@ -17,17 +19,18 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MovementResponse {
     private UUID movementId;
     private UUID userId;
     private LocalDate movementDate;
     private MovementType movementType;
     private String documentNumber;
-    private Entities entity;
+    private EntityShortResponse entity;
     private MovementStatus movementStatus;
     private DevolutionType devolutionType;
     private BigDecimal total;
     private String description;
-    private List<ItemsMovementResponse> items = new ArrayList<>();
+    private String patient;
     private boolean criticalStockAlert;
 }

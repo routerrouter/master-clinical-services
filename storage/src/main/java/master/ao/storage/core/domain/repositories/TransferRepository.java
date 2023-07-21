@@ -12,6 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface TransferRepository extends JpaRepository<Transfer, UUID>, JpaSpecificationExecutor<Transfer> {
-    @Query(value = "Select t From Transfer t join fetch t.items")
-    List<Transfer> findAll();
+    @Query(value = "Select t From Transfer t where t.storage.storageId=?1 ")
+    List<Transfer> findAll(UUID storageId);
 }

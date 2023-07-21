@@ -1,12 +1,15 @@
 package master.ao.storage.core.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import master.ao.storage.core.domain.enums.EntityType;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -52,6 +55,10 @@ public class Entities implements Serializable {
 
     @Column(nullable = false)
     private UUID userGroup;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "entity", cascade = CascadeType.ALL)
+    private List<Movement> movements = new ArrayList<>();
 
 
 }

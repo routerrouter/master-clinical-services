@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-//@Builder
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,6 +27,9 @@ public class TransferRequest {
 
     @NotNull(message = "Data da transferencia é obrigatório")
     private LocalDate transferDate;
+
+    @NotNull
+    private UUID storageId;
 
     @NotNull
     private List<ItemsTransferRequest> items  = new ArrayList<>();

@@ -19,5 +19,6 @@ public class TransferResponse {
     private String description;
     private LocalDate transferDate;
     private TransferType type;
+    private StorageResponse storage;
 
 }

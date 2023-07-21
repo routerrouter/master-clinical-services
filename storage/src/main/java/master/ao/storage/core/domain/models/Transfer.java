@@ -64,6 +64,10 @@ public class Transfer implements Serializable {
     @Enumerated(EnumType.STRING)
     private TransferType transferType;
 
+    @ManyToOne
+    @JoinColumn(name = "storage_id")
+    private Storage storage;
+
 
 
 

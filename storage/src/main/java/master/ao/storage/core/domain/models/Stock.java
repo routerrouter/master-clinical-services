@@ -22,20 +22,20 @@ public class Stock extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID Id;
+    private UUID stockId;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_id")
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "product_product_id")
     private Product product;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "storage_storage_id")
     private Storage storage;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "location_location_id")
     private Location location;
 

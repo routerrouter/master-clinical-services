@@ -61,6 +61,8 @@ public class Product implements Serializable {
 
     private UUID natureId;
 
+    private UUID userGroup;
+
 
 
 }
