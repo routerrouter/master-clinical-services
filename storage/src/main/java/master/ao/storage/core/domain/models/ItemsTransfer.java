@@ -43,7 +43,7 @@ public class ItemsTransfer extends Auditable<String> implements Serializable {
 
     private String lote;
 
-    private Long lifespan;
+    private Integer lifespan;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate expirationDate;

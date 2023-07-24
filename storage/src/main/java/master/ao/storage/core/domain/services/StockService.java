@@ -10,8 +10,12 @@ import java.util.UUID;
 public interface StockService {
     Stock saveOrUpdate(Stock stock, MovementType movementType);
     List<Stock> findByLocation(UUID locationId);
+    List<Stock> findExistenceByProduct(UUID productId);
     List<Stock> findCriticalProducts(UUID storageId);
     List<Stock> findExpiredProducts(UUID storageId);
     List<Stock> findInventory(UUID storageId);
     void updateProductCost(Stock stock);
+    void updateProductExistence(Stock stock);
+    Optional<Stock> fetchOrFailExistence(Stock stock);
+    Optional<Stock> fetchExistence(Stock stock);
 }

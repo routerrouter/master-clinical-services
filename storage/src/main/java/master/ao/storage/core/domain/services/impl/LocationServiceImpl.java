@@ -40,6 +40,7 @@ public class LocationServiceImpl implements LocationService {
             throw new ExistingDataException("Localização informada já existe.");
         }
         var storage = storageService.fetchOrFail(storageId);
+        location.setEnabeld(true);
         location.setStorage(storage.get());
         location.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
         location.setDescription(location.setDescriptionLocation());

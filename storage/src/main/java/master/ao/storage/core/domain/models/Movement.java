@@ -77,9 +77,15 @@ public class Movement implements Serializable {
     public void calculateTotalValue() {
         getItems().forEach(ItemsMovement::calculateTotalValue);
 
-        this.total = getItems().stream()
+        this.total = getItems()
+                .stream()
                 .map(item -> item.getTotalValue())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (this.total.doubleValue() <0 ) {
+            double newTotal = this.total.doubleValue()*-1;
+            this.total = BigDecimal.valueOf(newTotal);
+        }
 
     }
 

@@ -8,10 +8,8 @@ import master.ao.storage.core.domain.exceptions.UserNotFoundException;
 import master.ao.storage.core.domain.models.Product;
 import master.ao.storage.core.domain.repositories.ProductRepository;
 import master.ao.storage.core.domain.repositories.UserRepository;
-import master.ao.storage.core.domain.services.CategoryService;
-import master.ao.storage.core.domain.services.GroupService;
-import master.ao.storage.core.domain.services.NatureService;
-import master.ao.storage.core.domain.services.ProductService;
+import master.ao.storage.core.domain.services.*;
+import master.ao.storage.core.domain.utils.Converts;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,6 +21,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,17 +30,16 @@ public class ProductServiceImpl implements ProductService {
     private static final String MSG_PRODUCT_IN_USE = "Produto não pode ser removido, pois já foi movimentado.";
 
     private final ProductRepository repository;
-    private final UserRepository userRepository;
     private final CategoryService categoryService;
     private final GroupService groupService;
     private final NatureService natureService;
+    private final Converts convert;
+    private final UtilService utilService;
 
     @Override
-    public Product createProduct(Product product, UUID userId) {
+    public Product createProduct(Product product) {
         var category = categoryService.fetchOrFail(product.getCategory().getCategoryId());
         var group = groupService.fetchOrFail(product.getGroup().getGroupId());
-        var user = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException(userId));
 
         if (product.getNatureId() != null) {
             natureService.fetchOrFail(product.getNatureId());
@@ -51,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
         if (productOptional.isPresent()) {
             throw new ExistingDataException("Nome de produto informado já existe!");
         }
-        product.setUserGroup(user.getGroupId());
+        product.setUserGroup(utilService.getUserGroup());
         product.setGroup(group.get());
         product.setCategory(category.get());
         product.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
@@ -100,7 +98,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> findAll(Specification<Product> spec) {
-        return repository.findAll(spec);
+        return repository.findAll(spec).stream()
+                .filter(product -> convert.convertUuidToString(product.getUserGroup())
+                        .equals(convert.convertUuidToString(utilService.getUserGroup())))
+                .collect(Collectors.toList());
     }
 }
 

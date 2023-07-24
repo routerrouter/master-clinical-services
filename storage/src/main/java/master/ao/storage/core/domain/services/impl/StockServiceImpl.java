@@ -1,14 +1,16 @@
 package master.ao.storage.core.domain.services.impl;
 
-import master.ao.storage.core.domain.enums.DevolutionType;
+import lombok.RequiredArgsConstructor;
 import master.ao.storage.core.domain.enums.MovementType;
 import master.ao.storage.core.domain.exceptions.StockNotFoundException;
 import master.ao.storage.core.domain.models.Product;
 import master.ao.storage.core.domain.models.Stock;
 import master.ao.storage.core.domain.repositories.StockRepository;
+import master.ao.storage.core.domain.services.LocationService;
 import master.ao.storage.core.domain.services.ProductService;
 import master.ao.storage.core.domain.services.StockService;
 import master.ao.storage.core.domain.services.StorageService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +23,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class StockServiceImpl implements StockService {
 
-    @Autowired
-    private StockRepository repository;
 
-    @Autowired
-    private StorageService storageService;
-
-    @Autowired
-    private ProductService productService;
+    private  final StockRepository repository;
+    private final StorageService storageService;
+    private final ProductService productService;
+    private final LocationService locationService;
 
     LocalDate systemDate = LocalDate.now();
 
@@ -38,37 +38,19 @@ public class StockServiceImpl implements StockService {
     @Override
     public Stock saveOrUpdate(Stock stockRequest, MovementType movementType) {
 
-        // Verificar o tipo do movimento enviado(INPUT/OUTPUT)
-        // Verificar existencia do item pelo armazem informado
-        // Efetuar a operação de acordo ao tipo do movimento
-
-
-        Optional<Stock> stocked = null;
         Stock stock = new Stock();
         stock.setAcquisitionDate(stockRequest.getAcquisitionDate());
         stockRequest.setStorage(stockRequest.getLocation().getStorage());
 
-        if (isEquipment(stockRequest.getProduct())) {
-            stocked = repository.existEquipmentOnStock(stockRequest);
-            if (stocked.isPresent()) {
-                stock = stocked.get();
-                stock.setModel(stockRequest.getModel());
-                stock.setSerialNumber(stockRequest.getSerialNumber());
-                stock.setLifespan(stockRequest.getLifespan());
-                stock.setQuantity(movementType.quantityUpdated(stock.getQuantity(), stockRequest.getQuantity()));
-            } else {
-                stock = repository.save(stockRequest);
-            }
+        var stockOptional = repository.findStock(stockRequest);
+
+        if (stockOptional.isPresent()) {
+            stockOptional.get().setQuantity(movementType.quantityUpdated(stockOptional.get().getQuantity(), stockRequest.getQuantity()));
+            stockOptional.get().updateCostExistence(stockRequest.getCost());
+            BeanUtils.copyProperties(stockOptional.get(), stock);
+            repository.save(stock);
         } else {
-            stocked = repository.existProductOnStock(stockRequest);
-            if (stocked.isPresent()) {
-                stock = stocked.get();
-                stock.setLocation(stockRequest.getLocation());
-                stock.setQuantity(movementType.quantityUpdated(stock.getQuantity(), stockRequest.getQuantity()));
-                repository.updateStockExistence(stock);
-            } else {
-                stock = repository.save(stockRequest);
-            }
+            stock = repository.save(stockRequest);
         }
 
         return stock;
@@ -76,7 +58,14 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<Stock> findByLocation(UUID locationId) {
+        locationService.fetchOrFail(locationId);
         return repository.findAllProductStockByLocation(locationId);
+    }
+
+    @Override
+    public List<Stock> findExistenceByProduct(UUID productId) {
+        productService.fetchOrFail(productId);
+        return repository.findStockExistenceByProduct(productId);
     }
 
     @Override
@@ -94,7 +83,7 @@ public class StockServiceImpl implements StockService {
     public List<Stock> findExpiredProducts(UUID storageId) {
         storageService.fetchOrFail(storageId);
         List<Stock> expiredList = repository.findAll(storageId).stream()
-                .filter(product -> (product.getExpirationDate()==null ? LocalDate.now() :product.getExpirationDate()).isBefore(systemDate))
+                .filter(product -> (product.getExpirationDate() == null ? LocalDate.now() :product.getExpirationDate()).isBefore(systemDate))
                 .sorted(getProductComparator())
                 .collect(Collectors.toList());
 
@@ -113,28 +102,38 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public void updateProductCost(Stock stock) {
-        var storage = storageService.fetchOrFail(stock.getStorage().getStorageId());
-        var product = productService.fetchOrFail(stock.getProduct().getProductId());
-        if (isEquipment(product.get())) {
-            /*var equipmentStockOptional = repository.findIsEquipmentStocked(storage.get().getStorageId(),product.get().getProductId(),stock.getLifespan(), stock.getModel()).get();
+        validateStock(stock);
 
-            equipmentStockOptional.setCust(stock.getCust());
-            repository.save(equipmentStockOptional);*/
+        var stockOptional = repository.findStock(stock)
+                .orElseThrow(()-> new  StockNotFoundException());
 
-        } else {
-            var productStockOptional = repository.findIsProductStocked(storage.get().getStorageId(),
-                    product.get().getProductId(),stock.getExpirationDate(), stock.getLote())
-                    .orElseThrow(()-> new  StockNotFoundException());
-
-            productStockOptional.setCust(stock.getCust());
-            repository.save(productStockOptional);
-        }
+        stockOptional.setCost(stock.getCost());
+        repository.save(stockOptional);
 
     }
 
-    private boolean isEquipment(Product product) {
-        return product.getGroup().getName().contains("EQUIPAMENTO") ? true : false;
+    @Override
+    public void updateProductExistence(Stock stock) {
+        validateStock(stock);
+        Stock existence = fetchOrFailExistence(stock).get();
+        existence.setQuantity(stock.getQuantity());
+
+        repository.save(existence);
+
     }
+
+    @Override
+    public Optional<Stock> fetchOrFailExistence(Stock stock) {
+        var stockOptional = repository.findStock(stock)
+                .orElseThrow(()-> new  StockNotFoundException());
+        return Optional.of(stockOptional);
+    }
+
+    @Override
+    public Optional<Stock> fetchExistence(Stock stock) {
+        return repository.findStock(stock);
+    }
+
 
     private Comparator<Stock> getProductComparator() {
         return (stock1, stock2) -> stock1.getProduct().getName().

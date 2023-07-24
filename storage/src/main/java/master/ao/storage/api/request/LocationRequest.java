@@ -16,7 +16,4 @@ public class LocationRequest {
     @NotBlank
     private String partition;
 
-    private UUID storageId;
-
-    private boolean enabeld = true;
 }

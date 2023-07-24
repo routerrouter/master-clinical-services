@@ -1,6 +1,7 @@
 package master.ao.storage.api.mapper;
 
 import lombok.RequiredArgsConstructor;
+import master.ao.storage.api.request.StockPutRequest;
 import master.ao.storage.api.request.StockRequest;
 import master.ao.storage.api.response.StockResponse;
 import master.ao.storage.core.domain.models.Stock;
@@ -17,6 +18,10 @@ public class StockMapper {
     private final ModelMapper mapper;
 
     public Stock toStock(StockRequest request) {
+        return mapper.map(request, Stock.class);
+    }
+
+    public Stock toStock(StockPutRequest request) {
         return mapper.map(request, Stock.class);
     }
 

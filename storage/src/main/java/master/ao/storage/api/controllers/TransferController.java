@@ -14,6 +14,7 @@ import master.ao.storage.api.request.TransferRequest;
 import master.ao.storage.api.response.TransferResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.TransferService;
+import master.ao.storage.core.domain.services.UtilService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,7 @@ import java.util.stream.Stream;
 public class TransferController {
 
     private final TransferService transferService;
+    private final UtilService utilService;
     private final TransferMapper mapper;
 
 
@@ -67,7 +69,7 @@ public class TransferController {
     }
 
 
-    @Operation(summary = "Get all locations")
+    @Operation(summary = "Get all Transfers")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Locations",
                     content = @Content),
@@ -75,8 +77,8 @@ public class TransferController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping("/{storageId}/storage")
-    public ResponseEntity<Page<TransferResponse>> getAll(@ParameterObject SpecificationTemplate.LocationSpec spec,
-                                                         @ParameterObject  @PageableDefault(page = 0, size = 10, sort = "locationId", direction = Sort.Direction.ASC)
+    public ResponseEntity<Page<Object>> getAll(@ParameterObject SpecificationTemplate.LocationSpec spec,
+                                                         @ParameterObject  @PageableDefault(page = 0, size = 10, sort = "transfer_Date", direction = Sort.Direction.ASC)
                                                                  Pageable pageable, @PathVariable UUID storageId) {
         List<TransferResponse> transferResponseList = new ArrayList<>();
         transferResponseList = transferService.listByStorage(storageId)
@@ -85,30 +87,8 @@ public class TransferController {
                 .sorted(Comparator.comparing(TransferResponse::getTransferDate))
                 .collect(Collectors.toList());
 
-        int start = (int) (pageable.getOffset() > transferResponseList.size() ? transferResponseList.size() : pageable.getOffset());
-        int end = (int) ((start + pageable.getPageSize()) > transferResponseList.size() ? transferResponseList.size()
-                : (start + pageable.getPageSize()));
-        Page<TransferResponse> transferResponsePage = new PageImpl<>(transferResponseList.subList(start, end), pageable, transferResponseList.size());
-        return ResponseEntity.status(HttpStatus.OK).body(transferResponsePage);
+        return utilService.getPageResponseEntity(pageable, new ArrayList<Object>(transferResponseList));
 
     }
-
-
-
-
-
-
-
-
-
-    /*private ResponseEntity<Page<TransferResponse>> getPageResponseEntity(@ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
-                                                                         List<TransferResponse> transferResponseList) {
-        int start = (int) (pageable.getOffset() > transferResponseList.size() ? transferResponseList.size() : pageable.getOffset());
-        int end = (int) ((start + pageable.getPageSize()) > transferResponseList.size() ? transferResponseList.size()
-                : (start + pageable.getPageSize()));
-        Page<TransferResponse> productTransferPageList = new PageImpl<>(transferResponseList.subList(start, end), pageable, transferResponseList.size());
-
-        return ResponseEntity.status(HttpStatus.OK).body(productTransferPageList);
-    }*/
 
 }

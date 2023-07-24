@@ -15,6 +15,7 @@ import master.ao.storage.api.request.EntityRequest;
 import master.ao.storage.api.response.EntityResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.EntityService;
+import master.ao.storage.core.domain.services.UtilService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,6 +44,7 @@ import java.util.stream.Stream;
 public class EntityController {
 
     private final EntityService entityService;
+    private final UtilService utilService;
     private final EntityMapper mapper;
 
 
@@ -95,7 +98,7 @@ public class EntityController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
-    public ResponseEntity<Page<EntityResponse>> getAll(@ParameterObject SpecificationTemplate.EntitySpec spec,
+    public ResponseEntity<Page<Object>> getAll(@ParameterObject SpecificationTemplate.EntitySpec spec,
                                                        @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         List<EntityResponse> entitiesList = entityService.findAll(spec)
                 .stream()
@@ -104,12 +107,7 @@ public class EntityController {
                         compareTo(o2.getName()))
                 .collect(Collectors.toList());
 
-        int start = (int) (pageable.getOffset() > entitiesList.size() ? entitiesList.size() : pageable.getOffset());
-        int end = (int) ((start + pageable.getPageSize()) > entitiesList.size() ? entitiesList.size()
-                : (start + pageable.getPageSize()));
-        Page<EntityResponse> entitiesPageList = new PageImpl<>(entitiesList.subList(start, end), pageable, entitiesList.size());
-
-        return ResponseEntity.status(HttpStatus.OK).body(entitiesPageList);
+        return utilService.getPageResponseEntity(pageable, new ArrayList<Object>(entitiesList));
 
     }
 

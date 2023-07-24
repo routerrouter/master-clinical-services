@@ -12,10 +12,10 @@ public class StockNotFoundException extends EntityNotFoundException {
     }
 
     public StockNotFoundException() {
-        this(String.format("Não existe estocagem produto com estas caracteristicas {} "));
+        this(String.format("Produto informado sem existência em estoque "));
     }
     public StockNotFoundException(UUID storageId, UUID productId, String loteOrModel, LocalDate expiration) {
-        this(String.format("Não existe estocagem produto com estas caracteristicas {} ",loteOrModel));
+        this(String.format("Produto informado sem existência {} ",loteOrModel));
     }
 
 }

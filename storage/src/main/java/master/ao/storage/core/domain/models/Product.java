@@ -63,6 +63,10 @@ public class Product implements Serializable {
 
     private UUID userGroup;
 
+    public boolean isEquipment() {
+        return this.getGroup()
+                .getName().contains("EQUIPAMENTO");
+    }
 
 
 }

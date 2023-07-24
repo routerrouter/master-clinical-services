@@ -12,12 +12,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LocationResponse {
-
+public class LocationShortResponse {
     private UUID locationId;
-    private LocalDateTime registeredAt;
-    private String shelf;
-    private String partition;
     private String description;
-    private boolean enabeld;
 }

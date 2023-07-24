@@ -8,6 +8,8 @@ import master.ao.storage.core.domain.exceptions.NatureNotFoundException;
 import master.ao.storage.core.domain.models.Nature;
 import master.ao.storage.core.domain.repositories.NatureRepository;
 import master.ao.storage.core.domain.services.NatureService;
+import master.ao.storage.core.domain.services.UtilService;
+import master.ao.storage.core.domain.utils.Converts;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,6 +19,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,14 +31,17 @@ public class NatureServiceImpl implements NatureService {
 
 
     private final NatureRepository natureRepository;
+    private final Converts convert;
+    private final UtilService utilService;
 
     @Override
     @Transactional
-    public Nature save(Nature nature, UUID userId) {
+    public Nature save(Nature nature) {
         var natureOptional = natureRepository.findByName(nature.getName());
         if (natureOptional.isPresent()) {
             throw new ExistingDataException("Natureza informada já existe.");
         }
+        nature.setUserGroup(utilService.getUserGroup());
 
         return natureRepository.save(nature);
     }
@@ -75,7 +81,10 @@ public class NatureServiceImpl implements NatureService {
 
     @Override
     public List<Nature> findAll(Specification<Nature> spec) {
-        return natureRepository.findAll(spec);
+        return natureRepository.findAll(spec).stream()
+                .filter(nature -> convert.convertUuidToString(nature.getUserGroup())
+                        .equals(convert.convertUuidToString(utilService.getUserGroup())))
+                .collect(Collectors.toList());
     }
 
 }

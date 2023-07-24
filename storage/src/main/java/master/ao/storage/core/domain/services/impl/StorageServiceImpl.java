@@ -2,23 +2,32 @@ package master.ao.storage.core.domain.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import master.ao.storage.api.clients.StorageClient;
+import master.ao.storage.api.config.security.AuthenticationCurrentUserService;
+import master.ao.storage.api.config.security.UserDetailsImpl;
 import master.ao.storage.api.mapper.StorageMapper;
 import master.ao.storage.core.domain.exceptions.*;
 import master.ao.storage.core.domain.models.Storage;
+import master.ao.storage.core.domain.models.User;
 import master.ao.storage.core.domain.repositories.StorageRepository;
 import master.ao.storage.core.domain.repositories.UserRepository;
 import master.ao.storage.core.domain.services.StorageService;
+import master.ao.storage.core.domain.services.UtilService;
+import master.ao.storage.core.domain.utils.Converts;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Convert;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -30,19 +39,19 @@ public class StorageServiceImpl implements StorageService {
 
 
     private final StorageRepository storageRepository;
-    private final UserRepository userRepository;
     private final StorageClient storageClient;
-    private final StorageMapper mapper;
+    private final Converts convert;
+    private final UtilService utilService;
 
     @Override
     @Transactional
-    public Storage save(Storage storage, UUID userId, String token) {
+    public Storage save(Storage storage, String token) {
         var storageOptional = storageRepository.findByName(storage.getName());
         if (storageOptional.isPresent()) {
             throw new ExistingDataException("Armazém informado já existe.");
         }
-        var userGroup = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        storage.setUserGroup(userGroup.getGroupId());
+
+        storage.setUserGroup(utilService.getUserGroup());
         var storageSaved = storageRepository.saveAndFlush(storage);
         saveOrUpdateStorageToAuthuser(storageSaved,token);
         return storageSaved;
@@ -111,7 +120,12 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public List<Storage> findAll(Specification<Storage> spec) {
-        return storageRepository.findAll(spec);
+
+        return storageRepository.findAll(spec)
+                .stream()
+                .filter(storage -> convert.convertUuidToString(storage.getUserGroup())
+                        .equals(convert.convertUuidToString(utilService.getUserGroup())))
+                .collect(Collectors.toList());
     }
 
 

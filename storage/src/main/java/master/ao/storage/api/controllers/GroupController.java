@@ -1,6 +1,7 @@
 package master.ao.storage.api.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,6 +16,7 @@ import master.ao.storage.api.response.EntityResponse;
 import master.ao.storage.api.response.GroupResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.GroupService;
+import master.ao.storage.core.domain.services.UtilService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,6 +45,7 @@ import java.util.stream.Stream;
 public class GroupController {
 
     private final GroupService groupService;
+    private final UtilService utilService;
     private final GroupMapper mapper;
 
 
@@ -75,7 +79,7 @@ public class GroupController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PutMapping("/{groupId}")
     public ResponseEntity<GroupResponse> updateGroup(@Valid @RequestBody GroupRequest request,
-                                                     @PathVariable("groupId") UUID groupId) {
+                                                     @Parameter(description = "id of group to be updated") @PathVariable("groupId") UUID groupId) {
         log.debug("PUT updateGroup request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toGroup)
@@ -95,7 +99,7 @@ public class GroupController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
-    public ResponseEntity<Page<GroupResponse>> getAll(@ParameterObject SpecificationTemplate.GroupSpec spec,
+    public ResponseEntity<Page<Object>> getAll(@ParameterObject SpecificationTemplate.GroupSpec spec,
                                                       @ParameterObject @PageableDefault(page = 0, size = 10, sort = "groupId", direction = Sort.Direction.ASC) Pageable pageable) {
         var groupsList = groupService.findAll(spec)
                 .stream()
@@ -104,12 +108,7 @@ public class GroupController {
                         compareTo(o2.getName()))
                 .collect(Collectors.toList());
 
-        int start = (int) (pageable.getOffset() > groupsList.size() ? groupsList.size() : pageable.getOffset());
-        int end = (int) ((start + pageable.getPageSize()) > groupsList.size() ? groupsList.size()
-                : (start + pageable.getPageSize()));
-        Page<GroupResponse> groupsPageList = new PageImpl<>(groupsList.subList(start, end), pageable, groupsList.size());
-
-        return ResponseEntity.status(HttpStatus.OK).body(groupsPageList);
+        return utilService.getPageResponseEntity(pageable, new ArrayList<Object>(groupsList));
 
     }
 

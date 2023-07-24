@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface NatureService {
-    Nature save(Nature nature, UUID userId);
+    Nature save(Nature nature);
 
     Nature update(Nature nature, UUID natureId);
 

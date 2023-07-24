@@ -26,17 +26,17 @@ public class Stock extends Auditable implements Serializable {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "product_product_id")
+    //@JoinColumn(name = "product_product_id")
     private Product product;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "storage_storage_id")
+    //@JoinColumn(name = "storage_storage_id")
     private Storage storage;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "location_location_id")
+    //@JoinColumn(name = "location_location_id")
     private Location location;
 
     private String lote;
@@ -48,7 +48,7 @@ public class Stock extends Auditable implements Serializable {
     private String serialNumber;
 
     @Column(nullable = false)
-    private BigDecimal cust;
+    private BigDecimal cost;
 
     private Integer lifespan;
 
@@ -69,8 +69,9 @@ public class Stock extends Auditable implements Serializable {
     private LocalDate manufactureDate;
 
 
-
-
+    public void updateCostExistence(BigDecimal newCost) {
+        this.cost = (newCost != BigDecimal.ZERO ? newCost : this.getCost());
+    }
 
 
 }

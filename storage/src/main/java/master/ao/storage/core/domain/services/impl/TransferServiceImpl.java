@@ -1,40 +1,36 @@
 package master.ao.storage.core.domain.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import master.ao.storage.api.config.security.AuthenticationCurrentUserService;
 import master.ao.storage.core.domain.enums.TransferType;
-import master.ao.storage.core.domain.exceptions.BussinessException;
-import master.ao.storage.core.domain.exceptions.ExistingDataException;
-import master.ao.storage.core.domain.exceptions.UserNotFoundException;
+import master.ao.storage.core.domain.exceptions.*;
 import master.ao.storage.core.domain.models.*;
-import master.ao.storage.core.domain.repositories.StockRepository;
-import master.ao.storage.core.domain.repositories.TransferRepository;
-import master.ao.storage.core.domain.repositories.UserRepository;
-import master.ao.storage.core.domain.services.LocationService;
-import master.ao.storage.core.domain.services.ProductService;
-import master.ao.storage.core.domain.services.StorageService;
-import master.ao.storage.core.domain.services.TransferService;
+import master.ao.storage.core.domain.repositories.*;
+import master.ao.storage.core.domain.services.*;
+import master.ao.storage.core.domain.utils.Converts;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class TransferServiceImpl implements TransferService {
 
     private final TransferRepository repository;
-    private final UserRepository userRepository;
+    private final ItemsTransferRepository itemsTransferRepository;
     private final StockRepository stockRepository;
+    private final StockService stockService;
     private final ProductService productService;
     private final LocationService locationService;
     private final StorageService storageService;
-
+    private final UtilService utilService;
+    private final AuthenticationCurrentUserService currentUserService;
 
     @Override
     public Transfer saveTransfer(Transfer transfer, UUID userId) {
@@ -42,23 +38,19 @@ public class TransferServiceImpl implements TransferService {
         Transfer transferBeforeSaved = new Transfer();
         BeanUtils.copyProperties(transfer, transferBeforeSaved);
 
-        Transfer transferAfterSaved = new Transfer();
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-
         var storage = storageService.fetchOrFail(transfer.getStorage().getStorageId()).get();
 
-        transfer.setUserGroup(user.getGroupId());
+        transfer.setUserGroup(utilService.getUserGroup());
         transfer.setStorage(storage);
-        transfer = saveTransferOut(transfer, user);
+        transfer = saveTransferOut(transfer);
 
-        saveTransferIn(transfer, user);
+        saveTransferIn(transfer);
 
         return transfer;
     }
 
-    private Transfer saveTransferOut(Transfer transfer, User user) {
-        transfer.setUserId(user.getUserId());
+    private Transfer saveTransferOut(Transfer transfer) {
+        transfer.setUserId(currentUserService.getCurrentUser().getUserId());
         transfer.setTransferType(TransferType.OUTPUT);
 
         validateItemsOut(transfer);
@@ -66,14 +58,21 @@ public class TransferServiceImpl implements TransferService {
         return save(transfer);
     }
 
-    private Transfer saveTransferIn(Transfer transfer, User user) {
+    private Transfer saveTransferIn(Transfer transfer) {
         var transferInput = new Transfer();
         transferInput.setTransferType(TransferType.INPUT);
-        transferInput.setUserId(user.getUserId());
-        transferInput.setUserGroup(user.getGroupId());
+        transferInput.setUserId(currentUserService.getCurrentUser().getUserId());
+        transferInput.setUserGroup(utilService.getUserGroup());
         transferInput.setDescription(String.format("Recebimento de produtos via transferência pelo armazem: %s", transfer.getStorage().getStorageId().toString()));
         transferInput.setTransferDate(LocalDate.now());
-        transferInput.setStorage(transfer.getItems().stream().findFirst().get().getLocation().getStorage());
+        transferInput.setStorage(transfer
+                .getItems()
+                .stream()
+                .findFirst()
+                .get()
+                .getLocation()
+                .getStorage()
+        );
 
         Set<ItemsTransfer> itemsList = new HashSet<>();
         transfer.getItems().forEach(items -> items.setItemTransferId(null));
@@ -94,56 +93,30 @@ public class TransferServiceImpl implements TransferService {
         transfer.getItems()
                 .forEach(item -> {
 
-                    Product product = productService.fetchOrFail(item.getProduct().getProductId()).get();
-                    Location location = locationService.fetchOrFail(item.getLocation().getLocationId()).get();
+                    var product = productService.fetchOrFail(item.getProduct().getProductId()).get();
+                    var location = locationService.fetchOrFail(item.getLocation().getLocationId()).get();
 
                     item.setTransfer(transfer);
                     item.setProduct(product);
                     item.setLocation(location);
 
-                    if (isEquipment(item.getProduct())) {
-                        validateEquipmentStock(transfer.getStorage().getStorageId(), item);
+                    Stock stock = new Stock();
+                    BeanUtils.copyProperties(item, stock);
+                    stock.setStorage(transfer.getStorage());
+
+                    var optionalExistence = stockService.fetchExistence(stock);
+
+                    if (optionalExistence.isPresent()) {
+                        optionalExistence.get().setQuantity(optionalExistence.get().getQuantity() + item.getQuantity());
+                        updateOrSaveProductStock(optionalExistence.get());
                     } else {
-                        validateProductStock(transfer.getStorage().getStorageId(), item);
+                        stock.setCost(BigDecimal.TEN);
+                        updateOrSaveProductStock(stock);
                     }
+
                 });
     }
 
-    private void validateProductStock(UUID storageOriginId, ItemsTransfer item) {
-        var productStockOriginInfoOptional = stockRepository.findIsProductStocked(storageOriginId,
-                item.getProduct().getProductId(), item.getExpirationDate(), item.getLote()).get();
-
-        var productStockOptional = stockRepository.findIsProductStocked(getStorageByLocation(item.getLocation()),
-                item.getProduct().getProductId(), item.getExpirationDate(), item.getLote());
-
-        Location locationOptional = locationService.fetchOrFail(item.getLocation().getLocationId()).get();
-        item.setLocation(locationOptional);
-
-        if (productStockOptional.isPresent()) {
-            productStockOptional.get().setQuantity(productStockOptional.get().getQuantity() + item.getQuantity());
-            updateProductStock(productStockOptional.get());
-        } else {
-            updateProductStock(setStock(item, productStockOriginInfoOptional.getCust()));
-        }
-    }
-
-    private void validateEquipmentStock(UUID storageOriginId, ItemsTransfer item) {
-        var equipmentStockOriginInfoOptional = stockRepository.findIsEquipmentStocked(storageOriginId,
-                item.getProduct().getProductId(), item.getLifespan(), item.getModel()).get();
-
-        var equipmentStockOptional = stockRepository.findIsEquipmentStocked(getStorageByLocation(item.getLocation()),
-                item.getProduct().getProductId(), item.getLifespan(), item.getModel());
-
-        var locationOptional = locationService.fetchOrFail(item.getLocation().getLocationId()).get();
-        item.setLocation(locationOptional);
-
-        if (equipmentStockOptional.isPresent()) {
-            equipmentStockOptional.get().setQuantity(equipmentStockOptional.get().getQuantity() + item.getQuantity());
-            updateProductStock(equipmentStockOptional.get());
-        } else {
-            updateProductStock(setStock(item, equipmentStockOriginInfoOptional.getCust()));
-        }
-    }
 
 
     private void validateItemsOut(Transfer transfer) {
@@ -157,40 +130,23 @@ public class TransferServiceImpl implements TransferService {
                     item.setProduct(product);
                     item.setLocation(location);
 
-                    if (isEquipment(item.getProduct())) {
-                        var equipmentStockOptional = stockRepository.findIsEquipmentStocked(transfer.getStorage().getStorageId(),
-                                item.getProduct().getProductId(), item.getLifespan(), item.getModel());
+                    Stock stock = new Stock();
+                    BeanUtils.copyProperties(item, stock);
+                    stock.setStorage(transfer.getStorage());
 
-                        if (equipmentStockOptional.isPresent()) {
-                            if (item.getQuantity() < equipmentStockOptional.get().getQuantity()) {
-                                equipmentStockOptional.get().setQuantity(equipmentStockOptional.get().getQuantity() - item.getQuantity());
-                                updateProductStock(equipmentStockOptional.get());
-                            } else {
-                                throw new BussinessException("Quantidade de transferencia não deve ser maior que a existente!");
-                            }
+                    var optionalExistence = stockService.fetchOrFailExistence(stock);
 
-                        }
+                    if (item.getQuantity() < optionalExistence.get().getQuantity()) {
+                        optionalExistence.get().setQuantity(optionalExistence.get().getQuantity() - item.getQuantity());
+                        updateOrSaveProductStock(optionalExistence.get());
                     } else {
-                        var productStockOptional = stockRepository.findIsProductStocked(transfer.getStorage().getStorageId(),
-                                item.getProduct().getProductId(), item.getExpirationDate(), item.getLote());
-
-                        if (productStockOptional.isPresent()) {
-                            if (item.getQuantity() < productStockOptional.get().getQuantity()) {
-                                productStockOptional.get().setQuantity(productStockOptional.get().getQuantity() - item.getQuantity());
-                                updateProductStock(productStockOptional.get());
-                            } else {
-                                throw new BussinessException("Quantidade de transferencia não deve ser maior que a existente!");
-                            }
-
-                        }
+                        log.debug("Produto: {} ", item.getProduct());
+                        log.info("Quantidade de transferencia não deve ser maior que a existente!");
                     }
+
                 });
     }
 
-    private boolean isEquipment(Product request) {
-        var product = productService.fetchOrFail(request.getProductId()).get();
-        return product.getGroup().getName().contains("EQUIPAMENTO");
-    }
 
     private UUID getStorageByLocation(Location location) {
         return locationService.fetchOrFail(location.getLocationId())
@@ -200,22 +156,14 @@ public class TransferServiceImpl implements TransferService {
     }
 
 
-    private void updateProductStock(Stock stock) {
+    private void updateOrSaveProductStock(Stock stock) {
         stockRepository.save(stock);
     }
 
-    private Stock setStock(ItemsTransfer items, BigDecimal cust) {
+    private Stock setStock(ItemsTransfer item, BigDecimal cost) {
         var stock = new Stock();
-        stock.setStorage(items.getLocation().getStorage());
-        stock.setLote(items.getLote());
-        stock.setProduct(items.getProduct());
-        stock.setQuantity(items.getQuantity());
-        stock.setExpirationDate(items.getExpirationDate());
-        stock.setLocation(items.getLocation());
-        stock.setCust(cust);
-        stock.setAcquisitionDate(items.getAcquisitionDate());
-        stock.setManufactureDate(items.getManufactureDate());
-        stock.setUnitType(items.getUnitType());
+        stock.setCost(cost);
+        BeanUtils.copyProperties(item, stock);
 
         return stock;
     }
@@ -225,4 +173,22 @@ public class TransferServiceImpl implements TransferService {
     public List<Transfer> listByStorage(UUID storageId) {
         return repository.findAll(storageId);
     }
+
+    @Override
+    public List<ItemsTransfer> listItemsByTransfer(UUID transferId) {
+        fetchOrFail(transferId);
+
+        return itemsTransferRepository.findAllByTransferId(transferId)
+                .stream()
+                .collect(Collectors.toList());
+    }
+
+
+    public Optional<Transfer> fetchOrFail(UUID transferId) {
+        var transfer = repository.findById(transferId)
+                .orElseThrow(() -> new TransferNotFoundException(transferId));
+
+        return Optional.of(transfer);
+    }
+
 }

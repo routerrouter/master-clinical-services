@@ -6,6 +6,8 @@ import master.ao.storage.core.domain.models.Category;
 import master.ao.storage.core.domain.repositories.CategoryRepository;
 import master.ao.storage.core.domain.repositories.UserRepository;
 import master.ao.storage.core.domain.services.CategoryService;
+import master.ao.storage.core.domain.services.UtilService;
+import master.ao.storage.core.domain.utils.Converts;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,6 +19,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,17 +31,17 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
+    private final Converts convert;
+    private final UtilService utilService;
 
     @Override
     @Transactional
-    public Category save(Category category, UUID userId) {
+    public Category save(Category category) {
         var categoryOptional = categoryRepository.findByName(category.getName());
         if (categoryOptional.isPresent()) {
             throw new ExistingDataException("Categoria informado já existe.");
         }
-        var userGroup = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        category.setUserGroup(userGroup.getGroupId());
+        category.setUserGroup(utilService.getUserGroup());
 
         return categoryRepository.save(category);
     }
@@ -78,7 +81,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> findAll(Specification<Category> spec) {
-        return categoryRepository.findAll(spec);
+        return categoryRepository.findAll(spec)
+                .stream()
+                .filter(category -> convert.convertUuidToString(category.getUserGroup())
+                        .equals(convert.convertUuidToString(utilService.getUserGroup())))
+                .collect(Collectors.toList());
     }
 
 }

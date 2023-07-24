@@ -1,21 +1,17 @@
 package master.ao.storage.api.request;
 
-import lombok.*;
-import master.ao.storage.core.domain.audit.Auditable;
-import master.ao.storage.core.domain.enums.TransferType;
-import master.ao.storage.core.domain.models.ItemsTransfer;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor

@@ -1,23 +1,24 @@
 package master.ao.storage.core.domain.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import master.ao.storage.api.config.security.AuthenticationCurrentUserService;
 import master.ao.storage.core.domain.enums.DevolutionType;
 import master.ao.storage.core.domain.enums.MovementType;
 import master.ao.storage.core.domain.exceptions.MovementNotFoundException;
-import master.ao.storage.core.domain.exceptions.UserNotFoundException;
 import master.ao.storage.core.domain.models.Entities;
 import master.ao.storage.core.domain.models.ItemsMovement;
 import master.ao.storage.core.domain.models.Movement;
 import master.ao.storage.core.domain.models.Stock;
 import master.ao.storage.core.domain.repositories.ItemsMovementRepository;
 import master.ao.storage.core.domain.repositories.MovementRepository;
-import master.ao.storage.core.domain.repositories.UserRepository;
 import master.ao.storage.core.domain.services.*;
+import master.ao.storage.core.domain.utils.Converts;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -31,46 +32,41 @@ public class MovementServiceImpl implements MovementService {
     private final ProductService productService;
     private final EntityService entityService;
     private final LocationService locationService;
-    private final UserService userService;
-    private final UserRepository userRepository;
+    private final Converts convert;
+    private final AuthenticationCurrentUserService currentUserService;
+    private final UtilService utilService;
     private final StockService stockService;
     private final ItemsMovementRepository itemsMovementRepository;
 
     @Transactional
     @Override
-    public Movement save(Movement movement, UUID userId) {
+    public Movement save(Movement movement) {
 
-        validateMovement(movement,userId);
+        validateMovement(movement);
         validateItems(movement);
 
         movement.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
         movement.calculateTotalValue();
         movement.setMovementStatus();
-        Movement movementSaved =  movementRepository.save(movement);
-        return  movementSaved;
-    }
-    private void stockMovementation(Movement movementSaved) {
 
-       /* if (isCritical()) {
-
-        }*/
-        //launchAlerts();
+        return  movementRepository.save(movement);
     }
 
     @Override
-    public List<Movement> listAndFilterAllMovements(Specification<Movement> spec, UUID userId) {
+    public List<Movement> listAndFilterAllMovements(Specification<Movement> spec, LocalDate initial, LocalDate end) {
 
-        List<Movement> movementList = movementRepository.findAll(spec)
+        return movementRepository.findAll(spec)
                 .stream()
+                .filter(movement -> movement.getMovementDate().isAfter(initial.minusDays(1)))
+                .filter(movement -> movement.getMovementDate().isBefore(end.plusDays(1)))
+                .filter(movement -> convert.convertUuidToString(movement.getUserGroup())
+                        .equals(convert.convertUuidToString(utilService.getUserGroup())))
                 .sorted(getMovementComparator())
                 .collect(Collectors.toList());
-
-
-        return movementList;
     }
 
     @Override
-    public List<ItemsMovement> listItemsByMovement(UUID movementId, UUID userId) {
+    public List<ItemsMovement> listItemsByMovement(UUID movementId) {
         fetchOrFail(movementId);
 
         return itemsMovementRepository.findAllByMovementId(movementId)
@@ -109,18 +105,15 @@ public class MovementServiceImpl implements MovementService {
         stockService.saveOrUpdate(stock, item.getMovement().getMovementType());
     }
 
-    private void validateMovement(Movement movement,UUID userId) {
+    private void validateMovement(Movement movement) {
         Entities entity = new Entities();
         if (movement != null && movement.getEntity() != null) {
              entity = entityService.fetchOrFail(movement.getEntity().getEntityId()).get();
         }
-        var user = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException(userId));
 
-
-        movement.setUserGroup(user.getGroupId());
+        movement.setUserGroup(utilService.getUserGroup());
         movement.setEntity(entity);
-        movement.setUserId(user.getUserId());
+        movement.setUserId(currentUserService.getCurrentUser().getUserId());
     }
 
     public Optional<Movement> fetchOrFail(UUID movementId) {

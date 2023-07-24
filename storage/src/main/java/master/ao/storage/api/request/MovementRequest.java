@@ -30,8 +30,8 @@ public class MovementRequest {
     @NotBlank
     private String documentNumber;
 
-    @NotNull
     private DevolutionType devolutionType;
+
     private BigDecimal total;
 
     @NotBlank

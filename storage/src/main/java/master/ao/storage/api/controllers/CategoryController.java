@@ -52,13 +52,11 @@ public class CategoryController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping()
-    public ResponseEntity<CategoryResponse> saveCategory(@Valid @RequestBody CategoryRequest request,
-                                                         Authentication authentication) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    public ResponseEntity<CategoryResponse> saveCategory(@Valid @RequestBody CategoryRequest request) {
         log.debug("POST createCategory request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toCategory)
-                .map(category -> categoryService.save(category, userDetails.getUserId()))
+                .map(category -> categoryService.save(category))
                 .map(mapper::toCategoryResponse)
                 .map(categoryResponse -> ResponseEntity.status(HttpStatus.CREATED).body(categoryResponse))
                 .findFirst()

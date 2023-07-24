@@ -43,7 +43,7 @@ public class ItemsMovement implements Serializable {
 
     private String barcode;
 
-    private BigDecimal cust;
+    private BigDecimal cost;
 
     private String serialNumber;
 
@@ -76,7 +76,7 @@ public class ItemsMovement implements Serializable {
 
 
     public void calculateTotalValue() {
-        BigDecimal unitPrice = this.getCust();
+        BigDecimal unitPrice = this.getCost();
         Long quatity = this.getQuantity();
 
         if (unitPrice == null) {

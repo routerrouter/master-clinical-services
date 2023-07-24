@@ -22,6 +22,6 @@ public class ProductResponse {
     private String brand;
     private CategoryResponse category;
     private GroupResponse group;
-    private StorageResponse storage;
+    private StorageShortResponse storage;
     private UUID natureId;
 }

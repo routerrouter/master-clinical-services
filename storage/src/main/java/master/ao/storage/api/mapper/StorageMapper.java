@@ -3,6 +3,7 @@ package master.ao.storage.api.mapper;
 import lombok.RequiredArgsConstructor;
 import master.ao.storage.api.request.StorageRequest;
 import master.ao.storage.api.response.StorageResponse;
+import master.ao.storage.api.response.StorageShortResponse;
 import master.ao.storage.core.domain.models.Storage;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

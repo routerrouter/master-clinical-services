@@ -14,6 +14,7 @@ import master.ao.storage.api.request.LocationRequest;
 import master.ao.storage.api.response.LocationResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.LocationService;
+import master.ao.storage.core.domain.services.UtilService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,7 @@ import java.util.stream.Stream;
 public class LocationController {
 
     private final LocationService locationService;
+    private final UtilService utilService;
     private final LocationMapper mapper;
 
     @Operation(summary = "Create location")
@@ -93,7 +95,7 @@ public class LocationController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
-    public ResponseEntity<Page<LocationResponse>> getAll(@ParameterObject SpecificationTemplate.LocationSpec spec,
+    public ResponseEntity<Page<Object>> getAll(@ParameterObject SpecificationTemplate.LocationSpec spec,
                                                          @ParameterObject  @PageableDefault(page = 0, size = 10, sort = "locationId", direction = Sort.Direction.ASC)
                                                                  Pageable pageable, @RequestParam(required = false) UUID storageId) {
         List<LocationResponse> locationsList = new ArrayList<>();
@@ -113,12 +115,7 @@ public class LocationController {
                     .collect(Collectors.toList());
         }
 
-        int start = (int) (pageable.getOffset() > locationsList.size() ? locationsList.size() : pageable.getOffset());
-        int end = (int) ((start + pageable.getPageSize()) > locationsList.size() ? locationsList.size()
-                : (start + pageable.getPageSize()));
-        Page<LocationResponse> locationsPageList = new PageImpl<>(locationsList.subList(start, end), pageable, locationsList.size());
-
-        return ResponseEntity.status(HttpStatus.OK).body(locationsPageList);
+        return utilService.getPageResponseEntity(pageable, new ArrayList<Object>(locationsList));
 
     }
 

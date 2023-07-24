@@ -10,6 +10,7 @@ import master.ao.storage.api.request.MovementRequest;
 import master.ao.storage.api.response.ItemsMovementResponse;
 import master.ao.storage.api.response.MovementResponse;
 import master.ao.storage.core.domain.services.MovementService;
+import master.ao.storage.core.domain.services.UtilService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,18 +39,16 @@ import java.util.stream.Stream;
 public class MovementController {
 
     private final MovementService movementService;
+    private final UtilService utilService;
     private final MovementMapper mapper;
-    private final ItemsItemsMovementMapper itemsMovementMapper;
 
 
     @PostMapping()
-    public ResponseEntity<MovementResponse> saveMovement(@Valid @RequestBody MovementRequest request,
-                                                         Authentication authentication) {
-        var userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    public ResponseEntity<MovementResponse> saveMovement(@Valid @RequestBody MovementRequest request) {
         log.debug("POST saveMovement request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toMovement)
-                .map(movement -> movementService.save(movement, userDetails.getUserId()))
+                .map(movement -> movementService.save(movement))
                 .map(mapper::toMovementResponse)
                 .map(groupResponse -> ResponseEntity
                         .status(HttpStatus.CREATED).body(groupResponse))
@@ -57,56 +57,34 @@ public class MovementController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<MovementResponse>> listAllMovements(@ParameterObject SpecificationTemplate.MovementSpec spec,
+    public ResponseEntity<Page<Object>> listAllMovements(@ParameterObject SpecificationTemplate.MovementSpec spec,
                                                                    @ParameterObject @PageableDefault(page = 0, size = 10, sort = "movementDate", direction = Sort.Direction.ASC) Pageable pageable,
                                                                    @RequestParam(required = false) String initialDate,
                                                                    @RequestParam(required = false) String finalDate,
-                                                                   @RequestParam(required = false) UUID entityId,
-                                                                   @RequestParam UUID userGroup,
-                                                                   Authentication authentication) {
+                                                                   @RequestParam(required = false) UUID entityId) {
 
-        var userDetails = (UserDetailsImpl) authentication.getPrincipal();
         log.debug("GET list all movements");
 
         List<MovementResponse> movementResponseList = new ArrayList<>();
+        LocalDate initial = LocalDate.parse(initialDate);
+        LocalDate endDate = LocalDate.parse(finalDate);
+
 
         if (entityId != null) {
             movementResponseList = movementService.listAndFilterAllMovements(SpecificationTemplate.movementEntityId(entityId)
-                    .and(spec),userDetails.getUserId())
+                    .and(spec),initial, endDate)
                     .stream()
                     .map(mapper::toMovementResponse)
                     .collect(Collectors.toList());
         } else {
-            movementResponseList = movementService.listAndFilterAllMovements(spec,userDetails.getUserId())
+            movementResponseList = movementService.listAndFilterAllMovements(spec, initial, endDate)
                     .stream()
                     .map(mapper::toMovementResponse)
                     .collect(Collectors.toList());
         }
 
 
-        int start = (int) (pageable.getOffset() > movementResponseList.size() ? movementResponseList.size() : pageable.getOffset());
-        int end = (int) ((start + pageable.getPageSize()) > movementResponseList.size() ? movementResponseList.size()
-                : (start + pageable.getPageSize()));
-        Page<MovementResponse> movementResponsePage = new PageImpl<>(movementResponseList.subList(start, end), pageable, movementResponseList.size());
-
-        return ResponseEntity.status(HttpStatus.OK).body(movementResponsePage);
-    }
-
-
-    @GetMapping("/items/{movementId}/movement")
-    public ResponseEntity<List<ItemsMovementResponse>> listAllItemsMovement(@PathVariable UUID movementId,
-                                                                            Authentication authentication) {
-
-        var userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        log.debug("GET movement items list");
-
-        List<ItemsMovementResponse>  itemsMovementResponseList = movementService.listItemsByMovement(movementId, userDetails.getUserId())
-                    .stream()
-                    .map(itemsMovementMapper::toItemsMovementResponse)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.status(HttpStatus.OK).body(itemsMovementResponseList);
+        return utilService.getPageResponseEntity(pageable, new ArrayList<Object>(movementResponseList));
     }
 
 

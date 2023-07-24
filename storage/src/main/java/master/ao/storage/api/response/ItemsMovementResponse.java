@@ -19,14 +19,14 @@ import java.util.UUID;
 public class ItemsMovementResponse {
     private UUID id;
     private ProductShortResponse product;
-    private LocationResponse location;
+    private LocationShortResponse location;
     private String lote;
     private String model;
     private String barcode;
     private String serialNumber;
     private UUID originTransfer;
     private UUID destineTransfer;
-    private BigDecimal cust;
+    private BigDecimal cost;
     private Long quantity;
     private UnitType unitType;
     private LocalDate acquisitionDate;

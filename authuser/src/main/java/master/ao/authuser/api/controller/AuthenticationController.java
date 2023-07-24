@@ -28,6 +28,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -62,7 +63,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping("/signup/{groupId}/group")
-    public ResponseEntity<UserResponse> registerUser(@RequestBody @JsonView(UserRequest.UserView.RegistrationPost.class) UserRequest request,
+    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody @JsonView(UserRequest.UserView.RegistrationPost.class) UserRequest request,
                                                      @Parameter(description = "id of group to be associate") @PathVariable("groupId") UUID groupId,
                                                      @RequestHeader("Authorization") String token) {
         log.debug("POST createUser request received {} ", request.toString());

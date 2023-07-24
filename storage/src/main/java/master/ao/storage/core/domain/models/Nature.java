@@ -35,5 +35,8 @@ public class Nature implements Serializable {
     @Column(nullable = false)
     private String name;
 
+    @JsonIgnore
+    private UUID userGroup;
+
 
 }

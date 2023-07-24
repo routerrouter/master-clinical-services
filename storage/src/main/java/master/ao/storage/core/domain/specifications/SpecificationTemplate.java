@@ -15,14 +15,12 @@ import java.util.UUID;
 public class SpecificationTemplate {
 
     @And({
-            @Spec(path = "userGroup", spec = Equal.class),
             @Spec(path = "name", spec = Like.class)
     })
     public interface GroupSpec extends Specification<Group> {
     }
 
     @And({
-            @Spec(path = "userGroup", spec = Equal.class),
             @Spec(path = "name", spec = Like.class)
     })
     public interface CategorySpec extends Specification<Category> {
@@ -35,7 +33,7 @@ public class SpecificationTemplate {
     }
 
     @And({
-            @Spec(path = "userGroup", spec = Equal.class),
+            @Spec(path = "name", spec = Like.class),
             @Spec(path = "description", spec = Like.class)
     })
     public interface StorageSpec extends Specification<Storage> {
@@ -76,7 +74,7 @@ public class SpecificationTemplate {
             @Spec(path = "documentNumber", spec = Like.class),
             @Spec(path = "movementStatus", spec = Equal.class),
             @Spec(path = "devolutionType", spec = Equal.class),
-            @Spec(path = "userGroup", spec = Equal.class)
+            
     })
     public interface MovementSpec extends Specification<Movement> {
     }
@@ -93,7 +91,6 @@ public class SpecificationTemplate {
 
     @And({
             @Spec(path = "natureId", spec = Equal.class),
-            @Spec(path = "userGroup", spec = Equal.class),
             @Spec(path = "name", spec = Like.class)
     })
     public interface ProductSpec extends Specification<Product> {

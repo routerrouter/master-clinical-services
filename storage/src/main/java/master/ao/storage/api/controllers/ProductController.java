@@ -13,8 +13,10 @@ import master.ao.storage.api.config.security.UserDetailsImpl;
 import master.ao.storage.api.mapper.ProductMapper;
 import master.ao.storage.api.request.ProductRequest;
 import master.ao.storage.api.response.ProductResponse;
+import master.ao.storage.api.response.StockResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.ProductService;
+import master.ao.storage.core.domain.services.UtilService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -44,6 +46,7 @@ import java.util.stream.Stream;
 public class ProductController {
 
     private final ProductService productService;
+    private final UtilService utilService;
     private final ProductMapper mapper;
 
     @Operation(summary = "Create product")
@@ -54,15 +57,13 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping("")
-    public ResponseEntity<ProductResponse> saveProduct(@Valid @RequestBody ProductRequest request,
-                                                       Authentication authentication) {
+    public ResponseEntity<ProductResponse> saveProduct(@Valid @RequestBody ProductRequest request) {
 
         log.debug("POST createProduct request received {} ", request.toString());
 
-        var userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return Stream.of(request)
                 .map(mapper::toProduct)
-                .map(product -> productService.createProduct(product,userDetails.getUserId()))
+                .map(product -> productService.createProduct(product))
                 .map(mapper::toProductResponse)
                 .map(productResponse -> ResponseEntity.status(HttpStatus.CREATED).body(productResponse))
                 .findFirst()
@@ -78,7 +79,7 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(@Valid @RequestBody ProductRequest request,
-                                                         @Parameter(description = "id of product to be updated")  @PathVariable("productId") UUID productId) {
+                                                         @Parameter(description = "id of product to be updated") @PathVariable("productId") UUID productId) {
         log.debug("PUT updateProduct request received {} ", request.toString());
         return Stream.of(request)
                 .map(mapper::toProduct)
@@ -94,16 +95,15 @@ public class ProductController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Products",
                     content = @Content),
-            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "400", description = "Invalid id userGroup supplied"),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
-    public ResponseEntity<Page<ProductResponse>> getAllProducts(@ParameterObject SpecificationTemplate.ProductSpec spec,
-                                                        @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
-                                                        @RequestParam(required = false) UUID categoryId,
-                                                        @RequestParam(required = false) UUID productId,
-                                                        @RequestParam UUID userGroup,
-                                                        @RequestParam(required = false) UUID natureId) {
+    public ResponseEntity<Page<Object>> getAllProducts(@ParameterObject SpecificationTemplate.ProductSpec spec,
+                                                                @ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+                                                                @RequestParam(required = false) UUID categoryId,
+                                                                @RequestParam(required = false) UUID productId,
+                                                                @RequestParam(required = false) UUID natureId) {
 
         List<ProductResponse> productsList = new ArrayList<>();
 
@@ -136,21 +136,10 @@ public class ProductController {
                     .sorted(getProductResponseComparator())
                     .collect(Collectors.toList());
         }
-
-
-        int start = (int) (pageable.getOffset() > productsList.size() ? productsList.size() : pageable.getOffset());
-        int end = (int) ((start + pageable.getPageSize()) > productsList.size() ? productsList.size()
-                : (start + pageable.getPageSize()));
-        Page<ProductResponse> productsPageList = new PageImpl<>(productsList.subList(start, end), pageable, productsList.size());
-
-        return ResponseEntity.status(HttpStatus.OK).body(productsPageList);
+        return utilService.getPageResponseEntity(pageable, new ArrayList<Object>(productsList));
 
     }
 
-    private Comparator<ProductResponse> getProductResponseComparator() {
-        return (o1, o2) -> o1.getName().
-                compareTo(o2.getName());
-    }
 
     @Operation(summary = "Get a product by its id")
     @ApiResponses(value = {
@@ -164,7 +153,7 @@ public class ProductController {
     })
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> fetchOrFail(@Parameter(description = "id of product to be searched")
-                                                           @PathVariable("productId") UUID productId) {
+                                                       @PathVariable("productId") UUID productId) {
         return productService.fetchOrFail(productId)
                 .map(mapper::toProductResponse)
                 .map(productResponse -> ResponseEntity.status(HttpStatus.OK).body(productResponse))
@@ -184,9 +173,14 @@ public class ProductController {
     @DeleteMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@Parameter(description = "id of product to be deleted")
-                           @PathVariable UUID productId) {
+                       @PathVariable UUID productId) {
         productService.delete(productId);
     }
 
+
+    private Comparator<ProductResponse> getProductResponseComparator() {
+        return (o1, o2) -> o1.getName().
+                compareTo(o2.getName());
+    }
 
 }

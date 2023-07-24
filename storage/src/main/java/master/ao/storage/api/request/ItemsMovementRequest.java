@@ -19,7 +19,7 @@ public class ItemsMovementRequest {
     private String model;
     private String barcode;
     private String serialNumber;
-    private BigDecimal cust;
+    private BigDecimal cost;
     private Long quantity;
     private UnitType unitType;
     private LocalDate acquisitionDate;

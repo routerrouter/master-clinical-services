@@ -1,7 +1,5 @@
 package master.ao.storage.api.response;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import master.ao.storage.core.domain.enums.TransferType;
 import master.ao.storage.core.domain.enums.UnitType;
@@ -17,8 +15,8 @@ import java.util.UUID;
 public class ItemsTransferResponse {
 
     private UUID itemTransferId;
-    private ProductResponse product;
-    private LocationResponse location;
+    private ProductShortResponse product;
+    private LocationShortResponse location;
     private Long quantity;
     private String lote;
     private Long lifespan;

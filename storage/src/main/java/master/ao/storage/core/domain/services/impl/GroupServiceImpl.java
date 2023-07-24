@@ -6,6 +6,8 @@ import master.ao.storage.core.domain.models.Group;
 import master.ao.storage.core.domain.repositories.GroupRepository;
 import master.ao.storage.core.domain.repositories.UserRepository;
 import master.ao.storage.core.domain.services.GroupService;
+import master.ao.storage.core.domain.services.UtilService;
+import master.ao.storage.core.domain.utils.Converts;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,6 +19,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,7 +31,8 @@ public class GroupServiceImpl implements GroupService {
 
 
     private final GroupRepository groupRepository;
-    private final UserRepository userRepository;
+    private final Converts convert;
+    private final UtilService utilService;
 
     @Override
     @Transactional
@@ -37,8 +41,7 @@ public class GroupServiceImpl implements GroupService {
         if (groupOptional.isPresent()) {
             throw new ExistingDataException("Grupo informado já existe.");
         }
-        var userGroup = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        group.setUserGroup(userGroup.getGroupId());
+        group.setUserGroup(utilService.getUserGroup());
         return groupRepository.save(group);
     }
 
@@ -78,7 +81,11 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<Group> findAll(Specification<Group> spec) {
-        return groupRepository.findAll(spec);
+        return groupRepository.findAll(spec)
+                .stream()
+                .filter(group -> convert.convertUuidToString(group.getUserGroup())
+                .equals(convert.convertUuidToString(utilService.getUserGroup())))
+                .collect(Collectors.toList());
     }
 
 }
