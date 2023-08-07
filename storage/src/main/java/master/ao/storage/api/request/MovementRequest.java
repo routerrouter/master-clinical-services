@@ -6,9 +6,7 @@ import master.ao.storage.core.domain.enums.MovementStatus;
 import master.ao.storage.core.domain.enums.MovementType;
 import master.ao.storage.core.domain.models.Entities;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ public class MovementRequest {
     private BigDecimal total;
 
     @NotBlank
+    @Size(min = 15, max = 255)
     private String description;
     private String patient;
     

@@ -1,0 +1,38 @@
+package master.ao.accountancy.domain.services.implementation;
+
+import lombok.RequiredArgsConstructor;
+import master.ao.accountancy.api.config.security.AuthenticationCurrentUserService;
+import master.ao.accountancy.domain.services.UtilService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class UtilServiceImpl implements UtilService {
+
+    String baseUrl = "/master-authuser/user";
+
+    private final AuthenticationCurrentUserService currentUserService;
+
+    @Override
+    public String createUrlToAuthUser() {
+        return baseUrl;
+    }
+
+
+    @Override
+    public ResponseEntity<Page<Object>> getPageResponseEntity(Pageable pageable, List<Object> objectList) {
+        int start = (int) (pageable.getOffset() > objectList.size() ? objectList.size() : pageable.getOffset());
+        int end = (int) ((start + pageable.getPageSize()) > objectList.size() ? objectList.size()
+                : (start + pageable.getPageSize()));
+        Page<Object> objectPage = new PageImpl<>(objectList.subList(start, end), pageable, objectList.size());
+
+        return ResponseEntity.status(HttpStatus.OK).body(objectPage);
+    }
+}

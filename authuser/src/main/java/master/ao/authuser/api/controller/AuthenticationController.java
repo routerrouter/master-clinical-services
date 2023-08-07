@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import master.ao.authuser.api.config.security.JwtProvider;
 import master.ao.authuser.api.mapper.UserMapper;
-import master.ao.authuser.api.request.LoginResponseDetail;
 import master.ao.authuser.api.request.LoginRequest;
+import master.ao.authuser.api.request.LoginResponseDetail;
 import master.ao.authuser.api.request.UserRequest;
 import master.ao.authuser.api.response.GroupResponse;
 import master.ao.authuser.api.response.UserResponse;
@@ -28,12 +28,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;

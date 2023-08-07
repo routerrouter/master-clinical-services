@@ -20,14 +20,17 @@ public class SubAccount implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID subAccountId;
 
+    @Column(nullable = false)
     private String number;
+
+    @Column(nullable = false)
     private String description;
 
     @ManyToOne
+    @JoinColumn(nullable = false, name="account_id")
     private Account account;
 
     private String movement;
-
 
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")

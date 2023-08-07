@@ -48,7 +48,6 @@ public class Storage implements Serializable {
     private UUID userGroup;
 
     @JsonIgnore
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(
             mappedBy = "storage",
             fetch = FetchType.EAGER,
@@ -58,7 +57,6 @@ public class Storage implements Serializable {
     private Set<Product> products;
 
     @JsonIgnore
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(
             mappedBy = "storage",
             fetch = FetchType.EAGER,
