@@ -1,6 +1,5 @@
 package master.ao.authuser.core.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +11,6 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "TB_STORAGES")
 public class Storage implements Serializable {
@@ -24,7 +22,6 @@ public class Storage implements Serializable {
 
     @Column(nullable = false)
     private String name;
-
 
     @Column(nullable = false)
     private UUID userGroup;

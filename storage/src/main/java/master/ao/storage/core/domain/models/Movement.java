@@ -24,7 +24,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "TB_MOVEMENTS")
 public class Movement implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,8 +37,9 @@ public class Movement implements Serializable {
     @Column(nullable = false)
     private LocalDate movementDate;
 
-    @Column(nullable = false)
-    private UUID userId;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -51,6 +51,7 @@ public class Movement implements Serializable {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "entityId")
     private Entities entity;
 
     @Column(nullable = false)

@@ -25,7 +25,6 @@ public class MovementRequest {
     @NotNull
     private MovementType movementType;
 
-    @NotBlank
     private String documentNumber;
 
     private DevolutionType devolutionType;
@@ -35,8 +34,8 @@ public class MovementRequest {
     @NotBlank
     @Size(min = 15, max = 255)
     private String description;
+
     private String patient;
-    
 
     @NotNull
     private List<ItemsMovementRequest> items = new ArrayList<>();

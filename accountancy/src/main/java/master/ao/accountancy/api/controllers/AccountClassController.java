@@ -1,4 +1,4 @@
-package master.ao.accountancy.api;
+package master.ao.accountancy.api.controllers;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,7 +43,7 @@ public class AccountClassController {
 
     private final AccountClassService accountClassService;
     private final UtilService utilService;
-    private AccountClassMapper mapper;
+    private final AccountClassMapper mapper;
 
     @Operation(summary = "Create Account class")
     @ApiResponses(value = {

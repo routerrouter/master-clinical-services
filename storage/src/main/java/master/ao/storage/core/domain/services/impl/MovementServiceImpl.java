@@ -11,6 +11,7 @@ import master.ao.storage.core.domain.models.Movement;
 import master.ao.storage.core.domain.models.Stock;
 import master.ao.storage.core.domain.repositories.ItemsMovementRepository;
 import master.ao.storage.core.domain.repositories.MovementRepository;
+import master.ao.storage.core.domain.repositories.UserRepository;
 import master.ao.storage.core.domain.services.*;
 import master.ao.storage.core.domain.utils.Converts;
 import org.springframework.beans.BeanUtils;
@@ -37,13 +38,20 @@ public class MovementServiceImpl implements MovementService {
     private final UtilService utilService;
     private final StockService stockService;
     private final ItemsMovementRepository itemsMovementRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     @Override
     public Movement save(Movement movement) {
 
         validateMovement(movement);
-        validateItems(movement);
+
+        if (!movement.getMovementType().equals(MovementType.REQUEST)
+                && !movement.getMovementType().equals(MovementType.ORDER) ) {
+            validateItems(movement);
+        } else {
+            validateItemsRequestAndOrderMovement(movement);
+        }
 
         movement.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
         movement.calculateTotalValue();
@@ -82,17 +90,26 @@ public class MovementServiceImpl implements MovementService {
             var location = locationService.fetchOrFail(
                     item.getLocation().getLocationId()).get();
 
-
             item.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
             item.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
             item.setMovement(movement);
             item.setProduct(product);
             item.setLocation(location);
 
-            if (!movement.getMovementType().equals(MovementType.REQUEST)
-                    && !movement.getMovementType().equals(MovementType.ORDER) ) {
-                setStockForSave(item);
-            }
+            setStockForSave(item);
+
+        });
+    }
+
+    private void validateItemsRequestAndOrderMovement(Movement movement) {
+        movement.getItems().forEach(item -> {
+            var product = productService.fetchOrFail(
+                    item.getProduct().getProductId()).get();
+
+            item.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
+            item.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
+            item.setMovement(movement);
+            item.setProduct(product);
 
         });
     }
@@ -113,7 +130,7 @@ public class MovementServiceImpl implements MovementService {
 
         movement.setUserGroup(utilService.getUserGroup());
         movement.setEntity(entity);
-        movement.setUserId(currentUserService.getCurrentUser().getUserId());
+        movement.setUser(userRepository.findById(currentUserService.getCurrentUser().getUserId()).get()); // rever possivel bug
     }
 
     public Optional<Movement> fetchOrFail(UUID movementId) {

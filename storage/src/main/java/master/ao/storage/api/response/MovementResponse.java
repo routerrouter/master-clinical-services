@@ -8,6 +8,7 @@ import master.ao.storage.core.domain.enums.DevolutionType;
 import master.ao.storage.core.domain.enums.MovementStatus;
 import master.ao.storage.core.domain.enums.MovementType;
 import master.ao.storage.core.domain.models.Entities;
+import master.ao.storage.core.domain.models.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,7 +23,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MovementResponse {
     private UUID movementId;
-    private UUID userId;
+    private UserResponse user;
     private LocalDate movementDate;
     private MovementType movementType;
     private String documentNumber;

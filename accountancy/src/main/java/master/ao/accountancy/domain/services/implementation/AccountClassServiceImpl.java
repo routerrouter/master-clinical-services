@@ -49,10 +49,10 @@ public class AccountClassServiceImpl implements AccountClassService {
 
     @Override
     public Optional<AccountClass> fetchOrFail(UUID accountClassId) {
-        var Category = accountClassRepository.findById(accountClassId)
+        var accountClass = accountClassRepository.findById(accountClassId)
                 .orElseThrow(() -> new AccountClassNotFoundException(accountClassId));
 
-        return Optional.of(Category);
+        return Optional.of(accountClass);
     }
 
     @Override

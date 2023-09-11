@@ -43,7 +43,7 @@ public class Storage implements Serializable {
     @Column(nullable = false)
     private Long capacity;
 
-    @JsonIgnore
+    //@JsonIgnore
     @Column(nullable = false)
     private UUID userGroup;
 

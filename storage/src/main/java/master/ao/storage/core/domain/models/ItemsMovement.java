@@ -18,7 +18,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "TB_MOVEMENT_PRODUCTS")
 public class ItemsMovement implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,25 +25,31 @@ public class ItemsMovement implements Serializable {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "productId")
     private Product product;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "movementId")
     private Movement movement;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "locationId", nullable = true)
     private Location location;
 
+    @Column(nullable = true)
     private String lote;
 
+    @Column(nullable = true)
     private String model;
 
+    @Column(nullable = true)
     private String barcode;
 
     private BigDecimal cost;
 
+    @Column(nullable = true)
     private String serialNumber;
 
     private BigDecimal totalValue;

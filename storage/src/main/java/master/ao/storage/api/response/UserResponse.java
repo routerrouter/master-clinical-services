@@ -12,9 +12,4 @@ import java.util.UUID;
 public class UserResponse {
     private UUID userId;
     private String fullName;
-    private String email;
-    private String username;
-    private LocalDateTime creationDate;
-    private LocalDateTime lastUpdateDate;
-    private UUID groupId;
 }

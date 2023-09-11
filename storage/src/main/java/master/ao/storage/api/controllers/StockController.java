@@ -1,6 +1,5 @@
 package master.ao.storage.api.controllers;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,15 +10,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import master.ao.storage.api.mapper.StockMapper;
 import master.ao.storage.api.request.StockPutRequest;
-import master.ao.storage.api.request.StockRequest;
 import master.ao.storage.api.response.ProductResponse;
-import master.ao.storage.api.response.StockResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
 import master.ao.storage.core.domain.services.StockService;
 import master.ao.storage.core.domain.services.UtilService;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -30,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 

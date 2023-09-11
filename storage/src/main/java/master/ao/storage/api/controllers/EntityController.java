@@ -90,9 +90,9 @@ public class EntityController {
     }
 
 
-    @Operation(summary = "Get all categories")
+    @Operation(summary = "Get all entities")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found Categories",
+            @ApiResponse(responseCode = "200", description = "Found Entities",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
             @ApiResponse(responseCode = "500", description = "Internal server error",

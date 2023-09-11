@@ -1,15 +1,16 @@
 package master.ao.storage.core.domain.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import master.ao.storage.api.config.security.AuthenticationCurrentUserService;
 import master.ao.storage.core.domain.enums.MovementType;
+import master.ao.storage.core.domain.enums.UpdateStockType;
 import master.ao.storage.core.domain.exceptions.StockNotFoundException;
+import master.ao.storage.core.domain.models.LogStock;
 import master.ao.storage.core.domain.models.Product;
 import master.ao.storage.core.domain.models.Stock;
 import master.ao.storage.core.domain.repositories.StockRepository;
-import master.ao.storage.core.domain.services.LocationService;
-import master.ao.storage.core.domain.services.ProductService;
-import master.ao.storage.core.domain.services.StockService;
-import master.ao.storage.core.domain.services.StorageService;
+import master.ao.storage.core.domain.repositories.UserRepository;
+import master.ao.storage.core.domain.services.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StockServiceImpl implements StockService {
 
-
     private  final StockRepository repository;
     private final StorageService storageService;
     private final ProductService productService;
     private final LocationService locationService;
+    private final LogStockService logStockService;
+    private final AuthenticationCurrentUserService currentUserService;
+    private final UserService userService;
 
-    LocalDate systemDate = LocalDate.now();
+    private LocalDate systemDate = LocalDate.now();
+    private String beforeValue = "0";
+    private String alterValue = "0";
 
     @Transactional
     @Override
@@ -107,18 +112,27 @@ public class StockServiceImpl implements StockService {
         var stockOptional = repository.findStock(stock)
                 .orElseThrow(()-> new  StockNotFoundException());
 
-        stockOptional.setCost(stock.getCost());
-        repository.save(stockOptional);
+        alterValue = String.valueOf(stock.getCost());
+        beforeValue = String.valueOf(stockOptional.getCost());
 
+        stockOptional.setCost(stock.getCost());
+
+        var stockUpdated = repository.save(stockOptional);
+        saveLogUpdate(UpdateStockType.UPDATE_COST,stockUpdated);
     }
 
     @Override
     public void updateProductExistence(Stock stock) {
         validateStock(stock);
         Stock existence = fetchOrFailExistence(stock).get();
+
+        alterValue = String.valueOf(stock.getQuantity());
+        beforeValue = String.valueOf(existence.getQuantity());
+
         existence.setQuantity(stock.getQuantity());
 
-        repository.save(existence);
+        var stockUpdated = repository.save(existence);
+        saveLogUpdate(UpdateStockType.UPDATE_QUANTITY,stockUpdated);
 
     }
 
@@ -145,5 +159,24 @@ public class StockServiceImpl implements StockService {
         productService.fetchOrFail(stock.getProduct().getProductId());
     }
 
+
+    public void saveLogUpdate(UpdateStockType type, Stock stock) {
+        LogStock logStock = new LogStock();
+        var user = userService.fetchOrFail(currentUserService.getCurrentUser().getUserId());
+        logStock.setLote(stock.getLote());
+        logStock.setMovementDate(systemDate);
+        logStock.setType(type);
+        logStock.setProduct(stock.getProduct());
+        logStock.setBeforeValue(beforeValue);
+        logStock.setUser(user.get());
+        if(type.equals(UpdateStockType.UPDATE_COST)) {
+            logStock.setAlteredValue(String.valueOf(stock.getCost()));
+            logStock.setNewValue(String.valueOf(stock.getCost()));
+        } else {
+            logStock.setAlteredValue(String.valueOf(stock.getQuantity()));
+            logStock.setNewValue(String.valueOf(stock.getQuantity()));
+        }
+        logStockService.save(logStock);
+    }
 
 }

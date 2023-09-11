@@ -24,7 +24,7 @@ public class AccountClassMapper {
         return mapper.map(accountClass, AccountClassResponse.class);
     }
 
-    public List<AccountClassResponse> toCategoryResponseList(List<AccountClass> accountClassList) {
+    public List<AccountClassResponse> toAccountClassResponseList(List<AccountClass> accountClassList) {
         return accountClassList.stream()
                 .map(this::toAccountClassResponse)
                 .collect(Collectors.toList());
