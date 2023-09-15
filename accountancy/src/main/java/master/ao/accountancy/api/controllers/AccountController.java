@@ -11,11 +11,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import master.ao.accountancy.api.mapper.AccountClassMapper;
-import master.ao.accountancy.api.requests.AccountClassRequest;
+import master.ao.accountancy.api.mapper.AccountMapper;
+import master.ao.accountancy.api.requests.AccountRequest;
 import master.ao.accountancy.api.responses.AccountClassResponse;
+import master.ao.accountancy.api.responses.AccountResponse;
 import master.ao.accountancy.domain.exceptions.BussinessException;
-import master.ao.accountancy.domain.services.AccountClassService;
+import master.ao.accountancy.domain.services.AccountService;
 import master.ao.accountancy.domain.services.UtilService;
 import master.ao.accountancy.domain.specifications.SpecificationTemplate;
 import org.springdoc.api.annotations.ParameterObject;
@@ -37,108 +38,109 @@ import java.util.stream.Stream;
 
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/account-class")
-@Tag(name = "Account class", description = "The Account class API. Contains all operations that can be performed on a Account class")
+@RequestMapping("/api/v1/accounts")
+@Tag(name = "Accounts", description = "The Accounts API. Contains all operations that can be performed on a Account")
 @RestController
-public class AccountClassController {
+public class AccountController {
 
-    private final AccountClassService accountClassService;
+    private final AccountService accountService;
     private final UtilService utilService;
-    private final AccountClassMapper mapper;
+    private final AccountMapper mapper;
 
-    @Operation(summary = "Create Account class")
+    @Operation(summary = "Create Account")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Account class created!",
+            @ApiResponse(responseCode = "201", description = "Account created!",
                     content = @Content(schema = @Schema(implementation = AccountClassResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
-    @PostMapping()
-    private ResponseEntity<AccountClassResponse> createAccountClass(@Valid @RequestBody AccountClassRequest request) {
-        log.debug("account class requested:{} ", request.toString());
+    @PostMapping("/accountClass/{classId}")
+    private ResponseEntity<AccountResponse> createAccount(@Valid @RequestBody AccountRequest request,
+                                                          @PathVariable("classId") UUID classId) {
+        log.debug("account requested:{} ", request.toString());
 
         return Stream.of(request)
-                .map(mapper::toAccountClass)
-                .map(accountClass -> accountClassService.createAccountClass(accountClass))
-                .map(mapper::toAccountClassResponse)
-                .map(accountClassResponse -> ResponseEntity.status(HttpStatus.CREATED).body(accountClassResponse))
+                .map(mapper::toAccount)
+                .map(account -> accountService.createAccount(account, classId))
+                .map(mapper::toAccountResponse)
+                .map(accountResponse -> ResponseEntity.status(HttpStatus.CREATED).body(accountResponse))
                 .findFirst()
                 .get();
     }
 
-    @Operation(summary = "Update Account class")
+    @Operation(summary = "Update Account")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Updated accountClass", content = @Content(schema = @Schema(implementation = AccountClassResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "200", description = "Updated account", content = @Content(schema = @Schema(implementation = AccountClassResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
-            @ApiResponse(responseCode = "404", description = "Account class not found"),
+            @ApiResponse(responseCode = "404", description = "Account not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
-    @PutMapping("/{accountClassId}")
-    public ResponseEntity<AccountClassResponse> updateEntity(@Valid @RequestBody AccountClassRequest request,
-                                                       @Parameter(description = "id of account class to be updated") @PathVariable("accountClassId") UUID accountClassId) {
-        log.debug("PUT update Account class request received {} ", request.toString());
+    @PutMapping("/{accountId}")
+    public ResponseEntity<AccountResponse> updateEntity(@Valid @RequestBody AccountRequest request,
+                                                       @Parameter(description = "id of account to be updated") @PathVariable("accountId") UUID accountId) {
+        log.debug("PUT update Account request received {} ", request.toString());
         return Stream.of(request)
-                .map(mapper::toAccountClass)
-                .map(accountClass -> accountClassService.updateAccountClass(accountClassId,accountClass))
-                .map(mapper::toAccountClassResponse)
-                .map(accountClassResponse -> ResponseEntity.status(HttpStatus.OK).body(accountClassResponse))
+                .map(mapper::toAccount)
+                .map(account -> accountService.updateAccount(account,accountId))
+                .map(mapper::toAccountResponse)
+                .map(accountResponse -> ResponseEntity.status(HttpStatus.OK).body(accountResponse))
                 .findFirst()
                 .get();
     }
 
 
-    @Operation(summary = "Get all accounts class")
+    @Operation(summary = "Get all accounts")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found Accounts class",
+            @ApiResponse(responseCode = "200", description = "Found Accounts",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
-    public ResponseEntity<Page<Object>> getAll(@ParameterObject SpecificationTemplate.AccountClassSpec spec,
+    public ResponseEntity<Page<Object>> getAll(@ParameterObject SpecificationTemplate.AccountSpec spec,
                                                @ParameterObject @PageableDefault(page = 0, size = 10, sort = "number", direction = Sort.Direction.ASC) Pageable pageable) {
-        List<AccountClassResponse> accountClassResponseList = accountClassService.findAllAccountClass(spec)
+        List<AccountResponse> accountResponseList = accountService.findAll(spec)
                 .stream()
-                .map(mapper::toAccountClassResponse)
+                .map(mapper::toAccountResponse)
                 .sorted((o1, o2) -> o1.getNumber().
                         compareTo(o2.getNumber()))
                 .collect(Collectors.toList());
 
         return utilService
-                .getPageResponseEntity(pageable, new ArrayList<Object>(accountClassResponseList));
+                .getPageResponseEntity(pageable, new ArrayList<Object>(accountResponseList));
 
     }
 
-    @Operation(summary = "Get a account class by its id")
+    @Operation(summary = "Get a account by its id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found the account class",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AccountClassResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Found the account",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AccountResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Account class not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))
     })
-    @GetMapping("/{accountClassId}")
-    public ResponseEntity<AccountClassResponse> fetchOrFail(@Parameter(description = "id of account class to be searched")
-                                                      @PathVariable("accountClassId") UUID accountClassId) {
-        return accountClassService.fetchOrFail(accountClassId)
-                .map(mapper::toAccountClassResponse)
-                .map(accountClassResponse -> ResponseEntity.status(HttpStatus.OK).body(accountClassResponse))
+    @GetMapping("/{accountId}")
+    public ResponseEntity<AccountResponse> fetchOrFail(@Parameter(description = "id of account to be searched")
+                                                      @PathVariable("accountId") UUID accountId) {
+        return accountService.fetchOrFail(accountId)
+                .map(mapper::toAccountResponse)
+                .map(accountResponse -> ResponseEntity.status(HttpStatus.OK).body(accountResponse))
                 .orElse(ResponseEntity.notFound().build());
 
     }
 
-    @Operation(summary = "Delete a account class")
+    @Operation(summary = "Delete a account")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Deleted account class!",
+            @ApiResponse(responseCode = "204", description = "Deleted account!",
                     content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Account class not found",
                     content = @Content)})
-    @DeleteMapping("/{accountClassId}")
+    @DeleteMapping("/{accountId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remove(@Parameter(description = "id of account class to be deleted") @PathVariable UUID accountClassId) {
-        accountClassService.delete(accountClassId);
+    public void remove(@Parameter(description = "id of account to be deleted") @PathVariable UUID accountId) {
+        accountService.delete(accountId);
     }
 }

@@ -12,4 +12,5 @@ import java.util.UUID;
 @Repository
 public interface AccountClassRepository extends JpaRepository<AccountClass, UUID>  , JpaSpecificationExecutor<AccountClass> {
     Optional<AccountClass> findByDescription(String description);
+    Optional<AccountClass> findByNumber(String number);
 }

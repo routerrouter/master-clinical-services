@@ -16,7 +16,7 @@ public class AccountMapper {
 
     private final ModelMapper mapper;
 
-    public Account toAccountClass(AccountRequest request) {
+    public Account toAccount(AccountRequest request) {
         return mapper.map(request, Account.class);
     }
 

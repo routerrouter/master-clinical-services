@@ -19,7 +19,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "TB_ACCOUNTS")
 public class Account implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,7 +34,7 @@ public class Account implements Serializable {
     private AccountType accountType;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "class_id")
+    @JoinColumn(nullable = false, name = "classId")
     private AccountClass accountClass;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

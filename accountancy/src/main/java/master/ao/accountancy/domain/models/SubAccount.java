@@ -14,7 +14,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "TB_SUBACCOUNTS")
 public class SubAccount implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,7 +26,7 @@ public class SubAccount implements Serializable {
     private String description;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name="account_id")
+    @JoinColumn(nullable = false, name="accountId")
     private Account account;
 
     private String movement;
@@ -40,4 +39,9 @@ public class SubAccount implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @Column(nullable = false)
     private LocalDateTime lastUpdateDate;
+
+
+    private String setSubAccountNumber() {
+        return "";
+    }
 }

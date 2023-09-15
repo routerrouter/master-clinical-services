@@ -9,23 +9,18 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
 @Getter
 @Setter
 @Entity
-@Table(name = "TB_NATURES")
-public class AccountNature implements Serializable {
+@Table(name = "TB_CATEGORIES")
+public class Category implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID natureId;
+    private UUID categoryId;
 
     @Column(nullable = false)
     private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "categoryId")
-    private Category category;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @Column(nullable = false)

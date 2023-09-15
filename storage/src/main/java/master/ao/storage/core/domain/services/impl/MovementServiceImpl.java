@@ -47,7 +47,8 @@ public class MovementServiceImpl implements MovementService {
         validateMovement(movement);
 
         if (!movement.getMovementType().equals(MovementType.REQUEST)
-                && !movement.getMovementType().equals(MovementType.ORDER) ) {
+                && !movement.getMovementType().equals(MovementType.ORDER)
+                && !movement.getMovementType().equals(MovementType.DEVOLUTION)) {
             validateItems(movement);
         } else {
             validateItemsRequestAndOrderMovement(movement);
@@ -103,13 +104,23 @@ public class MovementServiceImpl implements MovementService {
 
     private void validateItemsRequestAndOrderMovement(Movement movement) {
         movement.getItems().forEach(item -> {
+
             var product = productService.fetchOrFail(
                     item.getProduct().getProductId()).get();
+
+            var location = stockService.findExistenceByProduct(product.getProductId())
+                    .stream()
+                    .findFirst();
 
             item.setRegisteredAt(LocalDateTime.now(ZoneId.of("UTC")));
             item.setLastUpdateAt(LocalDateTime.now(ZoneId.of("UTC")));
             item.setMovement(movement);
             item.setProduct(product);
+            item.setLocation(location.get().getLocation());
+
+            if (movement.getMovementType().equals(MovementType.DEVOLUTION)){
+                setStockForSave(item);
+            }
 
         });
     }

@@ -13,4 +13,5 @@ public interface AccountClassService {
     Optional<AccountClass> fetchOrFail(UUID accountClassId);
     List<AccountClass> findAllAccountClass(Specification<AccountClass> specification);
     void delete(UUID accountClassId);
+    void validateAccountClass(AccountClass accountClass);
 }

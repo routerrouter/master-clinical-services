@@ -30,12 +30,12 @@ public class AccountClassServiceImpl implements AccountClassService {
 
     @Override
     public AccountClass createAccountClass(AccountClass accountClass) {
-        var accountClassOptional = accountClassRepository.findByDescription(accountClass.getDescription());
-        if (accountClassOptional.isPresent())
-            throw new ExistingDataException("Já existe uma classe de contas com esta descrição");
+
+        validateAccountClass(accountClass);
 
         accountClass.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         accountClass.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+
         return accountClassRepository.save(accountClass);
     }
 
@@ -63,15 +63,25 @@ public class AccountClassServiceImpl implements AccountClassService {
     @Override
     public void delete(UUID accountClassId) {
         try {
-            var categoryOptional = fetchOrFail(accountClassId).get();
-            accountClassRepository.delete(categoryOptional);
+            var classOptional = fetchOrFail(accountClassId).get();
+            accountClassRepository.delete(classOptional);
             accountClassRepository.flush();
 
         } catch (EmptyResultDataAccessException e) {
             throw new AccountClassNotFoundException(accountClassId);
-
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(MSG_ACCOUNT_CLASS_IN_USE);
         }
+    }
+
+    @Override
+    public void validateAccountClass(AccountClass accountClass) {
+        var accountDescriptionOptional = accountClassRepository.findByDescription(accountClass.getDescription());
+        if (accountDescriptionOptional.isPresent())
+            throw new ExistingDataException("Já existe uma classe conta registada com esta descrição");
+
+        var accountNumberOptional = accountClassRepository.findByNumber(accountClass.getNumber());
+        if (accountNumberOptional.isPresent())
+            throw new ExistingDataException("Já existe uma classe de conta registada com este número");
     }
 }
