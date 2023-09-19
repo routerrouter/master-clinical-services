@@ -11,6 +11,7 @@ import master.ao.accountancy.domain.models.AccountNature;
 import master.ao.accountancy.domain.repositories.AccountNatureRepository;
 import master.ao.accountancy.domain.services.CategoryService;
 import master.ao.accountancy.domain.services.NatureService;
+import master.ao.accountancy.domain.utilities.Converts;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,6 +22,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -31,6 +33,7 @@ public class NatureServiceImpl implements NatureService {
 
     private final AccountNatureRepository accountNatureRepository;
     private final CategoryService categoryService;
+    private final Converts convert;
 
     @Override
     public AccountNature createAccountNature(AccountNature nature, UUID categoryId) {
@@ -46,7 +49,7 @@ public class NatureServiceImpl implements NatureService {
 
         natureOptional.get().setDescription(nature.getDescription());
         natureOptional.get().setCategory(nature.getCategory());
-
+        natureOptional.get().setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         return accountNatureRepository.save(natureOptional.get());
     }
 
@@ -59,7 +62,17 @@ public class NatureServiceImpl implements NatureService {
     }
 
     @Override
-    public List<AccountNature> findAll(Specification<AccountNature> specification) {
+    public List<AccountNature> findAll(Specification<AccountNature> specification, UUID categoryId) {
+
+        if (categoryId != null) {
+            return accountNatureRepository.findAll(specification)
+                    .stream()
+                    .filter(nature -> convert.convertUuidToString(nature.getCategory().getCategoryId())
+                            .equals(convert.convertUuidToString(categoryId)))
+                    .sorted((o1, o2) -> o1.getDescription().
+                            compareTo(o2.getDescription()))
+                    .collect(Collectors.toList());
+        }
         return accountNatureRepository.findAll(specification);
     }
 

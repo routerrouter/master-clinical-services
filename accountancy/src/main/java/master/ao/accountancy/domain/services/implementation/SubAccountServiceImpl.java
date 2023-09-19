@@ -51,6 +51,7 @@ public class SubAccountServiceImpl implements SubAccountService {
         subAccountOptional.get().setDescription(account.getDescription());
         subAccountOptional.get().setAccount(account.getAccount());
         subAccountOptional.get().setMovement(account.getMovement());
+        subAccountOptional.get().setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
         return subAccountRepository.save(subAccountOptional.get());
     }

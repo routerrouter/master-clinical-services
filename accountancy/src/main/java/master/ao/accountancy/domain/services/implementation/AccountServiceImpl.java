@@ -47,7 +47,7 @@ public class AccountServiceImpl implements AccountService {
         accountOptional.get().setNumber(account.getNumber());
         accountOptional.get().setAccountClass(account.getAccountClass());
         accountOptional.get().setAccountType(account.getAccountType());
-
+        accountOptional.get().setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         return accountRepository.save(accountOptional.get());
     }
 

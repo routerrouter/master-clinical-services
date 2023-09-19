@@ -44,6 +44,7 @@ public class AccountClassServiceImpl implements AccountClassService {
         var accountClassOptional = fetchOrFail(accountClassId);
         accountClassOptional.get().setDescription(accountClass.getDescription());
         accountClassOptional.get().setNumber(accountClass.getNumber());
+        accountClassOptional.get().setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         return accountClassRepository.save(accountClassOptional.get());
     }
 

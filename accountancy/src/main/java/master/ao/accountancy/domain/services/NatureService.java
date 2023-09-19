@@ -12,7 +12,7 @@ public interface NatureService {
     AccountNature createAccountNature(AccountNature nature, UUID categoryId);
     AccountNature updateAccountNature(AccountNature nature, UUID accountId);
     Optional<AccountNature> fetchOrFail(UUID natureId);
-    List<AccountNature> findAll(Specification<AccountNature> specification);
+    List<AccountNature> findAll(Specification<AccountNature> specification , UUID categoryId);
     void validateNature(AccountNature nature, UUID categoryId);
     void delete(UUID natureId);
 

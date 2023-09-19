@@ -96,8 +96,9 @@ public class NatureController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
     public ResponseEntity<Page<Object>> getAll(@ParameterObject SpecificationTemplate.NatureSpec spec,
-                                               @ParameterObject @PageableDefault(page = 0, size = 10, sort = "number", direction = Sort.Direction.ASC) Pageable pageable) {
-        List<NatureResponse> natureResponseList = natureService.findAll(spec)
+                                               @Parameter(description = "id of Category associated") @RequestParam(required = false) UUID categoryId,
+                                               @ParameterObject @PageableDefault(page = 0, size = 10, sort = "description", direction = Sort.Direction.ASC) Pageable pageable) {
+        List<NatureResponse> natureResponseList = natureService.findAll(spec, categoryId)
                 .stream()
                 .map(mapper::toNatureResponse)
                 .sorted((o1, o2) -> o1.getDescription().

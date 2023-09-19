@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category updateCategory(Category category, UUID categoryId) {
         var categoryOptional = fetchOrFail(categoryId);
         categoryOptional.get().setDescription(category.getDescription());
-
+        categoryOptional.get().setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         return categoryRepository.save(categoryOptional.get());
     }
 

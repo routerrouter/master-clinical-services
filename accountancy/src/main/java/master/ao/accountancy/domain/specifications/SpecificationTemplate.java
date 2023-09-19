@@ -34,6 +34,13 @@ public class SpecificationTemplate {
     }
 
     @And({
+            @Spec(path = "sigla", spec = Like.class),
+            @Spec(path = "description", spec = Like.class)
+    })
+    public interface DocumentSpec extends Specification<Document> {
+    }
+
+    @And({
             @Spec(path = "number", spec = Like.class),
             @Spec(path = "description", spec = Like.class),
             @Spec(path = "accountType", spec = Equal.class)
