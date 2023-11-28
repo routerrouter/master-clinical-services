@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TransferService {
-    Transfer saveTransfer(Transfer transfer, UUID userId);
+    Transfer saveTransfer(Transfer transfer, UUID destineStorageId);
     List<Transfer> listByStorage(UUID storageId);
     List<ItemsTransfer> listItemsByTransfer(UUID transferId);
 }

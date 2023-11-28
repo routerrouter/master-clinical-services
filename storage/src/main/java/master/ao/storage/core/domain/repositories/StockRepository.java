@@ -67,4 +67,5 @@ public interface StockRepository extends JpaRepository<Stock, UUID>, JpaSpecific
 
 
 
+
 }

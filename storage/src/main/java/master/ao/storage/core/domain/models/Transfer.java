@@ -65,7 +65,13 @@ public class Transfer implements Serializable {
     @JoinColumn(name = "storage_id")
     private Storage storage;
 
+    public String setReceiveDescription() {
+        return this.description = String.format("Recebimento de produtos via transferência pelo armazem: %s", storage.getName());
+    }
 
+    public String setSendDescription(String storage) {
+        return this.description = String.format("Envio de produtos via transferência para o armazem: %s", storage);
+    }
 
 
 

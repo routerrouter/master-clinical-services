@@ -6,13 +6,10 @@ import master.ao.storage.core.domain.enums.MovementType;
 import master.ao.storage.core.domain.enums.UpdateStockType;
 import master.ao.storage.core.domain.exceptions.StockNotFoundException;
 import master.ao.storage.core.domain.models.LogStock;
-import master.ao.storage.core.domain.models.Product;
 import master.ao.storage.core.domain.models.Stock;
 import master.ao.storage.core.domain.repositories.StockRepository;
-import master.ao.storage.core.domain.repositories.UserRepository;
 import master.ao.storage.core.domain.services.*;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -146,6 +143,23 @@ public class StockServiceImpl implements StockService {
     @Override
     public Optional<Stock> fetchExistence(Stock stock) {
         return repository.findStock(stock);
+    }
+
+    @Override
+    public Long fetchExistenceByProduct(UUID productId, UUID storageId, String lote, String expirated, String model, Integer lifespan) {
+        Stock stock = new Stock();
+        var product = productService.fetchOrFail(productId);
+        var storage = storageService.fetchOrFail(storageId);
+        stock.setExpirationDate(LocalDate.parse(expirated));
+        stock.setProduct(product.get());
+        stock.setStorage(storage.get());
+        stock.setLote(lote);
+        stock.setModel(model);
+        stock.setLifespan(lifespan);
+        if (repository.findStock(stock).isPresent()) {
+            return repository.findStock(stock).get().getQuantity();
+        }
+        return 0L;
     }
 
 

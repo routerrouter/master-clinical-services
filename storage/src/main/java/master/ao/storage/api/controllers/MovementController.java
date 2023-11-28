@@ -1,14 +1,21 @@
 package master.ao.storage.api.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import master.ao.storage.api.config.security.UserDetailsImpl;
+import master.ao.storage.api.mapper.EntityMapper;
 import master.ao.storage.api.mapper.ItemsItemsMovementMapper;
 import master.ao.storage.api.mapper.MovementMapper;
 import master.ao.storage.api.request.MovementRequest;
-import master.ao.storage.api.response.ItemsMovementResponse;
-import master.ao.storage.api.response.MovementResponse;
+import master.ao.storage.api.response.*;
+import master.ao.storage.core.domain.exceptions.BussinessException;
+import master.ao.storage.core.domain.models.Entities;
 import master.ao.storage.core.domain.services.MovementService;
 import master.ao.storage.core.domain.services.UtilService;
 import master.ao.storage.core.domain.specifications.SpecificationTemplate;
@@ -41,6 +48,7 @@ public class MovementController {
     private final MovementService movementService;
     private final UtilService utilService;
     private final MovementMapper mapper;
+    private final EntityMapper entityMapper;
 
 
     @PostMapping()
@@ -86,6 +94,35 @@ public class MovementController {
 
         return utilService.getPageResponseEntity(pageable, new ArrayList<Object>(movementResponseList));
     }
+
+    @Operation(summary = "Get all entities with pending rerquest")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Entities",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
+    @GetMapping("/movement-request/entities")
+    public ResponseEntity<List<EntityShortResponse>> getAllWithPendingRequest() {
+        List<EntityShortResponse> entityList = movementService.listEntitiesWithPendingRequest()
+                .stream()
+                .map(entityMapper::toEntityShortResponse)
+                .sorted((o1, o2) -> o1.getName().
+                        compareTo(o2.getName()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(entityList);
+
+    }
+
+    @PatchMapping("/movement-request/status/{movementId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void modifyMovementStatus(@PathVariable UUID movementId) {
+        movementService.updateRequestMovementStatus(movementId);
+    }
+
+
+
 
 
 }

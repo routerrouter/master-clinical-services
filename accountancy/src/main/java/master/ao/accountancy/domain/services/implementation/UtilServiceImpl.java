@@ -2,6 +2,8 @@ package master.ao.accountancy.domain.services.implementation;
 
 import lombok.RequiredArgsConstructor;
 import master.ao.accountancy.api.config.security.AuthenticationCurrentUserService;
+import master.ao.accountancy.domain.models.CurrentMonth;
+import master.ao.accountancy.domain.services.CurrentMonthService;
 import master.ao.accountancy.domain.services.UtilService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,6 +21,7 @@ public class UtilServiceImpl implements UtilService {
     String baseUrl = "/master-authuser/user";
 
     private final AuthenticationCurrentUserService currentUserService;
+    private final CurrentMonthService currentMonthService;
 
     @Override
     public String createUrlToAuthUser() {
@@ -34,5 +37,10 @@ public class UtilServiceImpl implements UtilService {
         Page<Object> objectPage = new PageImpl<>(objectList.subList(start, end), pageable, objectList.size());
 
         return ResponseEntity.status(HttpStatus.OK).body(objectPage);
+    }
+
+    @Override
+    public CurrentMonth getCurrentPeriod() {
+        return currentMonthService.getActiveYear();
     }
 }

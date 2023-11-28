@@ -34,4 +34,5 @@ public class ItemsMovementResponse {
     private LocalDate expirationDate;
     private LocalDate manufactureDate;
     private Long lifespan;
+    private String itemStatus;
 }

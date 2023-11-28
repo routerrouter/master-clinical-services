@@ -32,8 +32,10 @@ public class TransferServiceImpl implements TransferService {
     private final UtilService utilService;
     private final AuthenticationCurrentUserService currentUserService;
 
+    private String storageToSend = "";
+
     @Override
-    public Transfer saveTransfer(Transfer transfer, UUID userId) {
+    public Transfer saveTransfer(Transfer transfer, UUID destineStorageId) {
 
         Transfer transferBeforeSaved = new Transfer();
         BeanUtils.copyProperties(transfer, transferBeforeSaved);
@@ -42,9 +44,13 @@ public class TransferServiceImpl implements TransferService {
 
         transfer.setUserGroup(utilService.getUserGroup());
         transfer.setStorage(storage);
+
+        var destinationStorage =  storageService.fetchOrFail(destineStorageId);
+
+        transfer.setSendDescription(destinationStorage.get().getDescription());
         transfer = saveTransferOut(transfer);
 
-        saveTransferIn(transfer);
+        saveTransferIn(transfer,destineStorageId);
 
         return transfer;
     }
@@ -58,28 +64,24 @@ public class TransferServiceImpl implements TransferService {
         return save(transfer);
     }
 
-    private Transfer saveTransferIn(Transfer transfer) {
+    private Transfer saveTransferIn(Transfer transfer, UUID storageDestineId) {
         var transferInput = new Transfer();
         transferInput.setTransferType(TransferType.INPUT);
         transferInput.setUserId(currentUserService.getCurrentUser().getUserId());
         transferInput.setUserGroup(utilService.getUserGroup());
-        transferInput.setDescription(String.format("Recebimento de produtos via transferência pelo armazem: %s", transfer.getStorage().getStorageId().toString()));
         transferInput.setTransferDate(LocalDate.now());
-        transferInput.setStorage(transfer
-                .getItems()
-                .stream()
-                .findFirst()
-                .get()
-                .getLocation()
-                .getStorage()
-        );
 
+        var storage = storageService.fetchOrFail(storageDestineId);
+
+        transferInput.setStorage(storage.get());
+        transfer.setReceiveDescription();
+        transferInput.setDescription(transfer.getDescription());
         Set<ItemsTransfer> itemsList = new HashSet<>();
         transfer.getItems().forEach(items -> items.setItemTransferId(null));
         transfer.getItems().forEach(items -> items.getTransfer().setTransferId(null));
         itemsList.addAll(transfer.getItems());
         transferInput.setItems(itemsList);
-        validateItemsIn(transferInput);
+        validateItemsIn(transfer.getStorage().getStorageId(),transferInput);
 
         return save(transferInput);
     }
@@ -88,19 +90,24 @@ public class TransferServiceImpl implements TransferService {
         return repository.save(transfer);
     }
 
-    private void validateItemsIn(Transfer transfer) {
+    private void validateItemsIn(UUID originStorageId, Transfer transfer) {
 
         transfer.getItems()
                 .forEach(item -> {
 
                     var product = productService.fetchOrFail(item.getProduct().getProductId()).get();
                     var location = locationService.fetchOrFail(item.getLocation().getLocationId()).get();
+                    var storage = storageService.fetchOrFail(originStorageId).get();
 
                     item.setTransfer(transfer);
                     item.setProduct(product);
                     item.setLocation(location);
 
-                    Stock stock = new Stock();
+                    Stock stock = getStock(item,storage);
+
+                    item.setAcquisitionDate(stock.getAcquisitionDate());
+                    item.setManufactureDate(stock.getManufactureDate());
+
                     BeanUtils.copyProperties(item, stock);
                     stock.setStorage(transfer.getStorage());
 
@@ -110,7 +117,7 @@ public class TransferServiceImpl implements TransferService {
                         optionalExistence.get().setQuantity(optionalExistence.get().getQuantity() + item.getQuantity());
                         updateOrSaveProductStock(optionalExistence.get());
                     } else {
-                        stock.setCost(BigDecimal.TEN);
+                        stock.setStockId(null);
                         updateOrSaveProductStock(stock);
                     }
 
@@ -129,6 +136,7 @@ public class TransferServiceImpl implements TransferService {
                     item.setTransfer(transfer);
                     item.setProduct(product);
                     item.setLocation(location);
+
 
                     Stock stock = new Stock();
                     BeanUtils.copyProperties(item, stock);
@@ -160,12 +168,15 @@ public class TransferServiceImpl implements TransferService {
         stockRepository.save(stock);
     }
 
-    private Stock setStock(ItemsTransfer item, BigDecimal cost) {
+    private Stock getStock(ItemsTransfer item, Storage storage) {
+
         var stock = new Stock();
-        stock.setCost(cost);
+        stock.setStorage(storage);
         BeanUtils.copyProperties(item, stock);
 
-        return stock;
+        var stockOptional = stockService.fetchOrFailExistence(stock);
+
+        return stockOptional.get();
     }
 
 

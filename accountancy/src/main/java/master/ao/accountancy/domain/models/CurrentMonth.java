@@ -19,10 +19,9 @@ public class CurrentMonth implements Serializable {
     private UUID currentYearId;
 
     @Column(nullable = false)
-    private String year;
+    private int year;
 
     @Column(nullable = false)
     private String month;
 
-    private boolean active;
 }

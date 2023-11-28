@@ -3,6 +3,7 @@ package master.ao.storage.core.domain.services.impl;
 import lombok.RequiredArgsConstructor;
 import master.ao.storage.api.config.security.AuthenticationCurrentUserService;
 import master.ao.storage.core.domain.enums.DevolutionType;
+import master.ao.storage.core.domain.enums.ItemStatus;
 import master.ao.storage.core.domain.enums.MovementType;
 import master.ao.storage.core.domain.exceptions.MovementNotFoundException;
 import master.ao.storage.core.domain.models.Entities;
@@ -61,6 +62,11 @@ public class MovementServiceImpl implements MovementService {
         return  movementRepository.save(movement);
     }
 
+
+    private void modifyMovementStatus(Movement movement) {
+        movementRepository.save(movement);
+    }
+
     @Override
     public List<Movement> listAndFilterAllMovements(Specification<Movement> spec, LocalDate initial, LocalDate end) {
 
@@ -81,6 +87,28 @@ public class MovementServiceImpl implements MovementService {
         return itemsMovementRepository.findAllByMovementId(movementId)
                 .stream()
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Entities> listEntitiesWithPendingRequest() {
+        List<Entities> entities = new ArrayList<>();
+        movementRepository.findAll().stream()
+                .filter(movement -> movement.getMovementType().toString().equals("REQUEST"))
+                .filter(movement -> movement.getMovementStatus().toString().equals("PENDING"))
+                .forEach(entity -> {
+            entities.add(entity.getEntity());
+        });
+        return entities
+                .stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public void updateRequestMovementStatus(UUID requestId) {
+        movementRepository.updateMovementStatus(requestId);
+        itemsMovementRepository.updateItemMovementStatus(requestId);
     }
 
     private void validateItems(Movement movement) {

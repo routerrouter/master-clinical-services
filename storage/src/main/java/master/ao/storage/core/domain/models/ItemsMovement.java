@@ -4,6 +4,7 @@ package master.ao.storage.core.domain.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import master.ao.storage.core.domain.enums.ItemStatus;
 import master.ao.storage.core.domain.enums.UnitType;
 
 import javax.persistence.*;
@@ -78,6 +79,9 @@ public class ItemsMovement implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime lastUpdateAt;
+
+    @Enumerated(EnumType.STRING)
+    private ItemStatus itemStatus;
 
 
     public void calculateTotalValue() {

@@ -52,16 +52,15 @@ public class TransferController {
             @ApiResponse(responseCode = "201", description = "Transfer saved", content = @Content()),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
-    @PostMapping
+    @PostMapping("/destination/{destineStorageId}")
     public ResponseEntity<TransferResponse> saveTransfer(@Valid @RequestBody TransferRequest request,
-                                                         Authentication authentication) {
+                                                         @PathVariable("destineStorageId") UUID destineStorageId) {
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         log.debug("POST createStorage request received {} ", request.toString());
 
         return Stream.of(request)
                 .map(mapper::toTransfer)
-                .map(transfer -> transferService.saveTransfer(transfer, userDetails.getUserId()))
+                .map(transfer -> transferService.saveTransfer(transfer, destineStorageId))
                 .map(mapper::toTransferResponse)
                 .map(transferResponse -> ResponseEntity.status(HttpStatus.CREATED).body(transferResponse))
                 .findFirst()

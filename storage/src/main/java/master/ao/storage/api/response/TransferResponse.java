@@ -15,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class TransferResponse {
 
+    private UUID transferId;
     private UUID userId;
     private String description;
     private LocalDate transferDate;

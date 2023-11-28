@@ -10,8 +10,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import master.ao.storage.api.mapper.StockMapper;
 import master.ao.storage.api.request.StockPutRequest;
-import master.ao.storage.api.response.ProductResponse;
+import master.ao.storage.api.response.StockResponse;
 import master.ao.storage.core.domain.exceptions.BussinessException;
+import master.ao.storage.core.domain.models.Stock;
 import master.ao.storage.core.domain.services.StockService;
 import master.ao.storage.core.domain.services.UtilService;
 import org.springdoc.api.annotations.ParameterObject;
@@ -41,7 +42,7 @@ public class StockController {
 
     @Operation(summary = "Inventory")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Inventory found ", content = @Content(schema = @Schema(implementation = ProductResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "200", description = "Inventory found ", content = @Content(schema = @Schema(implementation = StockResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
             @ApiResponse(responseCode = "404", description = "Storage not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
@@ -59,7 +60,7 @@ public class StockController {
 
     @Operation(summary = "Get all critical product in stock")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Critical stock items found ", content = @Content(schema = @Schema(implementation = ProductResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "200", description = "Critical stock items found ", content = @Content(schema = @Schema(implementation = StockResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
             @ApiResponse(responseCode = "404", description = "Storage not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
@@ -76,7 +77,7 @@ public class StockController {
 
     @Operation(summary = "Get all expired product in stock")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Expired stock items found ", content = @Content(schema = @Schema(implementation = ProductResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "200", description = "Expired stock items found ", content = @Content(schema = @Schema(implementation = StockResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
             @ApiResponse(responseCode = "404", description = "Storage not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
@@ -93,7 +94,7 @@ public class StockController {
 
     @Operation(summary = "Get all product stock by location")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Products stock items found ", content = @Content(schema = @Schema(implementation = ProductResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "200", description = "Products stock items found ", content = @Content(schema = @Schema(implementation = StockResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "400", description = "Invalid id supplied"),
             @ApiResponse(responseCode = "404", description = "Location not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
@@ -110,7 +111,7 @@ public class StockController {
 
     @Operation(summary = "Get product existence")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Products stock items found ", content = @Content(schema = @Schema(implementation = ProductResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "200", description = "Products stock items found ", content = @Content(schema = @Schema(implementation = StockResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "400", description = "Invalid id product"),
             @ApiResponse(responseCode = "404", description = "Location not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
@@ -123,6 +124,24 @@ public class StockController {
                 .collect(Collectors.toList());
 
         return utilService.getPageResponseEntity(pageable, new ArrayList<Object>(inLocationProductsList));
+    }
+
+    @Operation(summary = "Get product existence")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products stock items found ", content = @Content(schema = @Schema(implementation = StockResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "400", description = "Invalid id product"),
+            @ApiResponse(responseCode = "404", description = "Location not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BussinessException.class)))})
+    @GetMapping("/existence/product/{productId}")
+    public Long getExistence(
+            @RequestParam(value = "lote", required = false) String lote,
+            @RequestParam(value = "expirated", required = false) String expirationDate,
+            @RequestParam(value = "model", required = false) String model,
+            @RequestParam(value = "lifespan", required = false) Integer lifespan,
+            @RequestParam(value = "storageId", required = false) UUID storageId,
+            @PathVariable UUID productId) {
+
+        return stockService.fetchExistenceByProduct(productId, storageId, lote, expirationDate, model, lifespan);
     }
 
     @Operation(summary = "Update product existence")

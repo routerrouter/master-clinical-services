@@ -1,19 +1,39 @@
 package master.ao.accountancy.domain.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+// Quota mensal
 
-import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class Expense {
+@Getter
+@Setter
+@Entity
+@Table(name = "TB_QUOTA")
+public class Quota implements Serializable {
 
-    private UUID expenseId;
-    private Integer year;
-    private Integer month;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID quotaId;
+
+    @ManyToOne()
+    @JoinColumn(name = "natureId")
     private AccountNature nature;
+
+    @Column(name = "month")
+    private String quotaMonth;
+
+    @Column(name = "year")
+    private int quotaYear;
+
     private UUID userId;
+
     private BigDecimal value;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -23,4 +43,5 @@ public class Expense {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @Column(nullable = false)
     private LocalDateTime lastUpdateDate;
+
 }

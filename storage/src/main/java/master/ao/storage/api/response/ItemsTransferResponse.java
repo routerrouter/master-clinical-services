@@ -20,9 +20,11 @@ public class ItemsTransferResponse {
     private Long quantity;
     private String lote;
     private Long lifespan;
-    private LocalDate expirationDate;
     private String model;
     private UnitType unitType;
     private TransferType type;
+    private LocalDate expirationDate;
+    private LocalDate acquisitionDate;
+    private LocalDate manufactureDate;
 
 }

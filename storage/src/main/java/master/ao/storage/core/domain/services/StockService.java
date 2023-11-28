@@ -18,4 +18,5 @@ public interface StockService {
     void updateProductExistence(Stock stock);
     Optional<Stock> fetchOrFailExistence(Stock stock);
     Optional<Stock> fetchExistence(Stock stock);
+    Long fetchExistenceByProduct(UUID productId,UUID storageId,String lote, String expirated, String model, Integer lifespan);
 }

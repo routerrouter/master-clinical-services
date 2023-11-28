@@ -18,6 +18,7 @@ import master.ao.authuser.api.request.UserRequest;
 import master.ao.authuser.api.response.GroupResponse;
 import master.ao.authuser.api.response.UserResponse;
 import master.ao.authuser.core.domain.exception.*;
+import master.ao.authuser.core.domain.model.Group;
 import master.ao.authuser.core.domain.model.Storage;
 import master.ao.authuser.core.domain.service.*;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -52,6 +54,7 @@ public class AuthenticationController {
     private final AccessLimitUserService limitUserService;
     private final RoleService roleService;
     private final StorageService storageService;
+    private final GroupService groupService;
 
     @Operation(summary = "Create account user")
     @ApiResponses(value = {
@@ -114,6 +117,13 @@ public class AuthenticationController {
                         loginUsrDetails.setUser(userResponse.get());
                         loginUsrDetails.setToken(jwt);
                         loginUsrDetails.setStorages(storages);
+
+                        Optional<Group> groupOptional = groupService.fetchOrFail(user.getGroup().getGroupId());
+                        if (groupOptional.isPresent()) {
+                            loginUsrDetails.setModulo(groupOptional.get().getDescription());
+                        } else {
+                            loginUsrDetails.setModulo("");
+                        }
 
                         return ResponseEntity.ok(loginUsrDetails);
                     } else {
