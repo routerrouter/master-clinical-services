@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-public class UserStorageRequest {
+public class UserOtherServicesRequest {
     private UUID userId;
     private String fullName;
     private String email;

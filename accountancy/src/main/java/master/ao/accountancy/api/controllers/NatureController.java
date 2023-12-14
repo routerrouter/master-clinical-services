@@ -55,7 +55,7 @@ public class NatureController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @PostMapping("/category/{categoryId}")
     private ResponseEntity<NatureResponse> createAccount(@Valid @RequestBody NatureRequest request,
-                                                         @PathVariable("categoryId") UUID categoryId) {
+                                                         @Parameter(description = "id of category associated") @PathVariable("categoryId") UUID categoryId) {
         log.debug("nature requested:{} ", request.toString());
 
         return Stream.of(request)
@@ -96,7 +96,7 @@ public class NatureController {
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
     @GetMapping
     public ResponseEntity<Page<Object>> getAll(@ParameterObject SpecificationTemplate.NatureSpec spec,
-                                               @Parameter(description = "id of Category associated") @RequestParam(required = false) UUID categoryId,
+                                               @Parameter(description = "id of category associated") @RequestParam(required = false) UUID categoryId,
                                                @ParameterObject @PageableDefault(page = 0, size = 10, sort = "description", direction = Sort.Direction.ASC) Pageable pageable) {
         List<NatureResponse> natureResponseList = natureService.findAll(spec, categoryId)
                 .stream()

@@ -3,7 +3,7 @@ package master.ao.authuser.core.domain.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import master.ao.authuser.api.clients.UserClient;
-import master.ao.authuser.api.request.UserStorageRequest;
+import master.ao.authuser.api.request.UserOtherServicesRequest;
 import master.ao.authuser.core.domain.exception.BussinessException;
 import master.ao.authuser.core.domain.exception.UserNotFoundException;
 import master.ao.authuser.core.domain.model.User;
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
         user = userRepository.saveAndFlush(user);
         log.debug("POST registerUser userId saved {} ", user.getUserId());
         log.info("User saved successfully userId {} ", user.getUserId());
-        saveOrUpdateUserToStorage(user, token);
+        saveOrUpdateUserToStorageAndAccountancy(user, token);
 
         return user;
     }
@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
         user.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         user = userRepository.saveAndFlush(user);
 
-        saveOrUpdateUserToStorage(user, token);
+        saveOrUpdateUserToStorageAndAccountancy(user, token);
 
         return user;
     }
@@ -175,16 +175,16 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private void saveOrUpdateUserToStorage(User user, String token) {
-        var userStorage = new UserStorageRequest();
-        userStorage.setCreationDate(user.getCreationDate());
-        userStorage.setLastUpdateDate(user.getLastUpdateDate());
-        userStorage.setEmail(user.getEmail());
-        userStorage.setUsername(user.getUsername());
-        userStorage.setFullName(user.getFullName());
-        userStorage.setGroupId(user.getGroup().getGroupId());
-        userStorage.setUserId(user.getUserId());
-        userClient.saveUserToStorageAndOuther(userStorage, token);
+    private void saveOrUpdateUserToStorageAndAccountancy(User user, String token) {
+        var newUser = new UserOtherServicesRequest();
+        newUser.setCreationDate(user.getCreationDate());
+        newUser.setLastUpdateDate(user.getLastUpdateDate());
+        newUser.setEmail(user.getEmail());
+        newUser.setUsername(user.getUsername());
+        newUser.setFullName(user.getFullName());
+        newUser.setGroupId(user.getGroup().getGroupId());
+        newUser.setUserId(user.getUserId());
+        userClient.saveUserToStorageAndOuther(newUser, token);
     }
 
 }

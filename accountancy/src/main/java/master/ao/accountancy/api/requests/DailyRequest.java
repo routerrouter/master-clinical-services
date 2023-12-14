@@ -1,26 +1,8 @@
-package master.ao.accountancy.domain.models;
+package master.ao.accountancy.api.requests;
 
+import master.ao.accountancy.domain.models.Document;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
-import master.ao.accountancy.domain.enums.MovementType;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-@Getter
-@Setter
-@Entity
-@Table(name = "TB_DAILYS")
-public class Daily implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class DailyRequest {
     private UUID dailyId;
 
     private LocalDate dailyDate;

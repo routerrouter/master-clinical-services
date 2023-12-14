@@ -2,7 +2,7 @@ package master.ao.authuser.api.mapper;
 
 import lombok.RequiredArgsConstructor;
 import master.ao.authuser.api.request.UserRequest;
-import master.ao.authuser.api.request.UserStorageRequest;
+import master.ao.authuser.api.request.UserOtherServicesRequest;
 import master.ao.authuser.api.response.UserResponse;
 import master.ao.authuser.api.response.UserStorageResponse;
 import master.ao.authuser.core.domain.model.User;
@@ -26,11 +26,11 @@ public class UserMapper {
         return mapper.map(user, UserResponse.class);
     }
 
-    public UserStorageRequest toUserStorage(UserRequest request) {
-        return mapper.map(request, UserStorageRequest.class);
+    public UserOtherServicesRequest toUserStorage(UserRequest request) {
+        return mapper.map(request, UserOtherServicesRequest.class);
     }
 
-    public UserStorageResponse toUserStorageResponse(UserStorageRequest user) {
+    public UserStorageResponse toUserStorageResponse(UserOtherServicesRequest user) {
         return mapper.map(user, UserStorageResponse.class);
     }
 

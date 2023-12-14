@@ -28,7 +28,9 @@ public class ExpensePeople implements Serializable {
     @JoinColumn(name = "natureId")
     private AccountNature nature;
 
-    private UUID userId;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
 
     private BigDecimal value;
 

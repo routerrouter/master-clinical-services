@@ -10,4 +10,9 @@ public class UtilServiceImpl implements UtilService {
     public String createUrlToStorage() {
         return "/master-storage/user";
     }
+
+    @Override
+    public String createUrlToAccountancy() {
+        return "/master-accountancy/user";
+    }
 }

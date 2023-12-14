@@ -13,4 +13,5 @@ public class SubAccountRequest {
     private String description;
     private String movement = "SIM";
     private UUID accountId;
+    private String nif;
 }

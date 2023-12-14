@@ -24,7 +24,9 @@ public class Budget implements Serializable {
     @Column(name = "year")
     private int currentYear;
 
-    private UUID userId;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "natureId")

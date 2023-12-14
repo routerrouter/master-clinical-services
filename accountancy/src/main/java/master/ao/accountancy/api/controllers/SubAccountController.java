@@ -110,6 +110,27 @@ public class SubAccountController {
 
     }
 
+    @Operation(summary = "Get all subAccounts providers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Provider",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
+    @GetMapping("/providers")
+    public ResponseEntity<Page<Object>> getAllProviders(@ParameterObject SpecificationTemplate.SubAccountSpec spec,
+                                               @ParameterObject @PageableDefault(page = 0, size = 10, sort = "number", direction = Sort.Direction.ASC) Pageable pageable) {
+
+        List<SubAccountResponse> subAccountResponseList = service.findAllProviders(spec)
+                .stream()
+                .map(mapper::toSubAccountResponse)
+                .collect(Collectors.toList());
+
+        return utilService
+                .getPageResponseEntity(pageable, new ArrayList<Object>(subAccountResponseList));
+
+    }
+
     @Operation(summary = "Get a subAccount by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the subAccount",
@@ -141,5 +162,38 @@ public class SubAccountController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@Parameter(description = "id of subAccount to be deleted") @PathVariable UUID subAccountId) {
         service.delete(subAccountId);
+    }
+
+    @Operation(summary = "Get all natures by providers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found natures",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = BussinessException.class)))})
+    @GetMapping("/natures/{providerId}/provider")
+    public ResponseEntity<List<?>> getAllProviders(@PathVariable("providerId") UUID providerId) {
+
+        var subAccountResponseList = service.findAllNaturesByProviders(providerId)
+                .stream()
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(subAccountResponseList);
+
+    }
+
+    @Operation(summary = "Add natures to provider")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Nature associated to provider",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "SubAccount id not found",
+                    content = @Content)})
+    @PostMapping("/{providerId}/natures")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addNaturesToProvider(@Parameter(description = "id of provider to be associate") @PathVariable UUID providerId,
+                                     @RequestBody  List<UUID> naturesId) {
+        service.associateNatureToProvider(providerId,naturesId);
     }
 }

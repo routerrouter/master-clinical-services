@@ -7,6 +7,7 @@ import master.ao.accountancy.domain.models.ExpensePeople;
 import master.ao.accountancy.domain.repositories.ExpensePeopleRepository;
 import master.ao.accountancy.domain.services.ExpensePeopleService;
 import master.ao.accountancy.domain.services.NatureService;
+import master.ao.accountancy.domain.services.UserService;
 import master.ao.accountancy.domain.services.UtilService;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class ExpensePeopleServiceImpl implements ExpensePeopleService {
     private final ExpensePeopleRepository expensePeopleRepository;
     private final UtilService utilService;
     private final NatureService natureService;
+    private final UserService userService;
     private final AuthenticationCurrentUserService currentUserService;
 
 
@@ -55,7 +57,8 @@ public class ExpensePeopleServiceImpl implements ExpensePeopleService {
         if (expensePeopleOptional.isPresent()) {
             throw new ExpensePeopleNotFoundException("Já existe um lançamento de despesas para a natureza selecionada!");
         }
-        expensePeople.setUserId(currentUserService.getCurrentUser().getUserId());
+        var user = userService.fetchOrFail(currentUserService.getCurrentUser().getUserId());
+        expensePeople.setUser(user.get());
         expensePeople.setYear(currentYear.getYear());
         expensePeople.setMonth(currentYear.getMonth());
         expensePeople.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));

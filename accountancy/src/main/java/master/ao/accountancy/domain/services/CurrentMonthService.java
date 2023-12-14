@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CurrentMonthService {
-    CurrentMonth activeCurrentYear(UUID currentYearId,CurrentMonth currentMonth);
+    void activeCurrentYear(CurrentMonth currentMonth);
     CurrentMonth fetchOrFail(UUID currentYearId);
     CurrentMonth getActiveYear();
     void validateYear(CurrentMonth currentMonth);

@@ -6,8 +6,10 @@ import master.ao.accountancy.domain.exceptions.BudgetNotFoundException;
 import master.ao.accountancy.domain.exceptions.NatureNotFoundException;
 import master.ao.accountancy.domain.models.Budget;
 import master.ao.accountancy.domain.repositories.BudgetRepository;
+import master.ao.accountancy.domain.repositories.UserRepository;
 import master.ao.accountancy.domain.services.BudgetService;
 import master.ao.accountancy.domain.services.CurrentMonthService;
+import master.ao.accountancy.domain.services.UserService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class BudgetServiceImpl implements BudgetService {
 
     private final BudgetRepository budgetRepository;
+    private final UserService userService;
     private final CurrentMonthService currentMonthService;
     private final AuthenticationCurrentUserService currentUserService;
 
@@ -53,7 +56,8 @@ public class BudgetServiceImpl implements BudgetService {
         if (budgetOptional.isPresent()) {
             throw new BudgetNotFoundException("Já existe um lançamento de abertura para a Natureza e Ano selecionado!");
         }
-        budget.setUserId(currentUserService.getCurrentUser().getUserId());
+        var user = userService.fetchOrFail(currentUserService.getCurrentUser().getUserId());
+        budget.setUser(user.get());
         budget.setCurrentYear(currentYear);
         budget.setAvailable(BigDecimal.ZERO);
         budget.setExecutable(BigDecimal.ZERO);

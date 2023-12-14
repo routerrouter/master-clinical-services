@@ -31,7 +31,6 @@ public class SubAccount implements Serializable {
 
     private String movement;
 
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @Column(nullable = false)
     private LocalDateTime creationDate;
@@ -40,6 +39,7 @@ public class SubAccount implements Serializable {
     @Column(nullable = false)
     private LocalDateTime lastUpdateDate;
 
+    private String nif;
 
     private String setSubAccountNumber() {
         return "";

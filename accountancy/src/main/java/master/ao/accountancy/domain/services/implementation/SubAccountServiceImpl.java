@@ -3,13 +3,18 @@ package master.ao.accountancy.domain.services.implementation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import master.ao.accountancy.api.responses.NatureDescriptionResponse;
 import master.ao.accountancy.domain.exceptions.EntityInUseException;
 import master.ao.accountancy.domain.exceptions.ExistingDataException;
 import master.ao.accountancy.domain.exceptions.SubAccountNotFoundException;
+import master.ao.accountancy.domain.models.ProviderNature;
 import master.ao.accountancy.domain.models.SubAccount;
+import master.ao.accountancy.domain.repositories.ProviderNatureRepository;
 import master.ao.accountancy.domain.repositories.SubAccountRepository;
 import master.ao.accountancy.domain.services.AccountService;
+import master.ao.accountancy.domain.services.NatureService;
 import master.ao.accountancy.domain.services.SubAccountService;
+import master.ao.accountancy.domain.specifications.SpecificationTemplate;
 import master.ao.accountancy.domain.utilities.Constants;
 import master.ao.accountancy.domain.utilities.Converts;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,7 +38,9 @@ public class SubAccountServiceImpl implements SubAccountService {
     private static final String MSG_SUBACCOUNT_IN_USE = "Subconta não pode ser removida, pois está em uso!";
 
     private final SubAccountRepository subAccountRepository;
+    private final ProviderNatureRepository providerNatureRepository;
     private final AccountService accountService;
+    private final NatureService natureService;
     private final Converts convert;
     private final Constants constants;
 
@@ -48,6 +56,7 @@ public class SubAccountServiceImpl implements SubAccountService {
     public SubAccount updateSubAccount(SubAccount account, UUID accountId) {
         var subAccountOptional = fetchOrFail(accountId);
 
+        subAccountOptional.get().setNif(account.getNif());
         subAccountOptional.get().setDescription(account.getDescription());
         subAccountOptional.get().setAccount(account.getAccount());
         subAccountOptional.get().setMovement(account.getMovement());
@@ -79,6 +88,7 @@ public class SubAccountServiceImpl implements SubAccountService {
         return subAccountRepository.findAll(specification);
     }
 
+
     @Override
     public void delete(UUID subAccountId) {
         try {
@@ -92,6 +102,45 @@ public class SubAccountServiceImpl implements SubAccountService {
         } catch (DataIntegrityViolationException e) {
             throw new EntityInUseException(MSG_SUBACCOUNT_IN_USE);
         }
+    }
+
+    @Override
+    public List<SubAccount> findAllProviders(SpecificationTemplate.SubAccountSpec specification) {
+        return subAccountRepository.findAll(specification)
+                .stream()
+                .filter(subAccount -> subAccount.getAccount().getNumber().equalsIgnoreCase("32"))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<NatureDescriptionResponse> findAllNaturesByProviders(UUID providerId) {
+        List<NatureDescriptionResponse> descriptionResponses = new ArrayList<>();
+         var returnList = providerNatureRepository.findAllNatureForProvider(providerId).stream()
+                 .map(nature -> nature.getNature())
+                 .collect(Collectors.toList());
+
+        returnList.forEach(natureDescription -> {
+            NatureDescriptionResponse nature = new NatureDescriptionResponse();
+            nature.setNatureId(natureDescription.getNatureId());
+            nature.setDescription(natureDescription.getDescription());
+            descriptionResponses.add(nature);
+        });
+
+        return descriptionResponses;
+    }
+
+    @Override
+    public void associateNatureToProvider(UUID providerId, List<UUID> natureIds) {
+        var provider = fetchOrFail(providerId);
+        natureIds.forEach( natureId -> {
+            ProviderNature providerNature = new ProviderNature();
+            if(!providerNatureRepository.getIfExist(providerId,natureId).isPresent()) {
+                providerNature.setNature( natureService.fetchOrFail(natureId).get());
+                providerNature.setSubAccount(provider.get());
+                providerNatureRepository.save(providerNature);
+            }
+
+        });
     }
 
     @Override

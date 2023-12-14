@@ -15,8 +15,8 @@ import java.util.UUID;
 public class FinancialProgrammingResponse {
 
     private UUID programmingId;
-    private NatureResponse nature;
-    private SubAccountResponse subAccount;
+    private NatureDescriptionResponse nature;
+    private SubAccountDescriptionResponse subAccount;
     private String document;
     private String description;
     private BigDecimal value;

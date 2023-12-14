@@ -41,17 +41,17 @@ public class Document implements Serializable {
 
     public void setSigla() {
         String sigla = "";
-        boolean caractereAnteriorEraEspaco = true;
+        boolean characterAnteriorEraEspaco = true;
 
         for (int i = 0; i < this.description.length(); i++) {
 
-            char caractere = this.description.charAt(i);
-            if (Character.isUpperCase(caractere) && caractereAnteriorEraEspaco) {
-                System.out.print(caractere);
-                sigla = sigla.concat(String.valueOf(caractere));
+            char character = this.description.charAt(i);
+            if (Character.isUpperCase(character) && characterAnteriorEraEspaco) {
+                System.out.print(character);
+                sigla = sigla.concat(String.valueOf(character));
             }
 
-            caractereAnteriorEraEspaco = Character.isWhitespace(caractere);
+            characterAnteriorEraEspaco = Character.isWhitespace(character);
         }
         this.sigla = sigla;
     }

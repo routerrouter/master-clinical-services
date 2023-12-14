@@ -8,6 +8,7 @@ import master.ao.accountancy.domain.repositories.CurrentMonthRepository;
 import master.ao.accountancy.domain.services.CurrentMonthService;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,13 +18,11 @@ public class CurrentMonthServiceImpl implements CurrentMonthService {
 
     private final CurrentMonthRepository currentMonthRepository;
 
+    @Transactional
     @Override
-    public CurrentMonth activeCurrentYear(UUID currentMonthId, CurrentMonth currentMonth) {
+    public void activeCurrentYear(CurrentMonth currentMonth) {
         validateYear(currentMonth);
-        var currentYear = fetchOrFail(currentMonthId);
-        currentYear.setMonth(currentMonth.getMonth());
-        currentYear.setYear(currentMonth.getYear());
-        return currentMonthRepository.save(currentYear);
+        currentMonthRepository.updateCurrentPeriod(currentMonth.getYear(),currentMonth.getMonth());
     }
 
 

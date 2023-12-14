@@ -8,17 +8,18 @@ import java.util.UUID;
 
 public interface FinancialProgrammingService {
 
-    FinancialProgramming save(FinancialProgramming programming);
+    void create(List<FinancialProgramming> programming);
     void delete(UUID programmingId);
-    void update(UUID programmingId);
-    FinancialProgramming finallyProgramming(int year, String month);
-    List<FinancialProgramming> findAllProgramming();
+    void update(FinancialProgramming programming, UUID programmingId);
+    void finallyProgramming();
+    Optional<FinancialProgramming> fetchOrFail(UUID programmingId);
+    List<FinancialProgramming> findAllProgramming(UUID natureId);
     void verifyExistence(int year, String month, UUID natureId, UUID providerId);
-    void finallyVerify(int year, String month);
+    void finallyVerify(int year, String month,String message);
     void verifyExistence(int year, String month);
     void linesVerifying();
     void validateDocument(int year, String month);
     List<FinancialProgramming> getAll(int year, String month);
-    void updateValueAt(int document, String valueNcb,String valueLiq,String valueOs,UUID programmingId);
+    void updateValueAt(FinancialProgramming financialProgramming,UUID programmingId);
 
 }

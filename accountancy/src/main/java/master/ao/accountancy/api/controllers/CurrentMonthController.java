@@ -43,18 +43,13 @@ public class CurrentMonthController {
             @ApiResponse(responseCode = "400", description = "Invalid data supplied"),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = BussinessException.class)))})
-    @PutMapping("/{currentYearId}")
-    private ResponseEntity<CurrentMonthResponse> createCurrentMonth(@Valid @RequestBody CurrentMonthRequest request,
-                                                          @PathVariable("currentYearId") UUID currentYearId) {
+    @PutMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private void createCurrentMonth(@Valid @RequestBody CurrentMonthRequest request) {
         log.debug("CurrentMonth requested:{} ", request.toString());
 
-        return Stream.of(request)
-                .map(mapper::toCurrentMonth)
-                .map(currentMonth -> currentMonthService.activeCurrentYear(currentYearId,currentMonth))
-                .map(mapper::toCurrentMonthResponse)
-                .map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response))
-                .findFirst()
-                .get();
+        var currentMonth = mapper.toCurrentMonth(request);
+        currentMonthService.activeCurrentYear(currentMonth);
     }
 
 

@@ -2,7 +2,9 @@ package master.ao.accountancy.domain.services.implementation;
 
 import lombok.RequiredArgsConstructor;
 import master.ao.accountancy.api.config.security.AuthenticationCurrentUserService;
+import master.ao.accountancy.api.config.security.UserDetailsImpl;
 import master.ao.accountancy.domain.models.CurrentMonth;
+import master.ao.accountancy.domain.repositories.UserRepository;
 import master.ao.accountancy.domain.services.CurrentMonthService;
 import master.ao.accountancy.domain.services.UtilService;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,10 +25,23 @@ public class UtilServiceImpl implements UtilService {
 
     private final AuthenticationCurrentUserService currentUserService;
     private final CurrentMonthService currentMonthService;
+    private final UserRepository userRepository;
+
 
     @Override
     public String createUrlToAuthUser() {
         return baseUrl;
+    }
+
+    @Override
+    public UUID getUserGroup() {
+        UserDetailsImpl userDetails = currentUserService.getCurrentUser();
+
+        return userRepository
+                .findById(userDetails.getUserId())
+                .get()
+                .getGroupId();
+
     }
 
 
@@ -43,4 +59,7 @@ public class UtilServiceImpl implements UtilService {
     public CurrentMonth getCurrentPeriod() {
         return currentMonthService.getActiveYear();
     }
+
+
+
 }

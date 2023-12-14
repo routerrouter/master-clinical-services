@@ -6,9 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UtilService {
-    CurrentMonth getCurrentPeriod();
     String createUrlToAuthUser();
+    UUID getUserGroup();
+    CurrentMonth getCurrentPeriod();
     ResponseEntity<Page<Object>> getPageResponseEntity(Pageable pageable, List<Object> objectList);
 }

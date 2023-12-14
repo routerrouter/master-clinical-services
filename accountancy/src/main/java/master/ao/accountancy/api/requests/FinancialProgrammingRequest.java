@@ -32,8 +32,6 @@ public class FinancialProgrammingRequest {
 
     private String os = "";
 
-    private String finished = "NAO";
-
     @NotBlank
     private String nif;
 }

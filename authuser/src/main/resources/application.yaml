@@ -10,6 +10,7 @@ master:
   api:
     url:
       storage: 'http://master-storage-service'
+      accountancy: 'http://master-accountancy-service'
 
 spring:
   application:

@@ -14,5 +14,6 @@ public class SubAccountResponse {
     private String description;
     private AccountShortResponse account;
     private String movement;
+    private String nif;
 
 }
