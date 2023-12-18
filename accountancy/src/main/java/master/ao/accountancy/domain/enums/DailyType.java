@@ -1,6 +1,6 @@
 package master.ao.accountancy.domain.enums;
 
-public enum MovementType {
+public enum DailyType {
     DEBIT,
     CREDIT
 }

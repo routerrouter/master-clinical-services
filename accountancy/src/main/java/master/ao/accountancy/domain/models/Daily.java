@@ -4,7 +4,7 @@ package master.ao.accountancy.domain.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
-import master.ao.accountancy.domain.enums.MovementType;
+import master.ao.accountancy.domain.enums.DailyType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -52,7 +52,7 @@ public class Daily implements Serializable {
     private SubAccount subAccount;
 
     @Enumerated(EnumType.STRING)
-    private MovementType movementType;
+    private DailyType dailyType;
 
     @ManyToOne
     @JoinColumn(name = "documentId")

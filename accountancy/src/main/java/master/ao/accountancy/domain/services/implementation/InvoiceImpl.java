@@ -27,7 +27,7 @@ public class InvoiceImpl implements InvoiceService {
         findByNumber(invoice.getSubAccount().getSubAccountId(), invoice.getInvoiceNumber());
         invoice.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         invoice.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-
+        invoice.setInvoiceDate(invoice.getInvoiceDate());
         invoice.setPaid(BigDecimal.ZERO);
         invoice.setBalance(invoice.getValue());
 

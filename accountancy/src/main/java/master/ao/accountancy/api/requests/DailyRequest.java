@@ -1,46 +1,51 @@
 package master.ao.accountancy.api.requests;
 
+import lombok.Data;
+import master.ao.accountancy.domain.enums.DailyType;
 import master.ao.accountancy.domain.models.Document;
+import master.ao.accountancy.domain.models.SubAccount;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.UUID;
+
+
+@Data
 public class DailyRequest {
-    private UUID dailyId;
 
+
+    @NotNull
     private LocalDate dailyDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
-    @Column(nullable = false)
-    private LocalDateTime creationDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
-    @Column(nullable = false)
-    private LocalDateTime lastUpdateDate;
-
-    private UUID userId;
 
     private boolean status;
 
-    @ManyToOne()
-    @JoinColumn(name = "natureId")
-    private AccountNature nature;
+    @NotNull
+    private UUID natureId;
 
+    @NotBlank
     private String description;
 
     private String invoiceNumber;
 
     private String documentUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "accountId")
+    @NotNull
     private SubAccount subAccount;
 
-    @Enumerated(EnumType.STRING)
-    private MovementType movementType;
+    @NotNull
+    private DailyType dailyType;
 
-    @ManyToOne
-    @JoinColumn(name = "documentId")
+
+    @NotNull
     private Document document;
 
     private String documentNumber;
 
+    @NotNull
+    @Min(1)
     private BigDecimal value;
 }

@@ -4,7 +4,7 @@ package master.ao.accountancy.domain.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
-import master.ao.accountancy.domain.enums.MovementType;
+import master.ao.accountancy.domain.enums.DailyType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,7 +28,7 @@ public class Document implements Serializable {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private MovementType movementType;
+    private DailyType movementType;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     @Column(nullable = false)

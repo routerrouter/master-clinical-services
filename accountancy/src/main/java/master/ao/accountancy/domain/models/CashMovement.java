@@ -2,8 +2,8 @@ package master.ao.accountancy.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import master.ao.accountancy.domain.enums.CostumerType;
-import master.ao.accountancy.domain.enums.MovementStatus;
-import master.ao.accountancy.domain.enums.MovementType;
+import master.ao.accountancy.domain.enums.DailyStatus;
+import master.ao.accountancy.domain.enums.DailyType;
 
 import javax.persistence.Column;
 import javax.persistence.EnumType;
@@ -34,11 +34,11 @@ public class CashMovement {
     private CostumerType costumerType;  
 
     @Enumerated(value = EnumType.STRING)
-    private MovementType movementType;
+    private DailyType movementType;
 
 
     @Enumerated(value = EnumType.STRING)
-    private MovementStatus movementStatus;
+    private DailyStatus movementStatus;
 
     private String processNumber;
 

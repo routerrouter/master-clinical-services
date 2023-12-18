@@ -1,6 +1,6 @@
 package master.ao.accountancy.domain.enums;
 
-public enum MovementStatus {
+public enum DailyStatus {
     DEBIT,
     CREDIT
 }
